@@ -168,61 +168,84 @@ export const RecipeMaster = () => {
       />
 
       {/* Recipe Statistics */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-primary/10 rounded-lg">
-                <Package className="w-5 h-5 text-primary" />
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-primary">687</div>
-                <p className="text-xs text-muted-foreground">Active across all channels</p>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <Card className="relative overflow-hidden border-none bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 hover-scale group">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-2">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 bg-blue-500/20 rounded-xl group-hover:bg-blue-500/30 transition-colors">
+                    <Package className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-blue-600 dark:text-blue-400 uppercase tracking-wide">Total Products</p>
+                    <div className="text-3xl font-bold text-blue-900 dark:text-blue-100">687</div>
+                  </div>
+                </div>
+                <p className="text-sm text-blue-700 dark:text-blue-300">Active across all channels</p>
               </div>
             </div>
-            <p className="text-sm font-medium mt-2">Total Products</p>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full -translate-y-16 translate-x-16"></div>
           </CardContent>
         </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-accent/10 rounded-lg">
-                <FileText className="w-5 h-5 text-accent" />
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-accent">4,811</div>
-                <p className="text-xs text-muted-foreground">For all product variants</p>
+
+        <Card className="relative overflow-hidden border-none bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-950 dark:to-emerald-900 hover-scale group">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-2">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 bg-emerald-500/20 rounded-xl group-hover:bg-emerald-500/30 transition-colors">
+                    <FileText className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400 uppercase tracking-wide">Total Recipes</p>
+                    <div className="text-3xl font-bold text-emerald-900 dark:text-emerald-100">4,811</div>
+                  </div>
+                </div>
+                <p className="text-sm text-emerald-700 dark:text-emerald-300">For all product variants</p>
               </div>
             </div>
-            <p className="text-sm font-medium mt-2">Total Recipes</p>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full -translate-y-16 translate-x-16"></div>
           </CardContent>
         </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-500/10 rounded-lg">
-                <Utensils className="w-5 h-5 text-blue-500" />
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-blue-500">1,553</div>
-                <p className="text-xs text-muted-foreground">Across all Recipes in this Version</p>
+
+        <Card className="relative overflow-hidden border-none bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-950 dark:to-orange-900 hover-scale group">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-2">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 bg-orange-500/20 rounded-xl group-hover:bg-orange-500/30 transition-colors">
+                    <Utensils className="w-6 h-6 text-orange-600 dark:text-orange-400" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-orange-600 dark:text-orange-400 uppercase tracking-wide">Unique Ingredients</p>
+                    <div className="text-3xl font-bold text-orange-900 dark:text-orange-100">1,553</div>
+                  </div>
+                </div>
+                <p className="text-sm text-orange-700 dark:text-orange-300">Across all Recipes in this Version</p>
               </div>
             </div>
-            <p className="text-sm font-medium mt-2">Unique Ingredients</p>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 rounded-full -translate-y-16 translate-x-16"></div>
           </CardContent>
         </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-green-500/10 rounded-lg">
-                <Building2 className="w-5 h-5 text-green-500" />
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-green-500">1,876</div>
-                <p className="text-xs text-muted-foreground">Stores using this Version</p>
+
+        <Card className="relative overflow-hidden border-none bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900 hover-scale group">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-2">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 bg-purple-500/20 rounded-xl group-hover:bg-purple-500/30 transition-colors">
+                    <Building2 className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-purple-600 dark:text-purple-400 uppercase tracking-wide">Stores</p>
+                    <div className="text-3xl font-bold text-purple-900 dark:text-purple-100">1,876</div>
+                  </div>
+                </div>
+                <p className="text-sm text-purple-700 dark:text-purple-300">Stores using this Version</p>
               </div>
             </div>
-            <p className="text-sm font-medium mt-2">Stores</p>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 rounded-full -translate-y-16 translate-x-16"></div>
           </CardContent>
         </Card>
       </div>
