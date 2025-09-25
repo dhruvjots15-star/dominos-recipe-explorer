@@ -1,8 +1,9 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Label } from "@/components/ui/label";
-import { Info } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Building2, Calendar, ChevronDown, ChevronUp } from "lucide-react";
+import { useState } from "react";
 
 interface VersionSelectorProps {
   selectedVersion: string;
@@ -11,78 +12,82 @@ interface VersionSelectorProps {
 
 const versions = [
   {
-    id: "v5.2",
-    name: "Version 5.2",
-    description: "Maharashtra stores - Dairy Blend for all pizza products",
-    stores: "All Maharashtra stores (247 stores)",
+    id: "v1.0",
+    name: "Version 1.0",
+    description: "All India, Except Maharashtra",
+    stores: 1876,
     status: "active",
-    lastUpdated: "2024-01-15"
+    lastUpdated: "2025-09-05",
+    regionalCoverage: "All India except Maharashtra",
+    keyDifferences: "Standard cheese blend for all Pizza products"
   },
   {
-    id: "v5.1",
-    name: "Version 5.1", 
-    description: "All India except Maharashtra - Seasoned Cheese Blend",
-    stores: "All India except Maharashtra (1,823 stores)",
+    id: "v2.0",
+    name: "Version 2.0", 
+    description: "All Maharashtra Stores",
+    stores: 247,
     status: "active",
-    lastUpdated: "2024-01-10"
+    lastUpdated: "2025-08-28",
+    regionalCoverage: "Maharashtra region",
+    keyDifferences: "Dairy Blend instead of Seasoned cheese blend for all Pizza products"
   },
   {
-    id: "v4.8",
-    name: "Version 4.8",
-    description: "Regional variant for North East stores",
-    stores: "North East region (156 stores)",
+    id: "v3.0",
+    name: "Version 3.0",
+    description: "Mozz + Cheddar for CHD",
+    stores: 89,
     status: "active",
-    lastUpdated: "2023-12-28"
+    lastUpdated: "2025-08-15",
+    regionalCoverage: "Chandigarh region",
+    keyDifferences: "Mozzarella + Cheddar cheese combination for premium products"
   },
   {
-    id: "v4.7",
-    name: "Version 4.7",
-    description: "Metro cities premium variant",
-    stores: "Delhi, Mumbai, Bangalore, Chennai (89 stores)",
+    id: "v4.0",
+    name: "Version 4.0",
+    description: "BBP Doughball change",
+    stores: 156,
     status: "active",
-    lastUpdated: "2023-12-20"
-  },
-  {
-    id: "v4.6",
-    name: "Version 4.6",
-    description: "Standard variant for Tier 2/3 cities",
-    stores: "Tier 2/3 cities (967 stores)",
-    status: "active",
-    lastUpdated: "2023-12-15"
+    lastUpdated: "2025-07-20",
+    regionalCoverage: "Select metro stores",
+    keyDifferences: "Updated doughball specifications for BBP products"
   }
 ];
 
 export const VersionSelector = ({ selectedVersion, onVersionChange }: VersionSelectorProps) => {
+  const [isExpanded, setIsExpanded] = useState(false);
   const currentVersion = versions.find(v => v.id === selectedVersion);
 
   return (
-    <Card className="border-primary/20 bg-gradient-to-r from-primary/5 to-accent/5">
+    <Card className="bg-card border">
       <CardContent className="pt-6">
         <div className="space-y-4">
-          <div className="flex items-center gap-2">
-            <Label htmlFor="version-select" className="text-sm font-semibold">
-              Recipe Bank Version
-            </Label>
-            <Info className="w-4 h-4 text-muted-foreground" />
+          <div>
+            <h3 className="text-lg font-semibold text-foreground">Recipe Bank Version</h3>
+            <p className="text-sm text-muted-foreground">Select Recipe Bank Version</p>
           </div>
           
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-center">
-            <div>
+          <div className="flex items-center justify-between gap-6">
+            <div className="flex-1">
               <Select value={selectedVersion} onValueChange={onVersionChange}>
-                <SelectTrigger id="version-select" className="w-full">
+                <SelectTrigger className="w-full max-w-sm">
                   <SelectValue placeholder="Select recipe bank version" />
                 </SelectTrigger>
                 <SelectContent>
                   {versions.map((version) => (
                     <SelectItem key={version.id} value={version.id}>
-                      <div className="flex items-center gap-2">
-                        {version.name}
-                        <Badge 
-                          variant={version.status === "active" ? "default" : "secondary"}
-                          className="text-xs"
-                        >
-                          {version.status}
-                        </Badge>
+                      <div className="flex flex-col items-start gap-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium">{version.name}</span>
+                          <Badge 
+                            variant={version.status === "active" ? "default" : "secondary"}
+                            className="text-xs"
+                          >
+                            {version.status}
+                          </Badge>
+                        </div>
+                        <span className="text-xs text-muted-foreground">
+                          {version.description}
+                        </span>
                       </div>
                     </SelectItem>
                   ))}
@@ -92,24 +97,56 @@ export const VersionSelector = ({ selectedVersion, onVersionChange }: VersionSel
 
             {currentVersion && (
               <>
-                <div className="space-y-1">
-                  <p className="text-sm font-medium text-foreground">
+                <div className="flex-1 space-y-1">
+                  <h4 className="font-semibold text-foreground">
                     {currentVersion.description}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {currentVersion.stores}
-                  </p>
+                  </h4>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Building2 className="w-4 h-4" />
+                    <span>{currentVersion.stores} stores</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Calendar className="w-4 h-4" />
+                    <span>Updated: {currentVersion.lastUpdated}</span>
+                  </div>
                 </div>
                 
-                <div className="text-right space-y-1">
-                  <p className="text-xs text-muted-foreground">Last Updated</p>
-                  <p className="text-sm font-medium">
-                    {new Date(currentVersion.lastUpdated).toLocaleDateString()}
-                  </p>
+                <div>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setIsExpanded(!isExpanded)}
+                    className="gap-2"
+                  >
+                    Show Details
+                    {isExpanded ? (
+                      <ChevronUp className="w-4 h-4" />
+                    ) : (
+                      <ChevronDown className="w-4 h-4" />
+                    )}
+                  </Button>
                 </div>
               </>
             )}
           </div>
+
+          {isExpanded && currentVersion && (
+            <div className="pt-4 border-t space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h5 className="font-medium text-foreground mb-2">Regional Coverage</h5>
+                  <p className="text-sm text-muted-foreground">
+                    {currentVersion.regionalCoverage} ({currentVersion.stores} stores)
+                  </p>
+                </div>
+                <div>
+                  <h5 className="font-medium text-foreground mb-2">Key Differences</h5>
+                  <p className="text-sm text-muted-foreground">
+                    {currentVersion.keyDifferences}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>

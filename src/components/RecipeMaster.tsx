@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Download, RefreshCw, Filter } from "lucide-react";
+import { TopNavigation } from "./TopNavigation";
 import { VersionSelector } from "./VersionSelector";
 import { FilterPanel, ActiveFilters } from "./FilterPanel";
 import { AdvancedSearch } from "./AdvancedSearch";
@@ -11,7 +12,8 @@ import { mockRecipeData, RecipeItem, searchRecipes } from "@/data/recipeData";
 
 
 export const RecipeMaster = () => {
-  const [selectedVersion, setSelectedVersion] = useState("v5.2");
+  const [activeTab, setActiveTab] = useState("recipe-bank");
+  const [selectedVersion, setSelectedVersion] = useState("v1.0");
   const [showFilters, setShowFilters] = useState(false);
   const [activeFilters, setActiveFilters] = useState<ActiveFilters>({});
   const [searchResults, setSearchResults] = useState<RecipeItem[]>(mockRecipeData);
@@ -104,26 +106,33 @@ export const RecipeMaster = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-6 space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-primary">Recipe Master</h1>
-          <p className="text-muted-foreground mt-1">
-            Manage and view all active product recipes across Dominos stores
-          </p>
+    <div className="min-h-screen bg-background">
+      {/* Top Navigation */}
+      <TopNavigation 
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+      />
+      
+      <div className="p-6 space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-primary">Recipe Bank</h1>
+            <p className="text-muted-foreground mt-1">
+              Manage and view all active product recipes across Dominos stores
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <Button variant="outline" size="sm">
+              <Download className="w-4 h-4 mr-2" />
+              Export
+            </Button>
+            <Button variant="outline" size="sm">
+              <RefreshCw className="w-4 h-4 mr-2" />
+              Refresh
+            </Button>
+          </div>
         </div>
-        <div className="flex items-center gap-3">
-          <Button variant="outline" size="sm">
-            <Download className="w-4 h-4 mr-2" />
-            Export
-          </Button>
-          <Button variant="outline" size="sm">
-            <RefreshCw className="w-4 h-4 mr-2" />
-            Refresh
-          </Button>
-        </div>
-      </div>
 
       {/* Version Selector */}
       <VersionSelector 
@@ -207,6 +216,7 @@ export const RecipeMaster = () => {
         onViewRecipe={handleViewRecipe}
         onEditRecipe={handleEditRecipe}
       />
+      </div>
     </div>
   );
 };
