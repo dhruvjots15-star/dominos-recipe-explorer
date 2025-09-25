@@ -50,16 +50,16 @@ export const RecipeMaster = () => {
     }
     
     // Apply search filters
-    if (filters.category) {
+    if (filters.category && filters.category !== "all") {
       results = results.filter(item => item.menuCategoryCode === filters.category);
     }
-    if (filters.sizeCode) {
+    if (filters.sizeCode && filters.sizeCode !== "all") {
       results = results.filter(item => item.sizeCode === filters.sizeCode);
     }
-    if (filters.sizeDescription) {
+    if (filters.sizeDescription && filters.sizeDescription !== "all") {
       results = results.filter(item => item.sizeDescription === filters.sizeDescription);
     }
-    if (filters.type) {
+    if (filters.type && filters.type !== "all") {
       const isVegFilter = filters.type === 'VG';
       results = results.filter(item => {
         const isVeg = item.description.includes('VG') || !item.description.includes('NV');

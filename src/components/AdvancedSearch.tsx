@@ -35,10 +35,10 @@ export const AdvancedSearch = ({ onSearch, onClear, results }: AdvancedSearchPro
     productSearch: "",
     ingredientSearch: "",
     searchType: 'product',
-    category: "",
-    sizeCode: "",
-    sizeDescription: "",
-    type: ""
+    category: "all",
+    sizeCode: "all",
+    sizeDescription: "all",
+    type: "all"
   });
 
   // Extract unique values from data
@@ -55,16 +55,17 @@ export const AdvancedSearch = ({ onSearch, onClear, results }: AdvancedSearchPro
       productSearch: "",
       ingredientSearch: "",
       searchType: 'product',
-      category: "",
-      sizeCode: "",
-      sizeDescription: "",
-      type: ""
+      category: "all",
+      sizeCode: "all",
+      sizeDescription: "all",
+      type: "all"
     });
     onClear();
   };
 
   const hasActiveSearch = filters.productSearch.trim() || filters.ingredientSearch.trim() || 
-    filters.category || filters.sizeCode || filters.sizeDescription || filters.type;
+    (filters.category && filters.category !== "all") || (filters.sizeCode && filters.sizeCode !== "all") || 
+    (filters.sizeDescription && filters.sizeDescription !== "all") || (filters.type && filters.type !== "all");
 
   return (
     <Card>
@@ -159,7 +160,7 @@ export const AdvancedSearch = ({ onSearch, onClear, results }: AdvancedSearchPro
                   <SelectValue placeholder="All Categories" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Categories</SelectItem>
+                  <SelectItem value="all">All Categories</SelectItem>
                   {categories.map((category) => (
                     <SelectItem key={category} value={category}>{category}</SelectItem>
                   ))}
@@ -174,7 +175,7 @@ export const AdvancedSearch = ({ onSearch, onClear, results }: AdvancedSearchPro
                   <SelectValue placeholder="All Sizes" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Sizes</SelectItem>
+                  <SelectItem value="all">All Sizes</SelectItem>
                   {sizeCodes.map((size) => (
                     <SelectItem key={size} value={size}>{size}</SelectItem>
                   ))}
@@ -189,7 +190,7 @@ export const AdvancedSearch = ({ onSearch, onClear, results }: AdvancedSearchPro
                   <SelectValue placeholder="All Descriptions" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Descriptions</SelectItem>
+                  <SelectItem value="all">All Descriptions</SelectItem>
                   {sizeDescriptions.map((desc) => (
                     <SelectItem key={desc} value={desc}>{desc}</SelectItem>
                   ))}
@@ -204,7 +205,7 @@ export const AdvancedSearch = ({ onSearch, onClear, results }: AdvancedSearchPro
                   <SelectValue placeholder="All Types" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Types</SelectItem>
+                  <SelectItem value="all">All Types</SelectItem>
                   <SelectItem value="VG">Vegetarian</SelectItem>
                   <SelectItem value="NV">Non-Vegetarian</SelectItem>
                 </SelectContent>
