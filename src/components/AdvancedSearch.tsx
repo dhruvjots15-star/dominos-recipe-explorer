@@ -6,11 +6,16 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search, X } from "lucide-react";
+import { mockRecipeData } from "@/data/recipeData";
 
 interface SearchFilters {
   productSearch: string;
   ingredientSearch: string;
   searchType: 'product' | 'ingredient';
+  category?: string;
+  sizeCode?: string;
+  sizeDescription?: string;
+  type?: string;
 }
 
 interface SearchResults {
@@ -29,8 +34,17 @@ export const AdvancedSearch = ({ onSearch, onClear, results }: AdvancedSearchPro
   const [filters, setFilters] = useState<SearchFilters>({
     productSearch: "",
     ingredientSearch: "",
-    searchType: 'product'
+    searchType: 'product',
+    category: "",
+    sizeCode: "",
+    sizeDescription: "",
+    type: ""
   });
+
+  // Extract unique values from data
+  const categories = [...new Set(mockRecipeData.map(item => item.menuCategoryCode))].filter(Boolean).sort();
+  const sizeCodes = [...new Set(mockRecipeData.map(item => item.sizeCode))].filter(Boolean).sort();
+  const sizeDescriptions = [...new Set(mockRecipeData.map(item => item.sizeDescription))].filter(Boolean).sort();
 
   const handleSearch = () => {
     onSearch(filters);
@@ -40,12 +54,17 @@ export const AdvancedSearch = ({ onSearch, onClear, results }: AdvancedSearchPro
     setFilters({
       productSearch: "",
       ingredientSearch: "",
-      searchType: 'product'
+      searchType: 'product',
+      category: "",
+      sizeCode: "",
+      sizeDescription: "",
+      type: ""
     });
     onClear();
   };
 
-  const hasActiveSearch = filters.productSearch.trim() || filters.ingredientSearch.trim();
+  const hasActiveSearch = filters.productSearch.trim() || filters.ingredientSearch.trim() || 
+    filters.category || filters.sizeCode || filters.sizeDescription || filters.type;
 
   return (
     <Card>
@@ -129,9 +148,74 @@ export const AdvancedSearch = ({ onSearch, onClear, results }: AdvancedSearchPro
           </div>
         )}
 
+        {/* Filter Dropdowns */}
+        <div className="space-y-2">
+          <Label className="text-sm font-medium">Filters (Optional)</Label>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="space-y-2">
+              <Label className="text-xs text-muted-foreground">Category</Label>
+              <Select value={filters.category} onValueChange={(value) => setFilters(prev => ({ ...prev, category: value }))}>
+                <SelectTrigger>
+                  <SelectValue placeholder="All Categories" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">All Categories</SelectItem>
+                  {categories.map((category) => (
+                    <SelectItem key={category} value={category}>{category}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="space-y-2">
+              <Label className="text-xs text-muted-foreground">Size Code</Label>
+              <Select value={filters.sizeCode} onValueChange={(value) => setFilters(prev => ({ ...prev, sizeCode: value }))}>
+                <SelectTrigger>
+                  <SelectValue placeholder="All Sizes" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">All Sizes</SelectItem>
+                  {sizeCodes.map((size) => (
+                    <SelectItem key={size} value={size}>{size}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="space-y-2">
+              <Label className="text-xs text-muted-foreground">Size Description</Label>
+              <Select value={filters.sizeDescription} onValueChange={(value) => setFilters(prev => ({ ...prev, sizeDescription: value }))}>
+                <SelectTrigger>
+                  <SelectValue placeholder="All Descriptions" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">All Descriptions</SelectItem>
+                  {sizeDescriptions.map((desc) => (
+                    <SelectItem key={desc} value={desc}>{desc}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="space-y-2">
+              <Label className="text-xs text-muted-foreground">Type</Label>
+              <Select value={filters.type} onValueChange={(value) => setFilters(prev => ({ ...prev, type: value }))}>
+                <SelectTrigger>
+                  <SelectValue placeholder="All Types" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">All Types</SelectItem>
+                  <SelectItem value="VG">Vegetarian</SelectItem>
+                  <SelectItem value="NV">Non-Vegetarian</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </div>
+
         {/* Action Buttons */}
         <div className="flex items-center gap-3">
-          <Button onClick={handleSearch} className="gap-2">
+          <Button onClick={handleSearch} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
             <Search className="w-4 h-4" />
             Search Recipes
           </Button>

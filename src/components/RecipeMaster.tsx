@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Download, RefreshCw, Filter } from "lucide-react";
+import { Download, RefreshCw, Filter, Package, FileText, Utensils, Building2 } from "lucide-react";
 import { TopNavigation } from "./TopNavigation";
 import { VersionSelector } from "./VersionSelector";
 import { FilterPanel, ActiveFilters } from "./FilterPanel";
@@ -21,7 +21,15 @@ export const RecipeMaster = () => {
   const [view, setView] = useState<'products' | 'recipes'>('products');
   const [selectedProduct, setSelectedProduct] = useState<string>('');
 
-  const handleSearch = (filters: { productSearch: string; ingredientSearch: string; searchType: 'product' | 'ingredient' }) => {
+  const handleSearch = (filters: { 
+    productSearch: string; 
+    ingredientSearch: string; 
+    searchType: 'product' | 'ingredient';
+    category?: string;
+    sizeCode?: string;
+    sizeDescription?: string;
+    type?: string;
+  }) => {
     let results = mockRecipeData;
     
     if (filters.searchType === 'product') {
@@ -39,6 +47,24 @@ export const RecipeMaster = () => {
       if (filters.ingredientSearch.trim()) {
         results = searchRecipes(results, filters.ingredientSearch, 'ingredient');
       }
+    }
+    
+    // Apply search filters
+    if (filters.category) {
+      results = results.filter(item => item.menuCategoryCode === filters.category);
+    }
+    if (filters.sizeCode) {
+      results = results.filter(item => item.sizeCode === filters.sizeCode);
+    }
+    if (filters.sizeDescription) {
+      results = results.filter(item => item.sizeDescription === filters.sizeDescription);
+    }
+    if (filters.type) {
+      const isVegFilter = filters.type === 'VG';
+      results = results.filter(item => {
+        const isVeg = item.description.includes('VG') || !item.description.includes('NV');
+        return isVegFilter ? isVeg : !isVeg;
+      });
     }
     
     // Apply active filters
@@ -140,6 +166,66 @@ export const RecipeMaster = () => {
         onVersionChange={setSelectedVersion}
       />
 
+      {/* Recipe Statistics */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <Package className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-primary">687</div>
+                <p className="text-xs text-muted-foreground">Active across all channels</p>
+              </div>
+            </div>
+            <p className="text-sm font-medium mt-2">Total Products</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-accent/10 rounded-lg">
+                <FileText className="w-5 h-5 text-accent" />
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-accent">4,811</div>
+                <p className="text-xs text-muted-foreground">For all product variants</p>
+              </div>
+            </div>
+            <p className="text-sm font-medium mt-2">Total Recipes</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-blue-500/10 rounded-lg">
+                <Utensils className="w-5 h-5 text-blue-500" />
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-blue-500">1,553</div>
+                <p className="text-xs text-muted-foreground">Across all Recipes in this Version</p>
+              </div>
+            </div>
+            <p className="text-sm font-medium mt-2">Unique Ingredients</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-green-500/10 rounded-lg">
+                <Building2 className="w-5 h-5 text-green-500" />
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-green-500">1,876</div>
+                <p className="text-xs text-muted-foreground">Stores using this Version</p>
+              </div>
+            </div>
+            <p className="text-sm font-medium mt-2">Stores</p>
+          </CardContent>
+        </Card>
+      </div>
+
       {/* Advanced Search */}
       <AdvancedSearch 
         onSearch={handleSearch}
@@ -171,39 +257,6 @@ export const RecipeMaster = () => {
         activeFilters={activeFilters}
       />
 
-      {/* Recipe Statistics */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-primary">{searchResults.length}</div>
-            <p className="text-xs text-muted-foreground">Total Recipes</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-accent">
-              {new Set(searchResults.map(item => item.description)).size}
-            </div>
-            <p className="text-xs text-muted-foreground">Active Products</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-dominos-blue">
-              {new Set(searchResults.map(item => item.sizeCode)).size}
-            </div>
-            <p className="text-xs text-muted-foreground">Size Variants</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-muted-foreground">
-              {new Set(searchResults.map(item => item.menuCode)).size}
-            </div>
-            <p className="text-xs text-muted-foreground">Menu Codes</p>
-          </CardContent>
-        </Card>
-      </div>
 
       {/* Product/Recipe Table */}
       <ProductRecipeTable 

@@ -69,7 +69,7 @@ export const VersionSelector = ({ selectedVersion, onVersionChange }: VersionSel
           <div className="flex items-center justify-between gap-6">
             <div className="flex-1">
               <Select value={selectedVersion} onValueChange={onVersionChange}>
-                <SelectTrigger className="w-full max-w-sm">
+                <SelectTrigger className="w-full max-w-sm h-12">
                   <SelectValue placeholder="Select recipe bank version" />
                 </SelectTrigger>
                 <SelectContent>
@@ -80,7 +80,7 @@ export const VersionSelector = ({ selectedVersion, onVersionChange }: VersionSel
                           <span className="font-medium">{version.name}</span>
                           <Badge 
                             variant={version.status === "active" ? "default" : "secondary"}
-                            className="text-xs"
+                            className={`text-xs ${version.status === "active" ? "bg-green-500 hover:bg-green-600" : ""}`}
                           >
                             {version.status}
                           </Badge>
