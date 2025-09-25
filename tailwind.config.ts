@@ -22,6 +22,15 @@ export default {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+          hover: "hsl(var(--primary-hover))",
+        },
+        dominos: {
+          red: "hsl(var(--dominos-red))",
+          "red-light": "hsl(var(--dominos-red-light))",
+          "red-dark": "hsl(var(--dominos-red-dark))",
+          blue: "hsl(var(--dominos-blue))",
+          "blue-light": "hsl(var(--dominos-blue-light))",
+          "blue-dark": "hsl(var(--dominos-blue-dark))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
