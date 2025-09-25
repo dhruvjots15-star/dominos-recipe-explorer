@@ -12,10 +12,6 @@ interface SearchFilters {
   productSearch: string;
   ingredientSearch: string;
   searchType: 'product' | 'ingredient';
-  category?: string;
-  sizeCode?: string;
-  sizeDescription?: string;
-  type?: string;
 }
 
 interface SearchResults {
@@ -34,17 +30,9 @@ export const AdvancedSearch = ({ onSearch, onClear, results }: AdvancedSearchPro
   const [filters, setFilters] = useState<SearchFilters>({
     productSearch: "",
     ingredientSearch: "",
-    searchType: 'product',
-    category: "all",
-    sizeCode: "all",
-    sizeDescription: "all",
-    type: "all"
+    searchType: 'product'
   });
 
-  // Extract unique values from data
-  const categories = [...new Set(mockRecipeData.map(item => item.menuCategoryCode))].filter(Boolean).sort();
-  const sizeCodes = [...new Set(mockRecipeData.map(item => item.sizeCode))].filter(Boolean).sort();
-  const sizeDescriptions = [...new Set(mockRecipeData.map(item => item.sizeDescription))].filter(Boolean).sort();
 
   const handleSearch = () => {
     onSearch(filters);
@@ -54,18 +42,12 @@ export const AdvancedSearch = ({ onSearch, onClear, results }: AdvancedSearchPro
     setFilters({
       productSearch: "",
       ingredientSearch: "",
-      searchType: 'product',
-      category: "all",
-      sizeCode: "all",
-      sizeDescription: "all",
-      type: "all"
+      searchType: 'product'
     });
     onClear();
   };
 
-  const hasActiveSearch = filters.productSearch.trim() || filters.ingredientSearch.trim() || 
-    (filters.category && filters.category !== "all") || (filters.sizeCode && filters.sizeCode !== "all") || 
-    (filters.sizeDescription && filters.sizeDescription !== "all") || (filters.type && filters.type !== "all");
+  const hasActiveSearch = filters.productSearch.trim() || filters.ingredientSearch.trim();
 
   return (
     <Card>
@@ -149,70 +131,6 @@ export const AdvancedSearch = ({ onSearch, onClear, results }: AdvancedSearchPro
           </div>
         )}
 
-        {/* Filter Dropdowns */}
-        <div className="space-y-2">
-          <Label className="text-sm font-medium">Filters (Optional)</Label>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="space-y-2">
-              <Label className="text-xs text-muted-foreground">Category</Label>
-              <Select value={filters.category} onValueChange={(value) => setFilters(prev => ({ ...prev, category: value }))}>
-                <SelectTrigger>
-                  <SelectValue placeholder="All Categories" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Categories</SelectItem>
-                  {categories.map((category) => (
-                    <SelectItem key={category} value={category}>{category}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className="space-y-2">
-              <Label className="text-xs text-muted-foreground">Size Code</Label>
-              <Select value={filters.sizeCode} onValueChange={(value) => setFilters(prev => ({ ...prev, sizeCode: value }))}>
-                <SelectTrigger>
-                  <SelectValue placeholder="All Sizes" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Sizes</SelectItem>
-                  {sizeCodes.map((size) => (
-                    <SelectItem key={size} value={size}>{size}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className="space-y-2">
-              <Label className="text-xs text-muted-foreground">Size Description</Label>
-              <Select value={filters.sizeDescription} onValueChange={(value) => setFilters(prev => ({ ...prev, sizeDescription: value }))}>
-                <SelectTrigger>
-                  <SelectValue placeholder="All Descriptions" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Descriptions</SelectItem>
-                  {sizeDescriptions.map((desc) => (
-                    <SelectItem key={desc} value={desc}>{desc}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className="space-y-2">
-              <Label className="text-xs text-muted-foreground">Type</Label>
-              <Select value={filters.type} onValueChange={(value) => setFilters(prev => ({ ...prev, type: value }))}>
-                <SelectTrigger>
-                  <SelectValue placeholder="All Types" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Types</SelectItem>
-                  <SelectItem value="VG">Vegetarian</SelectItem>
-                  <SelectItem value="NV">Non-Vegetarian</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </div>
 
         {/* Action Buttons */}
         <div className="flex items-center gap-3">

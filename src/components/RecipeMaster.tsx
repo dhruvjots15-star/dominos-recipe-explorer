@@ -2,12 +2,14 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Download, RefreshCw, Filter, Package, FileText, Utensils, Building2 } from "lucide-react";
+import { Download, RefreshCw, Filter, Package, FileText, Utensils, Building2, Search } from "lucide-react";
 import { TopNavigation } from "./TopNavigation";
 import { VersionSelector } from "./VersionSelector";
 import { FilterPanel, ActiveFilters } from "./FilterPanel";
 import { AdvancedSearch } from "./AdvancedSearch";
 import { ProductRecipeTable } from "./ProductRecipeTable";
+import { DatabaseFilters } from "./DatabaseFilters";
+import type { DatabaseFilters as DatabaseFiltersType } from "./DatabaseFilters";
 import { mockRecipeData, RecipeItem, searchRecipes } from "@/data/recipeData";
 
 
@@ -16,7 +18,9 @@ export const RecipeMaster = () => {
   const [selectedVersion, setSelectedVersion] = useState("v1.0");
   const [showFilters, setShowFilters] = useState(false);
   const [activeFilters, setActiveFilters] = useState<ActiveFilters>({});
+  const [databaseFilters, setDatabaseFilters] = useState<DatabaseFiltersType>({});
   const [searchResults, setSearchResults] = useState<RecipeItem[]>(mockRecipeData);
+  const [filteredResults, setFilteredResults] = useState<RecipeItem[]>(mockRecipeData);
   const [hasSearched, setHasSearched] = useState(false);
   const [view, setView] = useState<'products' | 'recipes'>('products');
   const [selectedProduct, setSelectedProduct] = useState<string>('');
@@ -25,10 +29,6 @@ export const RecipeMaster = () => {
     productSearch: string; 
     ingredientSearch: string; 
     searchType: 'product' | 'ingredient';
-    category?: string;
-    sizeCode?: string;
-    sizeDescription?: string;
-    type?: string;
   }) => {
     let results = mockRecipeData;
     
@@ -49,36 +49,47 @@ export const RecipeMaster = () => {
       }
     }
     
-    // Apply search filters
-    if (filters.category && filters.category !== "all") {
-      results = results.filter(item => item.menuCategoryCode === filters.category);
-    }
-    if (filters.sizeCode && filters.sizeCode !== "all") {
-      results = results.filter(item => item.sizeCode === filters.sizeCode);
-    }
-    if (filters.sizeDescription && filters.sizeDescription !== "all") {
-      results = results.filter(item => item.sizeDescription === filters.sizeDescription);
-    }
-    if (filters.type && filters.type !== "all") {
-      const isVegFilter = filters.type === 'VG';
-      results = results.filter(item => {
-        const isVeg = item.description.includes('VG') || !item.description.includes('NV');
-        return isVegFilter ? isVeg : !isVeg;
-      });
-    }
-    
-    // Apply active filters
-    results = applyFilters(results, activeFilters);
+    // Apply database filters
+    results = applyDatabaseFilters(results, databaseFilters);
     
     setSearchResults(results);
+    setFilteredResults(results);
     setHasSearched(true);
     setView('products');
   };
 
   const handleClearSearch = () => {
+    const filtered = applyDatabaseFilters(mockRecipeData, databaseFilters);
     setSearchResults(mockRecipeData);
+    setFilteredResults(filtered);
     setHasSearched(false);
     setView('products');
+  };
+
+  const applyDatabaseFilters = (data: RecipeItem[], filters: DatabaseFiltersType): RecipeItem[] => {
+    let filtered = [...data];
+    
+    if (filters.category) {
+      filtered = filtered.filter(item => item.menuCategoryCode === filters.category);
+    }
+    
+    if (filters.sizeCode) {
+      filtered = filtered.filter(item => item.sizeCode === filters.sizeCode);
+    }
+    
+    if (filters.sizeDescription) {
+      filtered = filtered.filter(item => item.sizeDescription === filters.sizeDescription);
+    }
+    
+    if (filters.type) {
+      const isVegFilter = filters.type === 'VG';
+      filtered = filtered.filter(item => {
+        const isVeg = item.description.includes('VG') || !item.description.includes('NV');
+        return isVegFilter ? isVeg : !isVeg;
+      });
+    }
+    
+    return filtered;
   };
 
   const applyFilters = (data: RecipeItem[], filters: ActiveFilters): RecipeItem[] => {
@@ -113,11 +124,32 @@ export const RecipeMaster = () => {
     setSearchResults(filteredData);
   };
 
+  const handleDatabaseFiltersChange = (filters: DatabaseFiltersType) => {
+    setDatabaseFilters(filters);
+    const baseData = hasSearched ? searchResults : mockRecipeData;
+    const filteredData = applyDatabaseFilters(baseData, filters);
+    setFilteredResults(filteredData);
+  };
+
+  const handleClearDatabaseFilters = () => {
+    setDatabaseFilters({});
+    const baseData = hasSearched ? searchResults : mockRecipeData;
+    setFilteredResults(baseData);
+  };
+
   const getSearchResultsStats = () => {
     const uniqueProducts = new Set(searchResults.map(item => item.description)).size;
     return {
       totalProducts: uniqueProducts,
       totalRecipes: searchResults.length
+    };
+  };
+
+  const getFilteredResultsStats = () => {
+    const uniqueProducts = new Set(filteredResults.map(item => item.description)).size;
+    return {
+      totalProducts: uniqueProducts,
+      totalRecipes: filteredResults.length
     };
   };
 
@@ -139,160 +171,196 @@ export const RecipeMaster = () => {
         onTabChange={setActiveTab}
       />
       
-      <div className="p-6 space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-primary">Recipe Bank</h1>
-            <p className="text-muted-foreground mt-1">
-              Manage and view all active product recipes across Dominos stores
-            </p>
+      <div className="p-6 space-y-8">
+        {/* SECTION 1: RECIPE BANK VERSION & INFO */}
+        <div className="bg-gradient-to-r from-blue-50/50 to-indigo-50/50 dark:from-blue-950/30 dark:to-indigo-950/30 rounded-xl p-6 border border-blue-200/50 dark:border-blue-800/50">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h1 className="text-3xl font-bold text-primary flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
+                  <Package className="w-6 h-6 text-white" />
+                </div>
+                Recipe Bank Version
+              </h1>
+              <p className="text-muted-foreground mt-1">
+                Select a recipe bank version to view its snapshot and manage recipes
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <Button variant="outline" size="sm">
+                <Download className="w-4 h-4 mr-2" />
+                Export
+              </Button>
+              <Button variant="outline" size="sm">
+                <RefreshCw className="w-4 h-4 mr-2" />
+                Refresh
+              </Button>
+            </div>
           </div>
-          <div className="flex items-center gap-3">
-            <Button variant="outline" size="sm">
-              <Download className="w-4 h-4 mr-2" />
-              Export
-            </Button>
-            <Button variant="outline" size="sm">
-              <RefreshCw className="w-4 h-4 mr-2" />
-              Refresh
-            </Button>
+
+          {/* Version Selector */}
+          <VersionSelector 
+            key={selectedVersion}
+            selectedVersion={selectedVersion}
+            onVersionChange={setSelectedVersion}
+          />
+
+          {/* Recipe Statistics */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-6">
+            <Card className="relative overflow-hidden border-none bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 hover-scale group">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-3">
+                      <div className="p-3 bg-blue-500/20 rounded-xl group-hover:bg-blue-500/30 transition-colors">
+                        <Package className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-blue-600 dark:text-blue-400 uppercase tracking-wide">Total Products</p>
+                        <div className="text-3xl font-bold text-blue-900 dark:text-blue-100">687</div>
+                      </div>
+                    </div>
+                    <p className="text-sm text-blue-700 dark:text-blue-300">Active across all channels</p>
+                  </div>
+                </div>
+                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full -translate-y-16 translate-x-16"></div>
+              </CardContent>
+            </Card>
+
+            <Card className="relative overflow-hidden border-none bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-950 dark:to-emerald-900 hover-scale group">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-3">
+                      <div className="p-3 bg-emerald-500/20 rounded-xl group-hover:bg-emerald-500/30 transition-colors">
+                        <FileText className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400 uppercase tracking-wide">Total Recipes</p>
+                        <div className="text-3xl font-bold text-emerald-900 dark:text-emerald-100">4,811</div>
+                      </div>
+                    </div>
+                    <p className="text-sm text-emerald-700 dark:text-emerald-300">For all product variants</p>
+                  </div>
+                </div>
+                <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full -translate-y-16 translate-x-16"></div>
+              </CardContent>
+            </Card>
+
+            <Card className="relative overflow-hidden border-none bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-950 dark:to-orange-900 hover-scale group">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-3">
+                      <div className="p-3 bg-orange-500/20 rounded-xl group-hover:bg-orange-500/30 transition-colors">
+                        <Utensils className="w-6 h-6 text-orange-600 dark:text-orange-400" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-orange-600 dark:text-orange-400 uppercase tracking-wide">Unique Ingredients</p>
+                        <div className="text-3xl font-bold text-orange-900 dark:text-orange-100">1,553</div>
+                      </div>
+                    </div>
+                    <p className="text-sm text-orange-700 dark:text-orange-300">Across all Recipes in this Version</p>
+                  </div>
+                </div>
+                <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 rounded-full -translate-y-16 translate-x-16"></div>
+              </CardContent>
+            </Card>
+
+            <Card className="relative overflow-hidden border-none bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900 hover-scale group">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-3">
+                      <div className="p-3 bg-purple-500/20 rounded-xl group-hover:bg-purple-500/30 transition-colors">
+                        <Building2 className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-purple-600 dark:text-purple-400 uppercase tracking-wide">Stores</p>
+                        <div className="text-3xl font-bold text-purple-900 dark:text-purple-100">1,876</div>
+                      </div>
+                    </div>
+                    <p className="text-sm text-purple-700 dark:text-purple-300">Stores using this Version</p>
+                  </div>
+                </div>
+                <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 rounded-full -translate-y-16 translate-x-16"></div>
+              </CardContent>
+            </Card>
           </div>
         </div>
 
-      {/* Version Selector */}
-      <VersionSelector 
-        key={selectedVersion}
-        selectedVersion={selectedVersion}
-        onVersionChange={setSelectedVersion}
-      />
-
-      {/* Recipe Statistics */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="relative overflow-hidden border-none bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 hover-scale group">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-2">
-                <div className="flex items-center gap-3">
-                  <div className="p-3 bg-blue-500/20 rounded-xl group-hover:bg-blue-500/30 transition-colors">
-                    <Package className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-blue-600 dark:text-blue-400 uppercase tracking-wide">Total Products</p>
-                    <div className="text-3xl font-bold text-blue-900 dark:text-blue-100">687</div>
-                  </div>
-                </div>
-                <p className="text-sm text-blue-700 dark:text-blue-300">Active across all channels</p>
-              </div>
+        {/* SECTION 2: SEARCH/FILTERS & RECIPE DATABASE */}
+        <div className="bg-gradient-to-r from-slate-50/50 to-gray-50/50 dark:from-slate-950/30 dark:to-gray-950/30 rounded-xl p-6 border border-slate-200/50 dark:border-slate-800/50">
+          {/* Search Header */}
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 bg-gradient-to-br from-slate-500 to-gray-600 rounded-lg flex items-center justify-center">
+              <Search className="w-6 h-6 text-white" />
             </div>
-            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full -translate-y-16 translate-x-16"></div>
-          </CardContent>
-        </Card>
-
-        <Card className="relative overflow-hidden border-none bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-950 dark:to-emerald-900 hover-scale group">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-2">
-                <div className="flex items-center gap-3">
-                  <div className="p-3 bg-emerald-500/20 rounded-xl group-hover:bg-emerald-500/30 transition-colors">
-                    <FileText className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400 uppercase tracking-wide">Total Recipes</p>
-                    <div className="text-3xl font-bold text-emerald-900 dark:text-emerald-100">4,811</div>
-                  </div>
-                </div>
-                <p className="text-sm text-emerald-700 dark:text-emerald-300">For all product variants</p>
-              </div>
+            <div>
+              <h2 className="text-2xl font-bold text-primary">Search & Browse Recipes</h2>
+              <p className="text-muted-foreground">Find specific recipes using product or ingredient search</p>
             </div>
-            <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full -translate-y-16 translate-x-16"></div>
-          </CardContent>
-        </Card>
+          </div>
 
-        <Card className="relative overflow-hidden border-none bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-950 dark:to-orange-900 hover-scale group">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-2">
-                <div className="flex items-center gap-3">
-                  <div className="p-3 bg-orange-500/20 rounded-xl group-hover:bg-orange-500/30 transition-colors">
-                    <Utensils className="w-6 h-6 text-orange-600 dark:text-orange-400" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-orange-600 dark:text-orange-400 uppercase tracking-wide">Unique Ingredients</p>
-                    <div className="text-3xl font-bold text-orange-900 dark:text-orange-100">1,553</div>
-                  </div>
-                </div>
-                <p className="text-sm text-orange-700 dark:text-orange-300">Across all Recipes in this Version</p>
-              </div>
+          {/* Advanced Search */}
+          <AdvancedSearch 
+            onSearch={handleSearch}
+            onClear={handleClearSearch}
+            results={hasSearched ? getSearchResultsStats() : undefined}
+          />
+
+          {/* Database Filters */}
+          <div className="mt-6">
+            <DatabaseFilters
+              filters={databaseFilters}
+              onFiltersChange={handleDatabaseFiltersChange}
+              onClearFilters={handleClearDatabaseFilters}
+              resultStats={getFilteredResultsStats()}
+            />
+          </div>
+
+          {/* Legacy Filter Panel (Hidden by default) */}
+          <div className="mt-4">
+            <div className="flex items-center gap-4">
+              <Button
+                variant={showFilters ? "default" : "outline"}
+                onClick={() => setShowFilters(!showFilters)}
+                className="gap-2"
+                size="sm"
+              >
+                <Filter className="w-4 h-4" />
+                Legacy Filters
+                {Object.keys(activeFilters).length > 0 && (
+                  <Badge variant="secondary" className="ml-1">
+                    {Object.keys(activeFilters).length}
+                  </Badge>
+                )}
+              </Button>
             </div>
-            <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 rounded-full -translate-y-16 translate-x-16"></div>
-          </CardContent>
-        </Card>
 
-        <Card className="relative overflow-hidden border-none bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900 hover-scale group">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-2">
-                <div className="flex items-center gap-3">
-                  <div className="p-3 bg-purple-500/20 rounded-xl group-hover:bg-purple-500/30 transition-colors">
-                    <Building2 className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-purple-600 dark:text-purple-400 uppercase tracking-wide">Stores</p>
-                    <div className="text-3xl font-bold text-purple-900 dark:text-purple-100">1,876</div>
-                  </div>
-                </div>
-                <p className="text-sm text-purple-700 dark:text-purple-300">Stores using this Version</p>
-              </div>
-            </div>
-            <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 rounded-full -translate-y-16 translate-x-16"></div>
-          </CardContent>
-        </Card>
-      </div>
+            <FilterPanel 
+              isVisible={showFilters}
+              onClose={() => setShowFilters(false)}
+              onFiltersChange={handleFiltersChange}
+              activeFilters={activeFilters}
+            />
+          </div>
 
-      {/* Advanced Search */}
-      <AdvancedSearch 
-        onSearch={handleSearch}
-        onClear={handleClearSearch}
-        results={hasSearched ? getSearchResultsStats() : undefined}
-      />
-
-      {/* Filter Panel */}
-      <div className="flex items-center gap-4">
-        <Button
-          variant={showFilters ? "default" : "outline"}
-          onClick={() => setShowFilters(!showFilters)}
-          className="gap-2"
-        >
-          <Filter className="w-4 h-4" />
-          Advanced Filters
-          {Object.keys(activeFilters).length > 0 && (
-            <Badge variant="secondary" className="ml-1">
-              {Object.keys(activeFilters).length}
-            </Badge>
-          )}
-        </Button>
-      </div>
-
-      <FilterPanel 
-        isVisible={showFilters}
-        onClose={() => setShowFilters(false)}
-        onFiltersChange={handleFiltersChange}
-        activeFilters={activeFilters}
-      />
-
-
-      {/* Product/Recipe Table */}
-      <ProductRecipeTable 
-        data={searchResults}
-        searchTerm=""
-        view={view}
-        onViewChange={setView}
-        selectedProduct={selectedProduct}
-        onProductSelect={setSelectedProduct}
-        onViewRecipe={handleViewRecipe}
-        onEditRecipe={handleEditRecipe}
-      />
+          {/* Product/Recipe Table */}
+          <div className="mt-6">
+            <ProductRecipeTable 
+              data={filteredResults}
+              searchTerm=""
+              view={view}
+              onViewChange={setView}
+              selectedProduct={selectedProduct}
+              onProductSelect={setSelectedProduct}
+              onViewRecipe={handleViewRecipe}
+              onEditRecipe={handleEditRecipe}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
