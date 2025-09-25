@@ -7,7 +7,8 @@ import { TopNavigation } from "./TopNavigation";
 import { VersionSelector } from "./VersionSelector";
 import { FilterPanel, ActiveFilters } from "./FilterPanel";
 import { AdvancedSearch } from "./AdvancedSearch";
-import { ProductRecipeTable } from "./ProductRecipeTable";
+import { RecipeView } from "./RecipeView";
+import { RecipeTable } from "./RecipeTable";
 import { DatabaseFilters } from "./DatabaseFilters";
 import type { DatabaseFilters as DatabaseFiltersType } from "./DatabaseFilters";
 import { mockRecipeData, RecipeItem, searchRecipes } from "@/data/recipeData";
@@ -16,14 +17,15 @@ import { mockRecipeData, RecipeItem, searchRecipes } from "@/data/recipeData";
 export const RecipeMaster = () => {
   const [activeTab, setActiveTab] = useState("recipe-bank");
   const [selectedVersion, setSelectedVersion] = useState("v1.0");
-  const [showFilters, setShowFilters] = useState(false);
+  const [showLegacyFilters, setShowLegacyFilters] = useState(false);
   const [activeFilters, setActiveFilters] = useState<ActiveFilters>({});
   const [databaseFilters, setDatabaseFilters] = useState<DatabaseFiltersType>({});
   const [searchResults, setSearchResults] = useState<RecipeItem[]>(mockRecipeData);
   const [filteredResults, setFilteredResults] = useState<RecipeItem[]>(mockRecipeData);
   const [hasSearched, setHasSearched] = useState(false);
-  const [view, setView] = useState<'products' | 'recipes'>('products');
-  const [selectedProduct, setSelectedProduct] = useState<string>('');
+  const [view, setView] = useState<'table' | 'recipe'>('table');
+  const [selectedRecipe, setSelectedRecipe] = useState<{ menuCode: string; sizeCode: string } | null>(null);
+  const [showFilters, setShowFilters] = useState(false);
 
   const handleSearch = (filters: { 
     productSearch: string; 
@@ -55,7 +57,7 @@ export const RecipeMaster = () => {
     setSearchResults(results);
     setFilteredResults(results);
     setHasSearched(true);
-    setView('products');
+    setView('table');
   };
 
   const handleClearSearch = () => {
@@ -63,7 +65,7 @@ export const RecipeMaster = () => {
     setSearchResults(mockRecipeData);
     setFilteredResults(filtered);
     setHasSearched(false);
-    setView('products');
+    setView('table');
   };
 
   const applyDatabaseFilters = (data: RecipeItem[], filters: DatabaseFiltersType): RecipeItem[] => {
@@ -154,13 +156,18 @@ export const RecipeMaster = () => {
   };
 
   const handleViewRecipe = (menuCode: string, sizeCode: string) => {
-    console.log(`View recipe: ${menuCode} - ${sizeCode}`);
-    // TODO: Implement recipe detail view
+    setSelectedRecipe({ menuCode, sizeCode });
+    setView('recipe');
   };
 
   const handleEditRecipe = (menuCode: string, sizeCode: string) => {
     console.log(`Edit recipe: ${menuCode} - ${sizeCode}`);
     // TODO: Implement recipe edit functionality
+  };
+
+  const handleBackToTable = () => {
+    setView('table');
+    setSelectedRecipe(null);
   };
 
   return (
@@ -291,75 +298,80 @@ export const RecipeMaster = () => {
         </div>
 
         {/* SECTION 2: SEARCH/FILTERS & RECIPE DATABASE */}
-        <div className="bg-gradient-to-r from-slate-50/50 to-gray-50/50 dark:from-slate-950/30 dark:to-gray-950/30 rounded-xl p-6 border border-slate-200/50 dark:border-slate-800/50">
-          {/* Search Header */}
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 bg-gradient-to-br from-slate-500 to-gray-600 rounded-lg flex items-center justify-center">
-              <Search className="w-6 h-6 text-white" />
+        <div className="space-y-6">
+          {/* Search */}
+          <div className="bg-gradient-to-r from-slate-50/50 to-gray-50/50 dark:from-slate-950/30 dark:to-gray-950/30 rounded-xl p-6 border border-slate-200/50 dark:border-slate-800/50">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-gradient-to-br from-slate-500 to-gray-600 rounded-lg flex items-center justify-center">
+                <Search className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-primary">Search & Browse Recipes</h2>
+                <p className="text-muted-foreground">Find specific recipes using product or ingredient search</p>
+              </div>
             </div>
-            <div>
-              <h2 className="text-2xl font-bold text-primary">Search & Browse Recipes</h2>
-              <p className="text-muted-foreground">Find specific recipes using product or ingredient search</p>
-            </div>
-          </div>
 
-          {/* Advanced Search */}
-          <AdvancedSearch 
-            onSearch={handleSearch}
-            onClear={handleClearSearch}
-            results={hasSearched ? getSearchResultsStats() : undefined}
-          />
-
-          {/* Database Filters */}
-          <div className="mt-6">
-            <DatabaseFilters
-              filters={databaseFilters}
-              onFiltersChange={handleDatabaseFiltersChange}
-              onClearFilters={handleClearDatabaseFilters}
-              resultStats={getFilteredResultsStats()}
+            <AdvancedSearch 
+              onSearch={handleSearch}
+              onClear={handleClearSearch}
+              results={hasSearched ? getSearchResultsStats() : undefined}
             />
           </div>
 
-          {/* Legacy Filter Panel (Hidden by default) */}
-          <div className="mt-4">
-            <div className="flex items-center gap-4">
-              <Button
-                variant={showFilters ? "default" : "outline"}
-                onClick={() => setShowFilters(!showFilters)}
-                className="gap-2"
-                size="sm"
-              >
-                <Filter className="w-4 h-4" />
-                Legacy Filters
-                {Object.keys(activeFilters).length > 0 && (
-                  <Badge variant="secondary" className="ml-1">
-                    {Object.keys(activeFilters).length}
-                  </Badge>
-                )}
-              </Button>
+          {/* Recipe Database */}
+          {view === 'table' ? (
+            <div className="space-y-4">
+              {/* Database Header */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-2xl font-bold text-primary">Recipe Database</h2>
+                  <p className="text-muted-foreground">
+                    {hasSearched 
+                      ? `${getFilteredResultsStats().totalProducts} Products, ${getFilteredResultsStats().totalRecipes} Recipes Found`
+                      : "687 Products, 4,811 Recipes"
+                    }
+                  </p>
+                </div>
+                <Button
+                  variant={showFilters ? "default" : "outline"}
+                  onClick={() => setShowFilters(!showFilters)}
+                  className="gap-2"
+                  size="sm"
+                >
+                  <Filter className="w-4 h-4" />
+                  Filters
+                  {Object.values(databaseFilters).filter(v => v && v !== "all").length > 0 && (
+                    <Badge variant="secondary" className="ml-1">
+                      {Object.values(databaseFilters).filter(v => v && v !== "all").length}
+                    </Badge>
+                  )}
+                </Button>
+              </div>
+
+              {/* Filters */}
+              {showFilters && (
+                <DatabaseFilters
+                  filters={databaseFilters}
+                  onFiltersChange={handleDatabaseFiltersChange}
+                  onClearFilters={handleClearDatabaseFilters}
+                  resultStats={getFilteredResultsStats()}
+                />
+              )}
+
+              {/* Recipe Table */}
+              <RecipeTable 
+                data={filteredResults}
+                onViewRecipe={handleViewRecipe}
+                onEditRecipe={handleEditRecipe}
+              />
             </div>
-
-            <FilterPanel 
-              isVisible={showFilters}
-              onClose={() => setShowFilters(false)}
-              onFiltersChange={handleFiltersChange}
-              activeFilters={activeFilters}
+          ) : (
+            <RecipeView 
+              menuCode={selectedRecipe?.menuCode || ""}
+              sizeCode={selectedRecipe?.sizeCode || ""}
+              onBack={handleBackToTable}
             />
-          </div>
-
-          {/* Product/Recipe Table */}
-          <div className="mt-6">
-            <ProductRecipeTable 
-              data={filteredResults}
-              searchTerm=""
-              view={view}
-              onViewChange={setView}
-              selectedProduct={selectedProduct}
-              onProductSelect={setSelectedProduct}
-              onViewRecipe={handleViewRecipe}
-              onEditRecipe={handleEditRecipe}
-            />
-          </div>
+          )}
         </div>
       </div>
     </div>

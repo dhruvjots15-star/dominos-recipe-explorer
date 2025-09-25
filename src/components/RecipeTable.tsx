@@ -1,57 +1,46 @@
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { 
-  ChevronLeft, 
-  ChevronRight, 
-  ChevronsLeft, 
-  ChevronsRight,
-  Eye,
-  Edit,
-  MoreHorizontal
-} from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-
-interface RecipeData {
-  menuCode: string;
-  menuCategory: string;
-  description: string;
-  sizeCode: string;
-  sizeDescription: string;
-  inventoryDescription: string;
-  inventoryCode: string;
-  portionUnit: string;
-  amount: string;
-}
+import { Eye, Edit } from "lucide-react";
+import { RecipeItem, getIngredientCount, getCategoryName } from "@/data/recipeData";
 
 interface RecipeTableProps {
-  data: RecipeData[];
-  searchTerm: string;
+  data: RecipeItem[];
+  onViewRecipe: (menuCode: string, sizeCode: string) => void;
+  onEditRecipe: (menuCode: string, sizeCode: string) => void;
 }
 
-export const RecipeTable = ({ data, searchTerm }: RecipeTableProps) => {
+export const RecipeTable = ({ data, onViewRecipe, onEditRecipe }: RecipeTableProps) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const itemsPerPage = 100;
 
-  // Filter data based on search term
-  const filteredData = data.filter(item =>
-    item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.menuCode.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.inventoryDescription.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Get unique recipes (one row per recipe, not per ingredient)
+  const getUniqueRecipes = () => {
+    const recipeMap = new Map();
+    
+    data.forEach(item => {
+      const key = `${item.menuCode}-${item.sizeCode}`;
+      if (!recipeMap.has(key)) {
+        recipeMap.set(key, {
+          menuCode: item.menuCode,
+          category: getCategoryName(item.menuCategoryCode),
+          description: item.description,
+          sizeCode: item.sizeCode,
+          sizeDescription: item.sizeDescription,
+          ingredientCount: getIngredientCount(data, item.menuCode, item.sizeCode)
+        });
+      }
+    });
+    
+    return Array.from(recipeMap.values());
+  };
 
-  // Pagination calculations
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+  const recipes = getUniqueRecipes();
+  const totalPages = Math.ceil(recipes.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedData = filteredData.slice(startIndex, startIndex + itemsPerPage);
+  const paginatedRecipes = recipes.slice(startIndex, startIndex + itemsPerPage);
 
   const goToPage = (page: number) => {
     setCurrentPage(Math.max(1, Math.min(page, totalPages)));
@@ -59,107 +48,79 @@ export const RecipeTable = ({ data, searchTerm }: RecipeTableProps) => {
 
   return (
     <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle>Recipe Details</CardTitle>
-          <div className="flex items-center gap-4">
-            <div className="text-sm text-muted-foreground">
-              Showing {startIndex + 1}-{Math.min(startIndex + itemsPerPage, filteredData.length)} of {filteredData.length} recipes
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-sm">Items per page:</span>
-              <select 
-                value={itemsPerPage} 
-                onChange={(e) => {
-                  setItemsPerPage(Number(e.target.value));
-                  setCurrentPage(1);
-                }}
-                className="border rounded px-2 py-1 text-sm"
-              >
-                <option value={10}>10</option>
-                <option value={25}>25</option>
-                <option value={50}>50</option>
-                <option value={100}>100</option>
-              </select>
-            </div>
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent>
+      <CardContent className="p-0">
         <div className="rounded-md border">
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/50">
                 <TableHead className="font-semibold">Menu Code</TableHead>
-                <TableHead className="font-semibold">Product</TableHead>
-                <TableHead className="font-semibold">Size</TableHead>
-                <TableHead className="font-semibold">Ingredient</TableHead>
-                <TableHead className="font-semibold">Inventory Code</TableHead>
-                <TableHead className="font-semibold">Unit</TableHead>
-                <TableHead className="font-semibold text-right">Amount</TableHead>
-                <TableHead className="font-semibold w-12">Actions</TableHead>
+                <TableHead className="font-semibold">Category</TableHead>
+                <TableHead className="font-semibold">Product Description</TableHead>
+                <TableHead className="font-semibold">Size Code</TableHead>
+                <TableHead className="font-semibold">Size Description</TableHead>
+                <TableHead className="font-semibold text-center">Ingredients</TableHead>
+                <TableHead className="font-semibold w-32 text-center">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {paginatedData.length === 0 ? (
+              {paginatedRecipes.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
-                    No recipes found matching your search criteria
+                  <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                    No recipes found matching your criteria
                   </TableCell>
                 </TableRow>
               ) : (
-                paginatedData.map((recipe, index) => (
-                  <TableRow key={`${recipe.menuCode}-${recipe.inventoryCode}-${index}`} className="hover:bg-muted/25">
-                    <TableCell className="font-medium">
-                      <Badge variant="outline" className="font-mono">
+                paginatedRecipes.map((recipe, index) => (
+                  <TableRow key={`${recipe.menuCode}-${recipe.sizeCode}-${index}`} className="hover:bg-muted/25">
+                    <TableCell>
+                      <Badge variant="outline" className="font-mono text-xs">
                         {recipe.menuCode}
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      <div>
-                        <div className="font-medium">{recipe.description}</div>
-                        <div className="text-xs text-muted-foreground">{recipe.menuCategory}</div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="secondary" className="text-xs">
-                        {recipe.sizeDescription}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="max-w-xs">
-                      <div className="truncate" title={recipe.inventoryDescription}>
-                        {recipe.inventoryDescription}
-                      </div>
-                    </TableCell>
-                    <TableCell className="font-mono text-sm">
-                      {recipe.inventoryCode}
-                    </TableCell>
-                    <TableCell>
                       <Badge variant="outline" className="text-xs">
-                        {recipe.portionUnit}
+                        {recipe.category}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-right font-medium">
-                      {recipe.amount}
+                    <TableCell>
+                      <div className="font-medium text-sm max-w-xs truncate" title={recipe.description}>
+                        {recipe.description}
+                      </div>
                     </TableCell>
                     <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-40">
-                          <DropdownMenuItem className="gap-2">
-                            <Eye className="h-4 w-4" />
-                            View Details
-                          </DropdownMenuItem>
-                          <DropdownMenuItem className="gap-2">
-                            <Edit className="h-4 w-4" />
-                            Edit Recipe
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      <Badge variant="secondary" className="font-mono text-xs">
+                        {recipe.sizeCode}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-sm">{recipe.sizeDescription}</span>
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <Badge variant="outline" className="text-xs">
+                        {recipe.ingredientCount}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex gap-1 justify-center">
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          onClick={() => onViewRecipe(recipe.menuCode, recipe.sizeCode)}
+                          className="h-8 w-8 p-0"
+                          title="View Recipe"
+                        >
+                          <Eye className="w-3 h-3" />
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          onClick={() => onEditRecipe(recipe.menuCode, recipe.sizeCode)}
+                          className="h-8 w-8 p-0"
+                          title="Edit Recipe"
+                        >
+                          <Edit className="w-3 h-3" />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))
@@ -170,9 +131,9 @@ export const RecipeTable = ({ data, searchTerm }: RecipeTableProps) => {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-between mt-4">
+          <div className="flex items-center justify-between p-4 border-t">
             <div className="text-sm text-muted-foreground">
-              Page {currentPage} of {totalPages}
+              Showing {startIndex + 1}-{Math.min(startIndex + itemsPerPage, recipes.length)} of {recipes.length} recipes
             </div>
             <div className="flex items-center gap-2">
               <Button
@@ -181,7 +142,7 @@ export const RecipeTable = ({ data, searchTerm }: RecipeTableProps) => {
                 onClick={() => goToPage(1)}
                 disabled={currentPage === 1}
               >
-                <ChevronsLeft className="h-4 w-4" />
+                First
               </Button>
               <Button
                 variant="outline"
@@ -189,32 +150,18 @@ export const RecipeTable = ({ data, searchTerm }: RecipeTableProps) => {
                 onClick={() => goToPage(currentPage - 1)}
                 disabled={currentPage === 1}
               >
-                <ChevronLeft className="h-4 w-4" />
+                Previous
               </Button>
-              
-              {/* Page numbers */}
-              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                const page = Math.max(1, Math.min(currentPage - 2 + i, totalPages - 4 + i));
-                return (
-                  <Button
-                    key={page}
-                    variant={currentPage === page ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => goToPage(page)}
-                    className="w-8"
-                  >
-                    {page}
-                  </Button>
-                );
-              })}
-
+              <span className="text-sm text-muted-foreground px-2">
+                Page {currentPage} of {totalPages}
+              </span>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => goToPage(currentPage + 1)}
                 disabled={currentPage === totalPages}
               >
-                <ChevronRight className="h-4 w-4" />
+                Next
               </Button>
               <Button
                 variant="outline"
@@ -222,7 +169,7 @@ export const RecipeTable = ({ data, searchTerm }: RecipeTableProps) => {
                 onClick={() => goToPage(totalPages)}
                 disabled={currentPage === totalPages}
               >
-                <ChevronsRight className="h-4 w-4" />
+                Last
               </Button>
             </div>
           </div>
