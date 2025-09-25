@@ -162,6 +162,7 @@ export const RecipeMaster = () => {
 
       {/* Version Selector */}
       <VersionSelector 
+        key={selectedVersion}
         selectedVersion={selectedVersion}
         onVersionChange={setSelectedVersion}
       />
