@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, GitCompare, Package, FileText, AlertTriangle, CheckCircle, Users, Calendar, ChevronDown, ChevronUp } from "lucide-react";
+import { ArrowLeft, GitCompare, Package, FileText, AlertTriangle, CheckCircle, Users, Calendar, ChevronDown, ChevronUp, Eye } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 interface Version {
   id: string;
@@ -81,22 +82,22 @@ const mockDifferences = {
     grammageChanges: 78
   },
   productsOnlyInV1: [
-    { menuCode: "PZ012", category: "Pizza", productName: "Veggie Deluxe Classic", sizeCode: "REG", sizeDesc: "Regular", ingredients: 8 },
-    { menuCode: "PZ018", category: "Pizza", productName: "Chicken Tikka Special", sizeCode: "LRG", sizeDesc: "Large", ingredients: 12 },
-    { menuCode: "PZ032", category: "Pizza", productName: "Mediterranean Garden", sizeCode: "REG", sizeDesc: "Regular", ingredients: 10 }
+    { menuCode: "PZ012", category: "Pizza", productName: "Veggie Deluxe Classic", sizeCode: "HT07", sizeDesc: "Half Thick", ingredients: 8 },
+    { menuCode: "PZ018", category: "Pizza", productName: "Chicken Tikka Special", sizeCode: "HT95", sizeDesc: "Half Thick XL", ingredients: 12 },
+    { menuCode: "PZ032", category: "Pizza", productName: "Mediterranean Garden", sizeCode: "RT12", sizeDesc: "Regular Thin", ingredients: 10 }
   ],
   productsOnlyInV2: [
-    { menuCode: "PZ025", category: "Pizza", productName: "BBQ Chicken Supreme", sizeCode: "REG", sizeDesc: "Regular", ingredients: 11 },
-    { menuCode: "PZ047", category: "Pizza", productName: "Truffle Delight", sizeCode: "LRG", sizeDesc: "Large", ingredients: 9 },
-    { menuCode: "PZ051", category: "Pizza", productName: "Spicy Jalapeño", sizeCode: "REG", sizeDesc: "Regular", ingredients: 7 }
+    { menuCode: "PZ025", category: "Pizza", productName: "BBQ Chicken Supreme", sizeCode: "MT45", sizeDesc: "Medium Thick", ingredients: 11 },
+    { menuCode: "PZ047", category: "Pizza", productName: "Truffle Delight", sizeCode: "LT88", sizeDesc: "Large Thin", ingredients: 9 },
+    { menuCode: "PZ051", category: "Pizza", productName: "Spicy Jalapeño", sizeCode: "ST23", sizeDesc: "Small Thick", ingredients: 7 }
   ],
   productsWithDifferentRecipes: [
     {
       menuCode: "PZ001",
       category: "Pizza", 
       productName: "Margherita Pizza Regular",
-      sizeCode: "REG",
-      sizeDesc: "Regular",
+      sizeCode: "RT12",
+      sizeDesc: "Regular Thin",
       v1Ingredients: 6,
       v2Ingredients: 6,
       changes: [
@@ -108,8 +109,8 @@ const mockDifferences = {
       menuCode: "PZ008",
       category: "Pizza",
       productName: "Pepperoni Feast", 
-      sizeCode: "LRG",
-      sizeDesc: "Large",
+      sizeCode: "LT88",
+      sizeDesc: "Large Thin",
       v1Ingredients: 8,
       v2Ingredients: 8,
       changes: [
@@ -120,8 +121,8 @@ const mockDifferences = {
       menuCode: "PZ015",
       category: "Pizza",
       productName: "Chicken Supreme",
-      sizeCode: "REG", 
-      sizeDesc: "Regular",
+      sizeCode: "MT45", 
+      sizeDesc: "Medium Thick",
       v1Ingredients: 9,
       v2Ingredients: 10,
       changes: [
@@ -196,45 +197,65 @@ const ProductComparisonRow = ({ product, currentVersionData, compareVersionData,
 
   return (
     <>
-      <tr className="border-b hover:bg-amber-25">
-        <td className="p-3 font-medium">{product.menuCode}</td>
-        <td className="p-3">{product.productName}</td>
-        <td className="p-3">{product.category}</td>
-        <td className="p-3">{product.sizeCode}</td>
-        <td className="p-3">{product.sizeDesc}</td>
-        <td className="p-3">
+      <TableRow className="hover:bg-amber-25">
+        <TableCell>
+          <Badge variant="outline" className="font-mono text-xs">
+            {product.menuCode}
+          </Badge>
+        </TableCell>
+        <TableCell>
+          <div className="font-medium text-sm max-w-xs truncate" title={product.productName}>
+            {product.productName}
+          </div>
+        </TableCell>
+        <TableCell>
+          <Badge variant="outline" className="text-xs">
+            {product.category}
+          </Badge>
+        </TableCell>
+        <TableCell>
+          <Badge variant="secondary" className="font-mono text-xs">
+            {product.sizeCode}
+          </Badge>
+        </TableCell>
+        <TableCell>
+          <span className="text-sm">{product.sizeDesc}</span>
+        </TableCell>
+        <TableCell>
           <Badge variant="outline" className="bg-amber-100 text-amber-800">
             {differenceType}
           </Badge>
-        </td>
-        <td className="p-3">
-          <Button 
-            variant="outline" 
-            size="sm"
-            onClick={() => setExpanded(!expanded)}
-            className="flex items-center gap-1"
-          >
-            View 
-            {expanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-          </Button>
-        </td>
-      </tr>
+        </TableCell>
+        <TableCell>
+          <div className="flex justify-center">
+            <Button 
+              size="sm" 
+              variant="outline" 
+              onClick={() => setExpanded(!expanded)}
+              className="h-8 w-8 p-0"
+              title="View Recipe Comparison"
+            >
+              <Eye className="w-3 h-3" />
+            </Button>
+          </div>
+        </TableCell>
+      </TableRow>
       {expanded && (
-        <tr>
-          <td colSpan={7} className="p-0">
+        <TableRow>
+          <TableCell colSpan={7} className="p-0">
             <div className="bg-gray-50 p-4 border-t">
               <h6 className="font-semibold mb-3">Recipe Comparison - {product.menuCode}</h6>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="bg-gray-100">
-                      <th className="text-left p-2 font-medium">Ingredient ({currentVersionData.name.split(' - ')[0]})</th>
-                      <th className="text-left p-2 font-medium">Grammage ({currentVersionData.name.split(' - ')[0]})</th>
-                      <th className="text-left p-2 font-medium">Ingredient ({compareVersionData.name.split(' - ')[0]})</th>
-                      <th className="text-left p-2 font-medium">Grammage ({compareVersionData.name.split(' - ')[0]})</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+              <div className="rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-gray-100">
+                      <TableHead className="font-semibold">Ingredient ({currentVersionData.name.split(' - ')[0]})</TableHead>
+                      <TableHead className="font-semibold">Grammage ({currentVersionData.name.split(' - ')[0]})</TableHead>
+                      <TableHead className="font-semibold">Ingredient ({compareVersionData.name.split(' - ')[0]})</TableHead>
+                      <TableHead className="font-semibold">Grammage ({compareVersionData.name.split(' - ')[0]})</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
                     {Math.max(v1Recipe.length, v2Recipe.length) && Array.from({ length: Math.max(v1Recipe.length, v2Recipe.length) }).map((_, index) => {
                       const v1Item = v1Recipe[index];
                       const v2Item = v2Recipe[index];
@@ -244,30 +265,30 @@ const ProductComparisonRow = ({ product, currentVersionData, compareVersionData,
                       const v2Grammage = v2Item?.grammage || "";
                       
                       return (
-                        <tr key={index} className={`border ${getRowHighlight(v1Ingredient, v1Grammage, v2Ingredient, v2Grammage)}`}>
-                          <td className="p-2">{v1Ingredient}</td>
-                          <td className="p-2">{v1Grammage}</td>
-                          <td className="p-2">
+                        <TableRow key={index} className={`${getRowHighlight(v1Ingredient, v1Grammage, v2Ingredient, v2Grammage)}`}>
+                          <TableCell className="p-2">{v1Ingredient}</TableCell>
+                          <TableCell className="p-2">{v1Grammage}</TableCell>
+                          <TableCell className="p-2">
                             {v2Ingredient && v1Ingredient !== v2Ingredient && (
                               <span className="font-bold text-red-600">{v2Ingredient}</span>
                             )}
                             {v2Ingredient && v1Ingredient === v2Ingredient && v2Ingredient}
-                          </td>
-                          <td className="p-2">
+                          </TableCell>
+                          <TableCell className="p-2">
                             {v2Grammage && v1Grammage !== v2Grammage && (
                               <span className="font-bold text-red-600">{v1Grammage} → {v2Grammage}</span>
                             )}
                             {v2Grammage && v1Grammage === v2Grammage && v2Grammage}
-                          </td>
-                        </tr>
+                          </TableCell>
+                        </TableRow>
                       );
                     })}
-                  </tbody>
-                </table>
+                  </TableBody>
+                </Table>
               </div>
             </div>
-          </td>
-        </tr>
+          </TableCell>
+        </TableRow>
       )}
     </>
   );
@@ -508,35 +529,69 @@ export const VersionComparison = ({ isOpen, onClose, currentVersion }: VersionCo
                     </h4>
                     <Card>
                       <CardContent className="p-0">
-                        <div className="overflow-x-auto">
-                          <table className="w-full">
-                            <thead className="bg-red-50 border-b">
-                              <tr>
-                                <th className="text-left p-3 font-medium text-red-800">Menu Code</th>
-                                <th className="text-left p-3 font-medium text-red-800">Product Description</th>
-                                <th className="text-left p-3 font-medium text-red-800">Category</th>
-                                <th className="text-left p-3 font-medium text-red-800">Size Code</th>
-                                <th className="text-left p-3 font-medium text-red-800">Size Description</th>
-                                <th className="text-left p-3 font-medium text-red-800">View</th>
-                              </tr>
-                            </thead>
-                            <tbody>
+                        <div className="rounded-md border">
+                          <Table>
+                            <TableHeader>
+                              <TableRow className="bg-red-50">
+                                <TableHead className="font-semibold text-red-800">Menu Code</TableHead>
+                                <TableHead className="font-semibold text-red-800">Product Description</TableHead>
+                                <TableHead className="font-semibold text-red-800">Category</TableHead>
+                                <TableHead className="font-semibold text-red-800">Size Code</TableHead>
+                                <TableHead className="font-semibold text-red-800">Size Description</TableHead>
+                                <TableHead className="font-semibold text-red-800 text-center">Ingredients</TableHead>
+                                <TableHead className="font-semibold text-red-800 w-20 text-center">View</TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody>
                               {mockDifferences.productsOnlyInV1.map((product, index) => (
-                                <tr key={index} className="border-b hover:bg-red-25">
-                                  <td className="p-3 font-medium">{product.menuCode}</td>
-                                  <td className="p-3">{product.productName}</td>
-                                  <td className="p-3">{product.category}</td>
-                                  <td className="p-3">{product.sizeCode}</td>
-                                  <td className="p-3">{product.sizeDesc}</td>
-                                  <td className="p-3">
-                                    <Button variant="outline" size="sm">
-                                      View
-                                    </Button>
-                                  </td>
-                                </tr>
+                                <TableRow key={index} className="hover:bg-red-25">
+                                  <TableCell>
+                                    <Badge variant="outline" className="font-mono text-xs">
+                                      {product.menuCode}
+                                    </Badge>
+                                  </TableCell>
+                                  <TableCell>
+                                    <div className="font-medium text-sm max-w-xs truncate" title={product.productName}>
+                                      {product.productName}
+                                    </div>
+                                  </TableCell>
+                                  <TableCell>
+                                    <Badge variant="outline" className="text-xs">
+                                      {product.category}
+                                    </Badge>
+                                  </TableCell>
+                                  <TableCell>
+                                    <Badge variant="secondary" className="font-mono text-xs">
+                                      {product.sizeCode}
+                                    </Badge>
+                                  </TableCell>
+                                  <TableCell>
+                                    <span className="text-sm">{product.sizeDesc}</span>
+                                  </TableCell>
+                                  <TableCell className="text-center">
+                                    <Badge variant="outline" className="text-xs">
+                                      {product.ingredients}
+                                    </Badge>
+                                  </TableCell>
+                                  <TableCell>
+                                    <div className="flex justify-center">
+                                      <Button 
+                                        size="sm" 
+                                        variant="outline" 
+                                        className="h-8 w-8 p-0"
+                                        title="View Recipe"
+                                      >
+                                        <Eye className="w-3 h-3" />
+                                      </Button>
+                                    </div>
+                                  </TableCell>
+                                </TableRow>
                               ))}
-                            </tbody>
-                          </table>
+                            </TableBody>
+                          </Table>
+                        </div>
+                        <div className="p-3 text-center text-sm text-muted-foreground border-t">
+                          ...{mockDifferences.summary.productsOnlyInV1 - 3} more products
                         </div>
                       </CardContent>
                     </Card>
@@ -549,35 +604,69 @@ export const VersionComparison = ({ isOpen, onClose, currentVersion }: VersionCo
                     </h4>
                     <Card>
                       <CardContent className="p-0">
-                        <div className="overflow-x-auto">
-                          <table className="w-full">
-                            <thead className="bg-emerald-50 border-b">
-                              <tr>
-                                <th className="text-left p-3 font-medium text-emerald-800">Menu Code</th>
-                                <th className="text-left p-3 font-medium text-emerald-800">Product Description</th>
-                                <th className="text-left p-3 font-medium text-emerald-800">Category</th>
-                                <th className="text-left p-3 font-medium text-emerald-800">Size Code</th>
-                                <th className="text-left p-3 font-medium text-emerald-800">Size Description</th>
-                                <th className="text-left p-3 font-medium text-emerald-800">View</th>
-                              </tr>
-                            </thead>
-                            <tbody>
+                        <div className="rounded-md border">
+                          <Table>
+                            <TableHeader>
+                              <TableRow className="bg-emerald-50">
+                                <TableHead className="font-semibold text-emerald-800">Menu Code</TableHead>
+                                <TableHead className="font-semibold text-emerald-800">Product Description</TableHead>
+                                <TableHead className="font-semibold text-emerald-800">Category</TableHead>
+                                <TableHead className="font-semibold text-emerald-800">Size Code</TableHead>
+                                <TableHead className="font-semibold text-emerald-800">Size Description</TableHead>
+                                <TableHead className="font-semibold text-emerald-800 text-center">Ingredients</TableHead>
+                                <TableHead className="font-semibold text-emerald-800 w-20 text-center">View</TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody>
                               {mockDifferences.productsOnlyInV2.map((product, index) => (
-                                <tr key={index} className="border-b hover:bg-emerald-25">
-                                  <td className="p-3 font-medium">{product.menuCode}</td>
-                                  <td className="p-3">{product.productName}</td>
-                                  <td className="p-3">{product.category}</td>
-                                  <td className="p-3">{product.sizeCode}</td>
-                                  <td className="p-3">{product.sizeDesc}</td>
-                                  <td className="p-3">
-                                    <Button variant="outline" size="sm">
-                                      View
-                                    </Button>
-                                  </td>
-                                </tr>
+                                <TableRow key={index} className="hover:bg-emerald-25">
+                                  <TableCell>
+                                    <Badge variant="outline" className="font-mono text-xs">
+                                      {product.menuCode}
+                                    </Badge>
+                                  </TableCell>
+                                  <TableCell>
+                                    <div className="font-medium text-sm max-w-xs truncate" title={product.productName}>
+                                      {product.productName}
+                                    </div>
+                                  </TableCell>
+                                  <TableCell>
+                                    <Badge variant="outline" className="text-xs">
+                                      {product.category}
+                                    </Badge>
+                                  </TableCell>
+                                  <TableCell>
+                                    <Badge variant="secondary" className="font-mono text-xs">
+                                      {product.sizeCode}
+                                    </Badge>
+                                  </TableCell>
+                                  <TableCell>
+                                    <span className="text-sm">{product.sizeDesc}</span>
+                                  </TableCell>
+                                  <TableCell className="text-center">
+                                    <Badge variant="outline" className="text-xs">
+                                      {product.ingredients}
+                                    </Badge>
+                                  </TableCell>
+                                  <TableCell>
+                                    <div className="flex justify-center">
+                                      <Button 
+                                        size="sm" 
+                                        variant="outline" 
+                                        className="h-8 w-8 p-0"
+                                        title="View Recipe"
+                                      >
+                                        <Eye className="w-3 h-3" />
+                                      </Button>
+                                    </div>
+                                  </TableCell>
+                                </TableRow>
                               ))}
-                            </tbody>
-                          </table>
+                            </TableBody>
+                          </Table>
+                        </div>
+                        <div className="p-3 text-center text-sm text-muted-foreground border-t">
+                          ...{mockDifferences.summary.productsOnlyInV2 - 3} more products
                         </div>
                       </CardContent>
                     </Card>
@@ -596,20 +685,20 @@ export const VersionComparison = ({ isOpen, onClose, currentVersion }: VersionCo
                       </h5>
                       <Card>
                         <CardContent className="p-0">
-                          <div className="overflow-x-auto">
-                            <table className="w-full">
-                              <thead className="bg-amber-50 border-b">
-                                <tr>
-                                  <th className="text-left p-3 font-medium text-amber-800">Menu Code</th>
-                                  <th className="text-left p-3 font-medium text-amber-800">Product Description</th>
-                                  <th className="text-left p-3 font-medium text-amber-800">Category</th>
-                                  <th className="text-left p-3 font-medium text-amber-800">Size Code</th>
-                                  <th className="text-left p-3 font-medium text-amber-800">Size Description</th>
-                                  <th className="text-left p-3 font-medium text-amber-800">Difference Type</th>
-                                  <th className="text-left p-3 font-medium text-amber-800">View</th>
-                                </tr>
-                              </thead>
-                              <tbody>
+                          <div className="rounded-md border">
+                            <Table>
+                              <TableHeader>
+                                <TableRow className="bg-amber-50">
+                                  <TableHead className="font-semibold text-amber-800">Menu Code</TableHead>
+                                  <TableHead className="font-semibold text-amber-800">Product Description</TableHead>
+                                  <TableHead className="font-semibold text-amber-800">Category</TableHead>
+                                  <TableHead className="font-semibold text-amber-800">Size Code</TableHead>
+                                  <TableHead className="font-semibold text-amber-800">Size Description</TableHead>
+                                  <TableHead className="font-semibold text-amber-800">Difference Type</TableHead>
+                                  <TableHead className="font-semibold text-amber-800 w-20 text-center">View</TableHead>
+                                </TableRow>
+                              </TableHeader>
+                              <TableBody>
                                 {mockDifferences.productsWithDifferentRecipes
                                   .filter(product => product.changes.some(change => change.type === 'ingredient'))
                                   .map((product, index) => (
@@ -621,8 +710,11 @@ export const VersionComparison = ({ isOpen, onClose, currentVersion }: VersionCo
                                       differenceType="Ingredient Change"
                                     />
                                   ))}
-                              </tbody>
-                            </table>
+                              </TableBody>
+                            </Table>
+                          </div>
+                          <div className="p-3 text-center text-sm text-muted-foreground border-t">
+                            ...more products with ingredient differences
                           </div>
                         </CardContent>
                       </Card>
@@ -635,20 +727,20 @@ export const VersionComparison = ({ isOpen, onClose, currentVersion }: VersionCo
                       </h5>
                       <Card>
                         <CardContent className="p-0">
-                          <div className="overflow-x-auto">
-                            <table className="w-full">
-                              <thead className="bg-blue-50 border-b">
-                                <tr>
-                                  <th className="text-left p-3 font-medium text-blue-800">Menu Code</th>
-                                  <th className="text-left p-3 font-medium text-blue-800">Product Description</th>
-                                  <th className="text-left p-3 font-medium text-blue-800">Category</th>
-                                  <th className="text-left p-3 font-medium text-blue-800">Size Code</th>
-                                  <th className="text-left p-3 font-medium text-blue-800">Size Description</th>
-                                  <th className="text-left p-3 font-medium text-blue-800">Difference Type</th>
-                                  <th className="text-left p-3 font-medium text-blue-800">View</th>
-                                </tr>
-                              </thead>
-                              <tbody>
+                          <div className="rounded-md border">
+                            <Table>
+                              <TableHeader>
+                                <TableRow className="bg-blue-50">
+                                  <TableHead className="font-semibold text-blue-800">Menu Code</TableHead>
+                                  <TableHead className="font-semibold text-blue-800">Product Description</TableHead>
+                                  <TableHead className="font-semibold text-blue-800">Category</TableHead>
+                                  <TableHead className="font-semibold text-blue-800">Size Code</TableHead>
+                                  <TableHead className="font-semibold text-blue-800">Size Description</TableHead>
+                                  <TableHead className="font-semibold text-blue-800">Difference Type</TableHead>
+                                  <TableHead className="font-semibold text-blue-800 w-20 text-center">View</TableHead>
+                                </TableRow>
+                              </TableHeader>
+                              <TableBody>
                                 {mockDifferences.productsWithDifferentRecipes
                                   .filter(product => product.changes.some(change => change.type === 'grammage'))
                                   .map((product, index) => (
@@ -660,8 +752,11 @@ export const VersionComparison = ({ isOpen, onClose, currentVersion }: VersionCo
                                       differenceType="Grammage Change"
                                     />
                                   ))}
-                              </tbody>
-                            </table>
+                              </TableBody>
+                            </Table>
+                          </div>
+                          <div className="p-3 text-center text-sm text-muted-foreground border-t">
+                            ...more products with grammage differences
                           </div>
                         </CardContent>
                       </Card>
