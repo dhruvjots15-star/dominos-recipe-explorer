@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Download, RefreshCw, Filter, Package, FileText, Utensils, Building2, Search } from "lucide-react";
+import { Download, RefreshCw, Filter, Package, FileText, Utensils, Building2, Search, GitCompare } from "lucide-react";
 import { TopNavigation } from "./TopNavigation";
 import { VersionSelector } from "./VersionSelector";
 import { FilterPanel, ActiveFilters } from "./FilterPanel";
@@ -10,6 +10,7 @@ import { AdvancedSearch } from "./AdvancedSearch";
 import { RecipeView } from "./RecipeView";
 import { RecipeTable } from "./RecipeTable";
 import { DatabaseFilters } from "./DatabaseFilters";
+import { VersionComparison } from "./VersionComparison";
 import type { DatabaseFilters as DatabaseFiltersType } from "./DatabaseFilters";
 import { mockRecipeData, RecipeItem, searchRecipes } from "@/data/recipeData";
 
@@ -26,6 +27,7 @@ export const RecipeMaster = () => {
   const [view, setView] = useState<'table' | 'recipe'>('table');
   const [selectedRecipe, setSelectedRecipe] = useState<{ menuCode: string; sizeCode: string } | null>(null);
   const [showFilters, setShowFilters] = useState(false);
+  const [showVersionComparison, setShowVersionComparison] = useState(false);
 
   const handleSearch = (filters: { 
     productSearch: string; 
@@ -195,6 +197,10 @@ export const RecipeMaster = () => {
               </p>
             </div>
             <div className="flex items-center gap-3">
+              <Button variant="outline" size="sm" onClick={() => setShowVersionComparison(true)}>
+                <GitCompare className="w-4 h-4 mr-2" />
+                Compare Versions
+              </Button>
               <Button variant="outline" size="sm">
                 <Download className="w-4 h-4 mr-2" />
                 Export
@@ -374,6 +380,13 @@ export const RecipeMaster = () => {
           )}
         </div>
       </div>
+
+      {/* Version Comparison Modal */}
+      <VersionComparison
+        isOpen={showVersionComparison}
+        onClose={() => setShowVersionComparison(false)}
+        currentVersion={selectedVersion}
+      />
     </div>
   );
 };
