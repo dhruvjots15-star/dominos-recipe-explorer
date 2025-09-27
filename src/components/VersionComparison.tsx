@@ -77,42 +77,56 @@ const mockDifferences = {
     productsOnlyInV1: 45,
     productsOnlyInV2: 81,
     productsWithDifferentRecipes: 123,
-    totalRecipeDifferences: 267,
     ingredientChanges: 89,
-    grammageChanges: 178
+    grammageChanges: 78
   },
-  detailed: [
+  productsOnlyInV1: [
+    { menuCode: "PZ012", category: "Pizza", productName: "Veggie Deluxe Classic", sizeCode: "REG", sizeDesc: "Regular", ingredients: 8 },
+    { menuCode: "PZ018", category: "Pizza", productName: "Chicken Tikka Special", sizeCode: "LRG", sizeDesc: "Large", ingredients: 12 },
+    { menuCode: "PZ032", category: "Pizza", productName: "Mediterranean Garden", sizeCode: "REG", sizeDesc: "Regular", ingredients: 10 }
+  ],
+  productsOnlyInV2: [
+    { menuCode: "PZ025", category: "Pizza", productName: "BBQ Chicken Supreme", sizeCode: "REG", sizeDesc: "Regular", ingredients: 11 },
+    { menuCode: "PZ047", category: "Pizza", productName: "Truffle Delight", sizeCode: "LRG", sizeDesc: "Large", ingredients: 9 },
+    { menuCode: "PZ051", category: "Pizza", productName: "Spicy Jalapeño", sizeCode: "REG", sizeDesc: "Regular", ingredients: 7 }
+  ],
+  productsWithDifferentRecipes: [
     {
       menuCode: "PZ001",
+      category: "Pizza", 
       productName: "Margherita Pizza Regular",
-      status: "recipe_changed",
+      sizeCode: "REG",
+      sizeDesc: "Regular",
+      v1Ingredients: 6,
+      v2Ingredients: 6,
       changes: [
         { type: "ingredient", description: "Mozzarella cheese replaced with Premium Mozzarella", impact: "Quality upgrade" },
         { type: "grammage", description: "Tomato sauce reduced from 80g to 75g", impact: "Cost optimization" }
       ]
     },
     {
-      menuCode: "PZ025",
-      productName: "BBQ Chicken Supreme",
-      status: "only_in_v2",
-      changes: [
-        { type: "new_product", description: "New addition in v2.0", impact: "Menu expansion" }
-      ]
-    },
-    {
-      menuCode: "PZ012",
-      productName: "Veggie Deluxe Classic",
-      status: "only_in_v1",
-      changes: [
-        { type: "discontinued", description: "Removed in v2.0", impact: "Menu simplification" }
-      ]
-    },
-    {
       menuCode: "PZ008",
-      productName: "Pepperoni Feast",
-      status: "grammage_changed",
+      category: "Pizza",
+      productName: "Pepperoni Feast", 
+      sizeCode: "LRG",
+      sizeDesc: "Large",
+      v1Ingredients: 8,
+      v2Ingredients: 8,
       changes: [
         { type: "grammage", description: "Pepperoni increased from 45g to 50g", impact: "Portion enhancement" }
+      ]
+    },
+    {
+      menuCode: "PZ015",
+      category: "Pizza",
+      productName: "Chicken Supreme",
+      sizeCode: "REG", 
+      sizeDesc: "Regular",
+      v1Ingredients: 9,
+      v2Ingredients: 10,
+      changes: [
+        { type: "ingredient", description: "Added Bell Peppers", impact: "Menu enhancement" },
+        { type: "grammage", description: "Chicken increased from 60g to 65g", impact: "Portion enhancement" }
       ]
     }
   ]
@@ -300,7 +314,7 @@ export const VersionComparison = ({ isOpen, onClose, currentVersion }: VersionCo
                           {mockDifferences.summary.productsOnlyInV1}
                         </div>
                         <p className="text-sm text-muted-foreground">
-                          Products in {currentVersionData.name} not in {compareVersionData.name}
+                          Products only in {currentVersionData.name.split(' - ')[0]}
                         </p>
                       </div>
                     </CardContent>
@@ -313,7 +327,7 @@ export const VersionComparison = ({ isOpen, onClose, currentVersion }: VersionCo
                           {mockDifferences.summary.productsOnlyInV2}
                         </div>
                         <p className="text-sm text-muted-foreground">
-                          New products in {compareVersionData.name}
+                          New products in {compareVersionData.name.split(' - ')[0]}
                         </p>
                       </div>
                     </CardContent>
@@ -328,30 +342,9 @@ export const VersionComparison = ({ isOpen, onClose, currentVersion }: VersionCo
                         <p className="text-sm text-muted-foreground">
                           Products with different recipes
                         </p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                  <Card>
-                    <CardContent className="p-4">
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-blue-600 mb-1">
-                          {mockDifferences.summary.ingredientChanges}
+                        <div className="mt-2 text-xs text-muted-foreground">
+                          {mockDifferences.summary.ingredientChanges} ingredient changes, {mockDifferences.summary.grammageChanges} grammage changes
                         </div>
-                        <p className="text-sm text-muted-foreground">Ingredient changes</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardContent className="p-4">
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-purple-600 mb-1">
-                          {mockDifferences.summary.grammageChanges}
-                        </div>
-                        <p className="text-sm text-muted-foreground">Grammage changes</p>
                       </div>
                     </CardContent>
                   </Card>
@@ -366,34 +359,115 @@ export const VersionComparison = ({ isOpen, onClose, currentVersion }: VersionCo
                   <FileText className="w-5 h-5" />
                   Detailed Comparison
                 </h3>
-                <div className="space-y-4">
-                  {mockDifferences.detailed.map((item, index) => (
-                    <Card key={index}>
-                      <CardContent className="p-4">
-                        <div className="flex items-start justify-between mb-3">
-                          <div className="flex items-center gap-3">
-                            {getStatusIcon(item.status)}
-                            <div>
-                              <h4 className="font-semibold">{item.menuCode} - {item.productName}</h4>
+                <div className="space-y-8">
+                  {/* Products only in V1 */}
+                  <div>
+                    <h4 className="text-lg font-semibold mb-4 text-red-600">
+                      {mockDifferences.summary.productsOnlyInV1} Products in {currentVersionData.name} not in {compareVersionData.name}
+                    </h4>
+                    <div className="space-y-2">
+                      {mockDifferences.productsOnlyInV1.map((product, index) => (
+                        <Card key={index}>
+                          <CardContent className="p-3">
+                            <div className="flex items-center justify-between">
+                              <div className="grid grid-cols-6 gap-4 flex-1 text-sm">
+                                <span className="font-medium">{product.menuCode}</span>
+                                <span>{product.category}</span>
+                                <span>{product.productName}</span>
+                                <span>{product.sizeCode}</span>
+                                <span>{product.sizeDesc}</span>
+                                <span>{product.ingredients} ingredients</span>
+                              </div>
+                              <Button variant="outline" size="sm">
+                                View
+                              </Button>
                             </div>
-                          </div>
-                          {getStatusBadge(item.status)}
-                        </div>
-                        <div className="space-y-2">
-                          {item.changes.map((change, changeIndex) => (
-                            <div key={changeIndex} className="bg-muted/50 p-3 rounded-lg">
-                              <div className="flex justify-between items-start">
-                                <p className="text-sm font-medium">{change.description}</p>
-                                <Badge variant="outline" className="ml-2">
-                                  {change.impact}
-                                </Badge>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Products only in V2 */}
+                  <div>
+                    <h4 className="text-lg font-semibold mb-4 text-emerald-600">
+                      {mockDifferences.summary.productsOnlyInV2} New products in {compareVersionData.name}
+                    </h4>
+                    <div className="space-y-2">
+                      {mockDifferences.productsOnlyInV2.map((product, index) => (
+                        <Card key={index}>
+                          <CardContent className="p-3">
+                            <div className="flex items-center justify-between">
+                              <div className="grid grid-cols-6 gap-4 flex-1 text-sm">
+                                <span className="font-medium">{product.menuCode}</span>
+                                <span>{product.category}</span>
+                                <span>{product.productName}</span>
+                                <span>{product.sizeCode}</span>
+                                <span>{product.sizeDesc}</span>
+                                <span>{product.ingredients} ingredients</span>
+                              </div>
+                              <Button variant="outline" size="sm">
+                                View
+                              </Button>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Products with different recipes */}
+                  <div>
+                    <h4 className="text-lg font-semibold mb-4 text-amber-600">
+                      {mockDifferences.summary.productsWithDifferentRecipes} Products with different recipes
+                    </h4>
+                    <div className="space-y-4">
+                      {mockDifferences.productsWithDifferentRecipes.map((product, index) => (
+                        <Card key={index}>
+                          <CardContent className="p-4">
+                            <div className="flex items-center justify-between mb-4">
+                              <div className="flex items-center gap-4">
+                                <span className="font-semibold">{product.menuCode} - {product.productName}</span>
+                                <Badge variant="secondary">{product.sizeCode} ({product.sizeDesc})</Badge>
+                              </div>
+                              <Button variant="outline" size="sm">
+                                View Full Recipe
+                              </Button>
+                            </div>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                              <div className="p-3 bg-red-50 rounded-lg border border-red-200">
+                                <h5 className="font-medium text-red-800 mb-2">{currentVersionData.name}</h5>
+                                <p className="text-sm text-red-700">{product.v1Ingredients} ingredients</p>
+                              </div>
+                              <div className="p-3 bg-emerald-50 rounded-lg border border-emerald-200">
+                                <h5 className="font-medium text-emerald-800 mb-2">{compareVersionData.name}</h5>
+                                <p className="text-sm text-emerald-700">{product.v2Ingredients} ingredients</p>
                               </div>
                             </div>
-                          ))}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
+
+                            <div className="space-y-2">
+                              <h6 className="font-medium text-sm">Changes:</h6>
+                              {product.changes.map((change, changeIndex) => (
+                                <div key={changeIndex} className="bg-muted/50 p-3 rounded-lg">
+                                  <div className="flex justify-between items-start">
+                                    <div className="flex items-center gap-2">
+                                      {change.type === 'ingredient' && <AlertTriangle className="w-4 h-4 text-amber-600" />}
+                                      {change.type === 'grammage' && <AlertTriangle className="w-4 h-4 text-blue-600" />}
+                                      <p className="text-sm font-medium">{change.description}</p>
+                                    </div>
+                                    <Badge variant="outline" className="ml-2">
+                                      {change.impact}
+                                    </Badge>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
