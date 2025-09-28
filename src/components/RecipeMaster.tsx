@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Download, RefreshCw, Filter, Package, FileText, Utensils, Building2, Search, GitCompare } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Download, RefreshCw, Filter, Package, FileText, Utensils, Building2, Search, GitCompare, Edit, ChevronDown } from "lucide-react";
 import { TopNavigation } from "./TopNavigation";
 import { VersionSelector } from "./VersionSelector";
 import { FilterPanel, ActiveFilters } from "./FilterPanel";
@@ -11,6 +12,9 @@ import { RecipeView } from "./RecipeView";
 import { RecipeTable } from "./RecipeTable";
 import { DatabaseFilters } from "./DatabaseFilters";
 import { VersionComparison } from "./VersionComparison";
+import { ExtendVersionForm } from "./ExtendVersionForm";
+import { RollbackVersionForm } from "./RollbackVersionForm";
+import { RecipeRequestLanding } from "./RecipeRequestLanding";
 import type { DatabaseFilters as DatabaseFiltersType } from "./DatabaseFilters";
 import { mockRecipeData, RecipeItem, searchRecipes } from "@/data/recipeData";
 
@@ -28,6 +32,10 @@ export const RecipeMaster = () => {
   const [selectedRecipe, setSelectedRecipe] = useState<{ menuCode: string; sizeCode: string } | null>(null);
   const [showFilters, setShowFilters] = useState(false);
   const [showVersionComparison, setShowVersionComparison] = useState(false);
+  const [showExtendForm, setShowExtendForm] = useState(false);
+  const [showRollbackForm, setShowRollbackForm] = useState(false);
+  const [showRequestLanding, setShowRequestLanding] = useState(false);
+  const [currentRequestId, setCurrentRequestId] = useState("");
 
   const handleSearch = (filters: { 
     productSearch: string; 
@@ -172,6 +180,13 @@ export const RecipeMaster = () => {
     setSelectedRecipe(null);
   };
 
+  const handleRequestSubmitted = (requestId: string) => {
+    setCurrentRequestId(requestId);
+    setShowExtendForm(false);
+    setShowRollbackForm(false);
+    setShowRequestLanding(true);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Top Navigation */}
@@ -201,14 +216,23 @@ export const RecipeMaster = () => {
                 <GitCompare className="w-4 h-4 mr-2" />
                 Compare Versions
               </Button>
-              <Button variant="outline" size="sm">
-                <Download className="w-4 h-4 mr-2" />
-                Export
-              </Button>
-              <Button variant="outline" size="sm">
-                <RefreshCw className="w-4 h-4 mr-2" />
-                Refresh
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm">
+                    <Edit className="w-4 h-4 mr-2" />
+                    Edit
+                    <ChevronDown className="w-3 h-3 ml-1" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => setShowExtendForm(true)}>
+                    Extend Recipe version to more stores
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setShowRollbackForm(true)}>
+                    Rollback Recipe Version
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
 
@@ -386,6 +410,29 @@ export const RecipeMaster = () => {
         isOpen={showVersionComparison}
         onClose={() => setShowVersionComparison(false)}
         currentVersion={selectedVersion}
+      />
+
+      {/* Extend Version Form */}
+      <ExtendVersionForm
+        isOpen={showExtendForm}
+        onClose={() => setShowExtendForm(false)}
+        selectedVersion={selectedVersion}
+        onRequestSubmitted={handleRequestSubmitted}
+      />
+
+      {/* Rollback Version Form */}
+      <RollbackVersionForm
+        isOpen={showRollbackForm}
+        onClose={() => setShowRollbackForm(false)}
+        selectedVersion={selectedVersion}
+        onRequestSubmitted={handleRequestSubmitted}
+      />
+
+      {/* Request Landing */}
+      <RecipeRequestLanding
+        isOpen={showRequestLanding}
+        onClose={() => setShowRequestLanding(false)}
+        requestId={currentRequestId}
       />
     </div>
   );
