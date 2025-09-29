@@ -1,7 +1,7 @@
 export interface RecipeRequest {
   requestId: string;
   requestDesc: string;
-  requestType: 'RECIPE VERSION EXTEND' | 'RECIPE VERSION ROLLBACK';
+  requestType: 'VERSION EXTEND' | 'VERSION ROLLBACK';
   requestedBy: string;
   requestCreatedDate: string;
   currentStatus: 'REQUEST CREATED, APPROVAL PENDING ON CATEGORY' | 'REQUEST APPROVED BY CATEGORY, PENDING EXECUTION ON MDM(POS)' | 'REQUEST EXECUTED BY MDM(POS), PENDING GO LIVE' | 'REQUEST LIVE, VERSION EXTENDED TO STORES' | 'REQUEST LIVE, VERSION ROLLED BACK' | 'REJECTED';
@@ -15,7 +15,7 @@ export const mockRequestsData: RecipeRequest[] = [
   {
     requestId: "REQ_001",
     requestDesc: "Extend v5.2 BBP Doughball recipe changes to 150 additional stores across North region",
-    requestType: "RECIPE VERSION EXTEND",
+    requestType: "VERSION EXTEND",
     requestedBy: "Sarah Chen",
     requestCreatedDate: "2024-01-15T09:30:00Z",
     currentStatus: "REQUEST LIVE, VERSION EXTENDED TO STORES",
@@ -27,7 +27,7 @@ export const mockRequestsData: RecipeRequest[] = [
   {
     requestId: "REQ_002", 
     requestDesc: "Rollback v4.8 Pizza sauce recipe due to customer complaints about taste consistency",
-    requestType: "RECIPE VERSION ROLLBACK",
+    requestType: "VERSION ROLLBACK",
     requestedBy: "Michael Rodriguez",
     requestCreatedDate: "2024-01-18T11:15:00Z",
     currentStatus: "REQUEST EXECUTED BY MDM(POS), PENDING GO LIVE",
@@ -38,7 +38,7 @@ export const mockRequestsData: RecipeRequest[] = [
   {
     requestId: "REQ_003",
     requestDesc: "Extend v6.1 Salad portion optimization to remaining 200 stores nationwide",
-    requestType: "RECIPE VERSION EXTEND", 
+    requestType: "VERSION EXTEND",
     requestedBy: "Emily Watson",
     requestCreatedDate: "2024-01-22T08:45:00Z",
     currentStatus: "REQUEST APPROVED BY CATEGORY, PENDING EXECUTION ON MDM(POS)",
@@ -49,7 +49,7 @@ export const mockRequestsData: RecipeRequest[] = [
   {
     requestId: "REQ_004",
     requestDesc: "Rollback v5.9 Chicken seasoning blend changes due to supply chain issues",
-    requestType: "RECIPE VERSION ROLLBACK",
+    requestType: "VERSION ROLLBACK",
     requestedBy: "David Park",
     requestCreatedDate: "2024-01-25T13:20:00Z", 
     currentStatus: "REQUEST CREATED, APPROVAL PENDING ON CATEGORY",
@@ -60,7 +60,7 @@ export const mockRequestsData: RecipeRequest[] = [
   {
     requestId: "REQ_005",
     requestDesc: "Extend v7.0 Beverage syrup concentration updates to 300 high-volume locations",
-    requestType: "RECIPE VERSION EXTEND",
+    requestType: "VERSION EXTEND",
     requestedBy: "Lisa Thompson",
     requestCreatedDate: "2024-01-28T10:00:00Z",
     currentStatus: "REJECTED",
@@ -71,7 +71,7 @@ export const mockRequestsData: RecipeRequest[] = [
   {
     requestId: "REQ_006",
     requestDesc: "Extend v6.3 Dessert recipe standardization to all remaining franchise locations",
-    requestType: "RECIPE VERSION EXTEND",
+    requestType: "VERSION EXTEND",
     requestedBy: "Robert Kim",
     requestCreatedDate: "2024-02-01T16:30:00Z",
     currentStatus: "REQUEST LIVE, VERSION EXTENDED TO STORES",
@@ -83,7 +83,7 @@ export const mockRequestsData: RecipeRequest[] = [
   {
     requestId: "REQ_007", 
     requestDesc: "Rollback v8.1 Soup base recipe modifications due to allergen concerns",
-    requestType: "RECIPE VERSION ROLLBACK",
+    requestType: "VERSION ROLLBACK",
     requestedBy: "Amanda Foster",
     requestCreatedDate: "2024-02-05T14:15:00Z",
     currentStatus: "REQUEST APPROVED BY CATEGORY, PENDING EXECUTION ON MDM(POS)",

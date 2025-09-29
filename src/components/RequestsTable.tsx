@@ -364,13 +364,13 @@ export const RequestsTable = ({ className }: RequestsTableProps) => {
                     <TableCell className="w-36">
                       <Badge 
                         variant="outline"
-                        className={`text-xs whitespace-nowrap ${
-                          request.requestType === 'RECIPE VERSION EXTEND' 
+                        className={`text-xs leading-tight text-center ${
+                          request.requestType === 'VERSION EXTEND' 
                             ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-800' 
                             : 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-800'
                         }`}
                       >
-                        {request.requestType === 'RECIPE VERSION EXTEND' ? 'EXTEND' : 'ROLLBACK'}
+                        {request.requestType}
                       </Badge>
                     </TableCell>
                     <TableCell className="font-medium w-40">{request.requestedBy}</TableCell>
