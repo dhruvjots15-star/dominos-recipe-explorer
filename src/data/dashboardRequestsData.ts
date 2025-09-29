@@ -1,10 +1,10 @@
 export interface DashboardRequest {
   requestId: string;
   requestDesc: string;
-  requestType: 'NEW RECIPE' | 'MODIFICATION';
+  requestType: 'NEW RECIPE' | 'MODIFICATION' | 'VERSION EXTEND' | 'VERSION ROLLBACK' | 'NEW SIZE CODE';
   requestedBy: string;
   requestCreatedDate: string;
-  currentStatus: 'REQUEST CREATED,PENDING ON CHEF' | 'APPROVAL PENDING ON CATEGORY' | 'APPROVAL PENDING ON SC' | 'APPROVAL PENDING ON QUALITY' | 'APPROVAL PENDING ON FINANCE' | 'APPROVED BY ALL, PENDING ON MDM' | 'ACKNOWLEDGED BY MDM, CHANGES PENDING' | 'DONE BY MDM, AWAITING ROLLOUT' | 'LIVE' | 'REJECTED';
+  currentStatus: 'REQUEST CREATED,PENDING ON CHEF' | 'APPROVAL PENDING ON CATEGORY' | 'APPROVAL PENDING ON SC' | 'APPROVAL PENDING ON QUALITY' | 'APPROVAL PENDING ON FINANCE' | 'APPROVED BY ALL, PENDING ON MDM' | 'ACKNOWLEDGED BY MDM, CHANGES PENDING' | 'DONE BY MDM, AWAITING ROLLOUT' | 'LIVE' | 'REJECTED' | 'REQUEST CREATED, APPROVAL PENDING' | 'REQUEST APPROVED, PENDING ON CHEF' | 'EXTRA TOPPING MASTER UPDATE REQUEST SUBMITTED BY CHEF' | 'EXTRA TOPPING MASTER UPDATED';
   goLiveDate?: string;
   targetVersion?: string;
   affectedStores?: number;
@@ -145,6 +145,85 @@ export const mockDashboardRequestsData: DashboardRequest[] = [
     targetVersion: "v2.3",
     affectedStores: 140,
     remarks: "Upscale comfort food option for dinner service"
+  },
+  // VERSION EXTEND and VERSION ROLLBACK requests from Recipe Bank
+  {
+    requestId: "REQ_013",
+    requestDesc: "Extend current version v3.2 of Peppy Paneer recipe to include seasonal vegetable variations",
+    requestType: "VERSION EXTEND",
+    requestedBy: "Maria Santos",
+    requestCreatedDate: "2024-03-05T09:30:00Z",
+    currentStatus: "APPROVAL PENDING ON SC",
+    targetVersion: "v3.3",
+    affectedStores: 200,
+    remarks: "Seasonal menu expansion for spring vegetables"
+  },
+  {
+    requestId: "REQ_014",
+    requestDesc: "Rollback Farmhouse recipe from v2.8 to v2.6 due to customer complaints about new ingredient",
+    requestType: "VERSION ROLLBACK",
+    requestedBy: "James Wilson",
+    requestCreatedDate: "2024-03-06T14:15:00Z",
+    currentStatus: "APPROVED BY ALL, PENDING ON MDM",
+    targetVersion: "v2.6",
+    affectedStores: 180,
+    remarks: "Quality issue with new organic tomato supplier"
+  },
+  {
+    requestId: "REQ_015",
+    requestDesc: "Extend Margherita Pizza v4.1 to include gluten-free dough option",
+    requestType: "VERSION EXTEND",
+    requestedBy: "Sarah Kim",
+    requestCreatedDate: "2024-03-07T10:45:00Z",
+    currentStatus: "ACKNOWLEDGED BY MDM, CHANGES PENDING",
+    targetVersion: "v4.2",
+    affectedStores: 250,
+    remarks: "Dietary accommodation for gluten-intolerant customers"
+  },
+  // NEW SIZE CODE requests from Size Codes Master
+  {
+    requestId: "REQ_145",
+    requestDesc: "New Size codes for Sourdough pizza",
+    requestType: "NEW SIZE CODE",
+    requestedBy: "Kshitij",
+    requestCreatedDate: "2024-03-15T14:30:00Z",
+    currentStatus: "REQUEST CREATED, APPROVAL PENDING",
+    targetVersion: "v1.0",
+    affectedStores: 150,
+    remarks: "New premium crust option for artisanal pizza line"
+  },
+  {
+    requestId: "REQ_123",
+    requestDesc: "New Size codes for Chicken Burst pizza",
+    requestType: "NEW SIZE CODE",
+    requestedBy: "Varun",
+    requestCreatedDate: "2024-03-10T09:15:00Z",
+    currentStatus: "REQUEST APPROVED, PENDING ON CHEF",
+    targetVersion: "v1.0",
+    affectedStores: 120,
+    remarks: "Chicken filled crust variant for non-veg customers"
+  },
+  {
+    requestId: "REQ_129",
+    requestDesc: "New Size codes",
+    requestType: "NEW SIZE CODE",
+    requestedBy: "Kshitij",
+    requestCreatedDate: "2024-03-08T16:45:00Z",
+    currentStatus: "EXTRA TOPPING MASTER UPDATE REQUEST SUBMITTED BY CHEF",
+    targetVersion: "v1.0",
+    affectedStores: 100,
+    remarks: "Special edition size for limited time offers"
+  },
+  {
+    requestId: "REQ_076",
+    requestDesc: "Changing Size Codes for Reg HT pizza",
+    requestType: "NEW SIZE CODE",
+    requestedBy: "ADMIN",
+    requestCreatedDate: "2024-02-20T10:30:00Z",
+    currentStatus: "REQUEST APPROVED, PENDING ON CHEF",
+    targetVersion: "v1.0",
+    affectedStores: 300,
+    remarks: "Updated specification for regular hand tossed crust"
   }
 ];
 
