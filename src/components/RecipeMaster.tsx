@@ -14,6 +14,7 @@ import { DatabaseFilters } from "./DatabaseFilters";
 import { VersionComparison } from "./VersionComparison";
 import { ExtendVersionForm } from "./ExtendVersionForm";
 import { RollbackVersionForm } from "./RollbackVersionForm";
+import { RequestsTable } from "./RequestsTable";
 import type { DatabaseFilters as DatabaseFiltersType } from "./DatabaseFilters";
 import { mockRecipeData, RecipeItem, searchRecipes } from "@/data/recipeData";
 import { useToast } from "@/hooks/use-toast";
@@ -318,6 +319,9 @@ export const RecipeMaster = () => {
               </CardContent>
             </Card>
           </div>
+
+          {/* Recent Requests Section */}
+          <RequestsTable />
         </div>
 
         {/* SECTION 2: SEARCH/FILTERS & RECIPE DATABASE */}

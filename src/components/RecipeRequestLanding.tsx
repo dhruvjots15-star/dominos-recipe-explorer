@@ -2,9 +2,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-import { CheckCircle, Clock, AlertCircle, XCircle, ArrowLeft } from "lucide-react";
+import { CheckCircle, Clock, AlertCircle, XCircle, ArrowLeft, User, Calendar, FileText, Settings, Play, Globe } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { format } from "date-fns";
+import { getRequestById } from "@/data/requestsData";
 
 interface RecipeRequestLandingProps {
   requestId: string;
@@ -16,87 +18,113 @@ export const RecipeRequestLanding = ({ requestId, onBack }: RecipeRequestLanding
   const [rejectReason, setRejectReason] = useState("");
   const [showRejectForm, setShowRejectForm] = useState(false);
 
-  // Mock request data based on requestId
-  const mockRequest = {
-    id: requestId,
-    type: requestId.includes("EXT") ? "Extend Version" : "Rollback Version",
-    description: requestId.includes("EXT") ? "Extend v5 to 100 more stores" : "Rollback v9 BBP Doughball change",
-    currentStatus: "REQUEST CREATED, APPROVAL PENDING ON CATEGORY",
-    requestedBy: "Category Team",
-    requestCreatedDate: new Date().toISOString(),
-    targetVersion: "v5",
-    affectedStores: 100,
-    remarks: "Extending the BBP Doughball change to 100 more stores due to success in experiment"
-  };
+  // Get the actual request data
+  const request = getRequestById(requestId);
+  
+  if (!request) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-950 dark:to-blue-950 p-6">
+        <div className="text-center max-w-md mx-auto mt-20">
+          <h1 className="text-2xl font-bold text-destructive mb-4">Request Not Found</h1>
+          <p className="text-muted-foreground mb-6">The requested ID {requestId} was not found.</p>
+          <Button onClick={onBack} variant="outline" className="gap-2">
+            <ArrowLeft className="w-4 h-4" />
+            Back to Recipe Bank
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
-  const getWorkflowSteps = () => {
-    const isExtend = mockRequest.type === "Extend Version";
-    return [
+  const getWorkflowSteps = (requestData: any) => {
+    const steps = [
       {
-        step: 1,
         title: "Request Submitted by Category Team",
-        description: `Submitted by ${mockRequest.requestedBy} on ${new Date(mockRequest.requestCreatedDate).toLocaleString()}`,
+        description: `Submitted by ${requestData.requestedBy} on ${format(new Date(requestData.requestCreatedDate), 'MMM dd, yyyy HH:mm')}`,
         status: "completed",
-        completedBy: mockRequest.requestedBy,
-        completedAt: mockRequest.requestCreatedDate,
-        icon: CheckCircle
-      },
-      {
-        step: 2,
-        title: mockRequest.currentStatus.includes("PENDING ON CATEGORY") ? "Request Approval Pending on Category Team" :
-               mockRequest.currentStatus === "REJECTED" ? "Request Rejected by Category Team" : "Request Approved by Category Team",
-        description: mockRequest.currentStatus.includes("PENDING ON CATEGORY") ? "Awaiting Category Team approval" :
-                    mockRequest.currentStatus === "REJECTED" ? "Request was rejected" : "Request approved by Category Team",
-        status: mockRequest.currentStatus.includes("PENDING ON CATEGORY") ? "current" : 
-                mockRequest.currentStatus === "REJECTED" ? "rejected" : "completed",
-        completedBy: !mockRequest.currentStatus.includes("PENDING ON CATEGORY") && mockRequest.currentStatus !== "REJECTED" ? "Category Manager" : undefined,
-        completedAt: !mockRequest.currentStatus.includes("PENDING ON CATEGORY") && mockRequest.currentStatus !== "REJECTED" ? "2024-03-16 10:30:00" : undefined,
-        icon: mockRequest.currentStatus === "REJECTED" ? XCircle : 
-              mockRequest.currentStatus.includes("PENDING ON CATEGORY") ? Clock : CheckCircle
-      },
-      {
-        step: 3,
-        title: mockRequest.currentStatus.includes("PENDING EXECUTION ON MDM") ? "Request Execution Pending on MDM (POS) Team" :
-               mockRequest.currentStatus.includes("PENDING GO LIVE") ? "Request Executed by MDM (POS) Team, Change Inactive" : "Request Execution Pending on MDM (POS) Team",
-        description: mockRequest.currentStatus.includes("PENDING EXECUTION ON MDM") ? "Awaiting MDM (POS) Team execution" :
-                    mockRequest.currentStatus.includes("PENDING GO LIVE") ? "Changes executed, awaiting go-live" : "Pending execution",
-        status: mockRequest.currentStatus.includes("APPROVED BY CATEGORY") ? "current" :
-                mockRequest.currentStatus.includes("PENDING EXECUTION ON MDM") ? "current" :
-                mockRequest.currentStatus.includes("PENDING GO LIVE") || mockRequest.currentStatus.includes("LIVE") ? "completed" : "pending",
-        completedBy: mockRequest.currentStatus.includes("PENDING GO LIVE") || mockRequest.currentStatus.includes("LIVE") ? "MDM Lead" : undefined,
-        completedAt: mockRequest.currentStatus.includes("PENDING GO LIVE") || mockRequest.currentStatus.includes("LIVE") ? "2024-03-17 14:15:00" : undefined,
-        icon: mockRequest.currentStatus.includes("APPROVED BY CATEGORY") || mockRequest.currentStatus.includes("PENDING EXECUTION ON MDM") ? Clock :
-              mockRequest.currentStatus.includes("PENDING GO LIVE") || mockRequest.currentStatus.includes("LIVE") ? CheckCircle : AlertCircle
-      },
-      {
-        step: 4,
-        title: mockRequest.currentStatus.includes("PENDING GO LIVE") ? "Go Live Pending on MDM (POS) Team" : "LIVE",
-        description: mockRequest.currentStatus.includes("PENDING GO LIVE") ? "Awaiting go-live activation" : 
-                    mockRequest.currentStatus.includes("LIVE") ? `Recipe version ${isExtend ? 'extended' : 'rolled back'} and stores updated` : "Pending go-live",
-        status: mockRequest.currentStatus.includes("PENDING GO LIVE") ? "current" :
-                mockRequest.currentStatus.includes("LIVE") ? "completed" : "pending",
-        completedBy: mockRequest.currentStatus.includes("LIVE") ? "MDM Manager" : undefined,
-        completedAt: mockRequest.currentStatus.includes("LIVE") ? "2024-03-18 11:45:00" : undefined,
-        icon: mockRequest.currentStatus.includes("LIVE") ? CheckCircle :
-              mockRequest.currentStatus.includes("PENDING GO LIVE") ? Clock : AlertCircle
+        icon: FileText
       }
     ];
+
+    // Step 2: Approval
+    if (requestData.currentStatus === "REQUEST CREATED, APPROVAL PENDING ON CATEGORY") {
+      steps.push({
+        title: "Request Approval Pending on Category Team",
+        description: "Awaiting approval from Category Team",
+        status: "pending",
+        icon: Clock
+      });
+    } else if (requestData.currentStatus === "REJECTED") {
+      steps.push({
+        title: "Request Rejected by Category Team",
+        description: "Rejected by Category Manager on Jan 16, 2024 15:30",
+        status: "rejected",
+        icon: XCircle
+      });
+    } else {
+      steps.push({
+        title: "Request Approved by Category Team", 
+        description: "Approved by Category Manager on Jan 16, 2024 10:15",
+        status: "completed",
+        icon: CheckCircle
+      });
+    }
+
+    // Step 3: Execution
+    if (requestData.currentStatus === "REQUEST APPROVED BY CATEGORY, PENDING EXECUTION ON MDM(POS)") {
+      steps.push({
+        title: "Request Execution Pending on MDM (POS) Team",
+        description: "Awaiting execution by MDM (POS) Team",
+        status: "pending", 
+        icon: Clock
+      });
+    } else if (requestData.currentStatus === "REQUEST EXECUTED BY MDM(POS), PENDING GO LIVE" || 
+               requestData.currentStatus.includes("REQUEST LIVE")) {
+      steps.push({
+        title: "Request Executed by MDM (POS) Team, Change Inactive",
+        description: "Executed by MDM Lead on Jan 18, 2024 14:30",
+        status: "completed",
+        icon: Settings
+      });
+    }
+
+    // Step 4: Go Live
+    if (requestData.currentStatus === "REQUEST EXECUTED BY MDM(POS), PENDING GO LIVE") {
+      steps.push({
+        title: "Go Live Pending on MDM (POS) Team",
+        description: "Awaiting go live activation",
+        status: "pending",
+        icon: Clock
+      });
+    } else if (requestData.currentStatus.includes("REQUEST LIVE")) {
+      const statusText = requestData.currentStatus.includes("EXTENDED") ? "VERSION EXTENDED TO STORES" : "VERSION ROLLED BACK";
+      steps.push({
+        title: "LIVE",
+        description: requestData.goLiveDate ? 
+          `LIVE by MDM Manager on ${format(new Date(requestData.goLiveDate), 'MMM dd, yyyy HH:mm')}` :
+          `LIVE by MDM Manager on Jan 20, 2024 14:45`, 
+        status: "completed",
+        icon: Globe
+      });
+    }
+
+    return steps;
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "completed": return "text-emerald-600";
-      case "current": return "text-blue-600";
-      case "rejected": return "text-red-600";
+      case "completed": return "text-emerald-600 dark:text-emerald-400";
+      case "pending": return "text-amber-600 dark:text-amber-400";
+      case "rejected": return "text-red-600 dark:text-red-400";
       default: return "text-muted-foreground";
     }
   };
 
   const getStatusBg = (status: string) => {
     switch (status) {
-      case "completed": return "bg-emerald-100";
-      case "current": return "bg-blue-100";
-      case "rejected": return "bg-red-100";
+      case "completed": return "bg-emerald-100 dark:bg-emerald-950/30";
+      case "pending": return "bg-amber-100 dark:bg-amber-950/30";
+      case "rejected": return "bg-red-100 dark:bg-red-950/30";
       default: return "bg-muted";
     }
   };
@@ -104,7 +132,7 @@ export const RecipeRequestLanding = ({ requestId, onBack }: RecipeRequestLanding
   const handleApprove = () => {
     toast({
       title: "Request Approved",
-      description: `Request ${mockRequest.id} has been approved successfully`,
+      description: `Request ${request.requestId} has been approved successfully`,
     });
     onBack();
   };
@@ -112,7 +140,7 @@ export const RecipeRequestLanding = ({ requestId, onBack }: RecipeRequestLanding
   const handleExecute = () => {
     toast({
       title: "Request Executed",
-      description: `Request ${mockRequest.id} has been executed successfully`,
+      description: `Request ${request.requestId} has been executed successfully`,
     });
     onBack();
   };
@@ -120,7 +148,7 @@ export const RecipeRequestLanding = ({ requestId, onBack }: RecipeRequestLanding
   const handleMarkLive = () => {
     toast({
       title: "Request Marked Live",
-      description: `Request ${mockRequest.id} is now live`,
+      description: `Request ${request.requestId} is now live`,
     });
     onBack();
   };
@@ -137,31 +165,31 @@ export const RecipeRequestLanding = ({ requestId, onBack }: RecipeRequestLanding
     
     toast({
       title: "Request Rejected",
-      description: `Request ${mockRequest.id} has been rejected`,
+      description: `Request ${request.requestId} has been rejected`,
       variant: "destructive"
     });
     onBack();
   };
 
-  const canApprove = () => {
-    return mockRequest.currentStatus.includes("PENDING ON CATEGORY");
+  const canApprove = (status: string) => {
+    return status === "REQUEST CREATED, APPROVAL PENDING ON CATEGORY";
   };
 
-  const canExecute = () => {
-    return mockRequest.currentStatus.includes("APPROVED BY CATEGORY");
+  const canExecute = (status: string) => {
+    return status === "REQUEST APPROVED BY CATEGORY, PENDING EXECUTION ON MDM(POS)";
   };
 
-  const canMarkLive = () => {
-    return mockRequest.currentStatus.includes("PENDING GO LIVE");
+  const canMarkLive = (status: string) => {
+    return status === "REQUEST EXECUTED BY MDM(POS), PENDING GO LIVE";
   };
 
-  const canReject = () => {
-    return mockRequest.currentStatus.includes("PENDING ON CATEGORY") || 
-           mockRequest.currentStatus.includes("APPROVED BY CATEGORY") ||
-           mockRequest.currentStatus.includes("PENDING GO LIVE");
+  const canReject = (status: string) => {
+    return status === "REQUEST CREATED, APPROVAL PENDING ON CATEGORY" || 
+           status === "REQUEST APPROVED BY CATEGORY, PENDING EXECUTION ON MDM(POS)" ||
+           status === "REQUEST EXECUTED BY MDM(POS), PENDING GO LIVE";
   };
 
-  const steps = getWorkflowSteps();
+  const steps = getWorkflowSteps(request);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
@@ -180,18 +208,18 @@ export const RecipeRequestLanding = ({ requestId, onBack }: RecipeRequestLanding
 
         <div>
           <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-            Request Details - {mockRequest.id}
+            Request Details - {request.requestId}
           </h1>
           <div className="mt-4">
             <Badge 
               variant="outline" 
               className={`px-4 py-2 text-sm font-medium ${
-                mockRequest.currentStatus.includes("LIVE") ? "bg-emerald-50 text-emerald-700 border-emerald-200" :
-                mockRequest.currentStatus === "REJECTED" ? "bg-red-50 text-red-700 border-red-200" :
-                "bg-blue-50 text-blue-700 border-blue-200"
+                request.currentStatus.includes("LIVE") ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-800" :
+                request.currentStatus === "REJECTED" ? "bg-red-50 text-red-700 border-red-200 dark:bg-red-950/30 dark:text-red-400 dark:border-red-800" :
+                "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-800"
               }`}
             >
-              {mockRequest.currentStatus}
+              {request.currentStatus}
             </Badge>
           </div>
         </div>
@@ -206,25 +234,23 @@ export const RecipeRequestLanding = ({ requestId, onBack }: RecipeRequestLanding
               {steps.map((step, index) => {
                 const IconComponent = step.icon;
                 return (
-                  <div key={step.step} className="flex items-start gap-4">
+                  <div key={index} className="flex items-start gap-4 relative">
                     <div className={`rounded-full p-2 ${getStatusBg(step.status)}`}>
                       <IconComponent className={`h-5 w-5 ${getStatusColor(step.status)}`} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <h3 className={`font-semibold ${getStatusColor(step.status)}`}>
-                          Step {step.step}: {step.title}
+                          Step {index + 1}: {step.title}
                         </h3>
                       </div>
                       <p className="text-sm text-muted-foreground mt-1">{step.description}</p>
-                      {step.completedBy && step.completedAt && (
-                        <p className="text-xs text-muted-foreground mt-2">
-                          Completed by {step.completedBy} on {new Date(step.completedAt).toLocaleString()}
-                        </p>
-                      )}
                     </div>
                     {index < steps.length - 1 && step.status !== "rejected" && (
-                      <div className="absolute left-6 mt-12 w-0.5 h-6 bg-border" style={{ marginLeft: '1.75rem' }} />
+                      <div 
+                        className="absolute left-6 mt-12 w-0.5 h-6 bg-border" 
+                        style={{ marginLeft: '1.75rem' }} 
+                      />
                     )}
                   </div>
                 );
@@ -234,14 +260,14 @@ export const RecipeRequestLanding = ({ requestId, onBack }: RecipeRequestLanding
         </Card>
 
         {/* Action Buttons */}
-        {(canApprove() || canExecute() || canMarkLive() || canReject()) && (
+        {(canApprove(request.currentStatus) || canExecute(request.currentStatus) || canMarkLive(request.currentStatus) || canReject(request.currentStatus)) && (
           <Card>
             <CardHeader>
               <CardTitle>Available Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex gap-4">
-                {canApprove() && (
+                {canApprove(request.currentStatus) && (
                   <Button 
                     onClick={handleApprove}
                     className="bg-emerald-600 hover:bg-emerald-700 text-white"
@@ -250,7 +276,7 @@ export const RecipeRequestLanding = ({ requestId, onBack }: RecipeRequestLanding
                     Approve
                   </Button>
                 )}
-                {canExecute() && (
+                {canExecute(request.currentStatus) && (
                   <Button 
                     onClick={handleExecute}
                     className="bg-blue-600 hover:bg-blue-700 text-white"
@@ -259,7 +285,7 @@ export const RecipeRequestLanding = ({ requestId, onBack }: RecipeRequestLanding
                     Execute
                   </Button>
                 )}
-                {canMarkLive() && (
+                {canMarkLive(request.currentStatus) && (
                   <Button 
                     onClick={handleMarkLive}
                     className="bg-green-600 hover:bg-green-700 text-white"
@@ -268,7 +294,7 @@ export const RecipeRequestLanding = ({ requestId, onBack }: RecipeRequestLanding
                     Mark LIVE
                   </Button>
                 )}
-                {canReject() && (
+                {canReject(request.currentStatus) && (
                   <Button 
                     variant="destructive"
                     onClick={() => setShowRejectForm(!showRejectForm)}
@@ -318,28 +344,28 @@ export const RecipeRequestLanding = ({ requestId, onBack }: RecipeRequestLanding
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="text-sm font-medium text-muted-foreground">Request Description</label>
-                <p className="text-foreground font-medium mt-1">{mockRequest.description}</p>
+                <p className="text-foreground font-medium mt-1">{request.requestDesc}</p>
               </div>
               <div>
                 <label className="text-sm font-medium text-muted-foreground">Selected Version</label>
-                <p className="text-foreground font-medium mt-1 text-primary">{mockRequest.targetVersion}</p>
+                <p className="text-foreground font-medium mt-1 text-primary">{request.targetVersion}</p>
               </div>
               <div>
                 <label className="text-sm font-medium text-muted-foreground">Target Stores</label>
-                <p className="text-foreground font-medium mt-1">{mockRequest.affectedStores} stores</p>
+                <p className="text-foreground font-medium mt-1">{request.affectedStores} stores</p>
               </div>
               <div>
                 <label className="text-sm font-medium text-muted-foreground">Remarks</label>
-                <p className="text-foreground font-medium mt-1">{mockRequest.remarks || "N/A"}</p>
+                <p className="text-foreground font-medium mt-1">{request.remarks || "No remarks provided"}</p>
               </div>
               <div>
                 <label className="text-sm font-medium text-muted-foreground">Requested By</label>
-                <p className="text-foreground font-medium mt-1">{mockRequest.requestedBy}</p>
+                <p className="text-foreground font-medium mt-1">{request.requestedBy}</p>
               </div>
               <div>
                 <label className="text-sm font-medium text-muted-foreground">Created On</label>
                 <p className="text-foreground font-medium mt-1">
-                  {new Date(mockRequest.requestCreatedDate).toLocaleString()}
+                  {format(new Date(request.requestCreatedDate), 'MMM dd, yyyy HH:mm')}
                 </p>
               </div>
             </div>
