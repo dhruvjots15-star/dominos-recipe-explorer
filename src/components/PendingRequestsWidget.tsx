@@ -77,11 +77,19 @@ export const PendingRequestsWidget = ({ className }: PendingRequestsWidgetProps)
                 <Table>
                   <TableHeader>
                     <TableRow className="bg-muted/50">
-                      <TableHead className="font-semibold w-32">Request ID</TableHead>
+                      <TableHead className="font-semibold w-32">
+                        <div className="h-auto p-0 font-semibold justify-start gap-1">
+                          Request ID
+                        </div>
+                      </TableHead>
                       <TableHead className="font-semibold min-w-[300px]">Request Desc</TableHead>
                       <TableHead className="font-semibold w-36">Request Type</TableHead>
                       <TableHead className="font-semibold w-40">Requested By</TableHead>
-                      <TableHead className="font-semibold w-48">Request Created Date</TableHead>
+                      <TableHead className="font-semibold w-48">
+                        <div className="h-auto p-0 font-semibold justify-start gap-1">
+                          Request Created Date
+                        </div>
+                      </TableHead>
                       <TableHead className="font-semibold w-64">Current Status</TableHead>
                       <TableHead className="font-semibold w-48">Go Live Date</TableHead>
                     </TableRow>
