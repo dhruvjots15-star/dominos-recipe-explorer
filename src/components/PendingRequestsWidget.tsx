@@ -81,7 +81,7 @@ export const PendingRequestsWidget = ({ className }: PendingRequestsWidgetProps)
   };
 
   const handleRowClick = (requestId: string) => {
-    navigate(`/recipe-request/${requestId}`);
+    navigate(`/recipe-request/${requestId}?source=dashboard`);
   };
 
   return (

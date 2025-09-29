@@ -1,23 +1,29 @@
-import { useParams, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { TopNavigation } from "@/components/TopNavigation";
 import { RecipeRequestLanding } from "@/components/RecipeRequestLanding";
 import { useToast } from "@/hooks/use-toast";
 
 const RecipeRequestLandingPage = () => {
   const { requestId } = useParams<{ requestId: string }>();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [hasShownToast, setHasShownToast] = useState(false);
+  
+  const source = searchParams.get('source') || 'recipe-bank';
+  const showToast = searchParams.get('showToast') === 'true';
 
   useEffect(() => {
-    // Show the success toast when the page loads
-    if (requestId) {
+    // Only show toast once when explicitly requested (on creation)
+    if (requestId && showToast && !hasShownToast) {
       toast({
         title: "Request Submitted",
         description: `Request submitted: ${requestId}`,
       });
+      setHasShownToast(true);
     }
-  }, [requestId, toast]);
+  }, [requestId, showToast, hasShownToast, toast]);
 
   const handleTabChange = (tab: string) => {
     if (tab === "dashboard") {
@@ -28,13 +34,17 @@ const RecipeRequestLandingPage = () => {
   };
 
   const handleBack = () => {
-    navigate("/");
+    if (source === 'dashboard') {
+      navigate("/dashboard");
+    } else {
+      navigate("/");
+    }
   };
 
   if (!requestId) {
     return (
       <div className="min-h-screen">
-        <TopNavigation activeTab="recipe-bank" onTabChange={handleTabChange} />
+        <TopNavigation activeTab={source === 'dashboard' ? 'dashboard' : 'recipe-bank'} onTabChange={handleTabChange} />
         <div className="bg-background p-6">
           <div className="text-center">
             <h1 className="text-2xl font-bold text-destructive mb-4">Request Not Found</h1>
@@ -43,7 +53,7 @@ const RecipeRequestLandingPage = () => {
               onClick={handleBack}
               className="text-primary hover:underline"
             >
-              Back to Recipe Bank
+              {source === 'dashboard' ? 'Back to Dashboard' : 'Back to Recipe Bank'}
             </button>
           </div>
         </div>
@@ -53,10 +63,11 @@ const RecipeRequestLandingPage = () => {
 
   return (
     <div className="min-h-screen">
-      <TopNavigation activeTab="recipe-bank" onTabChange={handleTabChange} />
+      <TopNavigation activeTab={source === 'dashboard' ? 'dashboard' : 'recipe-bank'} onTabChange={handleTabChange} />
       <RecipeRequestLanding 
         requestId={requestId} 
         onBack={handleBack}
+        source={source}
       />
     </div>
   );

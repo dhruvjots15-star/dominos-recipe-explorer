@@ -173,7 +173,7 @@ export const DashboardTable = ({ className }: DashboardTableProps) => {
   const hasMoreRequests = filteredAndSortedRequests.length > displayCount;
 
   const handleRowClick = (requestId: string) => {
-    navigate(`/recipe-request/${requestId}`);
+    navigate(`/recipe-request/${requestId}?source=dashboard`);
   };
 
   const activeFiltersCount = Object.values(filters).filter(value => value && value !== 'all').length;

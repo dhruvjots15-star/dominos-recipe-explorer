@@ -11,9 +11,10 @@ import { getDashboardRequestById } from "@/data/dashboardRequestsData";
 interface RecipeRequestLandingProps {
   requestId: string;
   onBack: () => void;
+  source?: string;
 }
 
-export const RecipeRequestLanding = ({ requestId, onBack }: RecipeRequestLandingProps) => {
+export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank' }: RecipeRequestLandingProps) => {
   const { toast } = useToast();
   const [rejectReason, setRejectReason] = useState("");
   const [showRejectForm, setShowRejectForm] = useState(false);
@@ -29,7 +30,7 @@ export const RecipeRequestLanding = ({ requestId, onBack }: RecipeRequestLanding
           <p className="text-muted-foreground mb-6">The requested ID {requestId} was not found.</p>
           <Button onClick={onBack} variant="outline" className="gap-2">
             <ArrowLeft className="w-4 h-4" />
-            Back to Recipe Bank
+            {source === 'dashboard' ? 'Back to Dashboard' : 'Back to Recipe Bank'}
           </Button>
         </div>
       </div>
@@ -202,7 +203,7 @@ export const RecipeRequestLanding = ({ requestId, onBack }: RecipeRequestLanding
             className="hover:bg-muted/50"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Recipe Bank
+            {source === 'dashboard' ? 'Back to Dashboard' : 'Back to Recipe Bank'}
           </Button>
         </div>
 
