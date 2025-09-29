@@ -56,19 +56,13 @@ export const RequestsTable = ({ className }: RequestsTableProps) => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'REQUEST CREATED, APPROVAL PENDING ON CATEGORY':
-        return 'text-amber-600 bg-amber-50 dark:text-amber-400 dark:bg-amber-950/30';
-      case 'REQUEST APPROVED BY CATEGORY, PENDING EXECUTION ON MDM(POS)':
-        return 'text-blue-600 bg-blue-50 dark:text-blue-400 dark:bg-blue-950/30';
-      case 'REQUEST EXECUTED BY MDM(POS), PENDING GO LIVE':
-        return 'text-purple-600 bg-purple-50 dark:text-purple-400 dark:bg-purple-950/30';
       case 'REQUEST LIVE, VERSION EXTENDED TO STORES':
       case 'REQUEST LIVE, VERSION ROLLED BACK':
-        return 'text-green-600 bg-green-50 dark:text-green-400 dark:bg-green-950/30';
+        return 'text-green-600 bg-green-50 border-green-200 dark:text-green-400 dark:bg-green-950/30 dark:border-green-800';
       case 'REJECTED':
-        return 'text-red-600 bg-red-50 dark:text-red-400 dark:bg-red-950/30';
+        return 'text-red-600 bg-red-50 border-red-200 dark:text-red-400 dark:bg-red-950/30 dark:border-red-800';
       default:
-        return 'text-gray-600 bg-gray-50 dark:text-gray-400 dark:bg-gray-950/30';
+        return 'text-amber-600 bg-amber-50 border-amber-200 dark:text-amber-400 dark:bg-amber-950/30 dark:border-amber-800';
     }
   };
 

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { TopNavigation } from "@/components/TopNavigation";
 import { DashboardTable } from "@/components/DashboardTable";
+import { PendingRequestsWidget } from "@/components/PendingRequestsWidget";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -27,7 +28,10 @@ const Dashboard = () => {
             </p>
           </div>
           
-          <DashboardTable />
+          <div className="space-y-8">
+            <PendingRequestsWidget />
+            <DashboardTable />
+          </div>
         </div>
       </div>
     </div>

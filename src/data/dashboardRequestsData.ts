@@ -13,7 +13,7 @@ export interface DashboardRequest {
 
 export const mockDashboardRequestsData: DashboardRequest[] = [
   {
-    requestId: "DR_001",
+    requestId: "REQ_001",
     requestDesc: "New Mediterranean Quinoa Bowl recipe with tahini dressing and seasonal vegetables for health-conscious customers",
     requestType: "NEW RECIPE",
     requestedBy: "Maria Santos",
@@ -25,7 +25,7 @@ export const mockDashboardRequestsData: DashboardRequest[] = [
     remarks: "Successful launch of new healthy menu option"
   },
   {
-    requestId: "DR_002",
+    requestId: "REQ_002",
     requestDesc: "Modification to Classic Burger recipe - reduce sodium content by 15% while maintaining taste profile",
     requestType: "MODIFICATION",
     requestedBy: "James Wilson",
@@ -36,7 +36,7 @@ export const mockDashboardRequestsData: DashboardRequest[] = [
     remarks: "Health initiative to reduce sodium across menu items"
   },
   {
-    requestId: "DR_003",
+    requestId: "REQ_003",
     requestDesc: "New Vegan Chocolate Avocado Mousse dessert with coconut whipped cream and berry compote",
     requestType: "NEW RECIPE",
     requestedBy: "Sarah Kim",
@@ -47,7 +47,7 @@ export const mockDashboardRequestsData: DashboardRequest[] = [
     remarks: "Plant-based dessert option for vegan customers"
   },
   {
-    requestId: "DR_004",
+    requestId: "REQ_004",
     requestDesc: "Modification to Caesar Salad dressing - switch to organic ingredients and cage-free eggs",
     requestType: "MODIFICATION",
     requestedBy: "Alex Rodriguez",
@@ -58,7 +58,7 @@ export const mockDashboardRequestsData: DashboardRequest[] = [
     remarks: "Sustainability initiative for organic ingredient sourcing"
   },
   {
-    requestId: "DR_005",
+    requestId: "REQ_005",
     requestDesc: "New Korean BBQ Fusion Bowl with kimchi, bulgogi-style protein, and gochujang aioli",
     requestType: "NEW RECIPE",
     requestedBy: "Linda Chen",
@@ -69,7 +69,7 @@ export const mockDashboardRequestsData: DashboardRequest[] = [
     remarks: "Expansion into Asian fusion cuisine market"
   },
   {
-    requestId: "DR_006",
+    requestId: "REQ_006",
     requestDesc: "Modification to Margherita Pizza - upgrade to San Marzano tomatoes and buffalo mozzarella",
     requestType: "MODIFICATION",
     requestedBy: "Tony Ricci",
@@ -80,7 +80,7 @@ export const mockDashboardRequestsData: DashboardRequest[] = [
     remarks: "Premium ingredient upgrade for signature pizza"
   },
   {
-    requestId: "DR_007",
+    requestId: "REQ_007",
     requestDesc: "New Breakfast Power Bowl with quinoa, poached egg, avocado, and turmeric tahini dressing",
     requestType: "NEW RECIPE",
     requestedBy: "Emma Thompson",
@@ -91,7 +91,7 @@ export const mockDashboardRequestsData: DashboardRequest[] = [
     remarks: "Healthy breakfast option for morning customers"
   },
   {
-    requestId: "DR_008",
+    requestId: "REQ_008",
     requestDesc: "Modification to Fish & Chips batter - gluten-free alternative using rice flour and cornstarch blend",
     requestType: "MODIFICATION",
     requestedBy: "David Park",
@@ -102,7 +102,7 @@ export const mockDashboardRequestsData: DashboardRequest[] = [
     remarks: "Gluten-free option for customers with dietary restrictions"
   },
   {
-    requestId: "DR_009",
+    requestId: "REQ_009",
     requestDesc: "New Seasonal Pumpkin Spice Latte with house-made syrup and organic pumpkin puree",
     requestType: "NEW RECIPE",
     requestedBy: "Rachel Green",
@@ -113,7 +113,7 @@ export const mockDashboardRequestsData: DashboardRequest[] = [
     remarks: "Seasonal timing conflict with existing beverage promotions"
   },
   {
-    requestId: "DR_010",
+    requestId: "REQ_010",
     requestDesc: "Modification to Chicken Tikka Masala - adjust spice level and add coconut milk for creamier texture",
     requestType: "MODIFICATION",
     requestedBy: "Priya Sharma",
@@ -124,7 +124,7 @@ export const mockDashboardRequestsData: DashboardRequest[] = [
     remarks: "Customer feedback driven recipe improvement"
   },
   {
-    requestId: "DR_011",
+    requestId: "REQ_011",
     requestDesc: "New Artisanal Sourdough Sandwich with locally sourced meats, aged cheeses, and house-made pickles",
     requestType: "NEW RECIPE",
     requestedBy: "Michael Brown",
@@ -136,7 +136,7 @@ export const mockDashboardRequestsData: DashboardRequest[] = [
     remarks: "Premium sandwich option using local suppliers"
   },
   {
-    requestId: "DR_012",
+    requestId: "REQ_012",
     requestDesc: "Modification to Classic Mac & Cheese - add truffle oil and breadcrumb topping for premium version",
     requestType: "MODIFICATION",
     requestedBy: "Jessica Lee",

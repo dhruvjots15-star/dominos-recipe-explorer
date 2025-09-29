@@ -22,7 +22,7 @@ type SortDirection = 'asc' | 'desc';
 
 export const DashboardTable = ({ className }: DashboardTableProps) => {
   const navigate = useNavigate();
-  const [displayCount, setDisplayCount] = useState(10);
+  const [displayCount, setDisplayCount] = useState(5);
   const [showFilters, setShowFilters] = useState(false);
   const [sortField, setSortField] = useState<SortField>('requestCreatedDate');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
@@ -60,23 +60,12 @@ export const DashboardTable = ({ className }: DashboardTableProps) => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'REQUEST CREATED,PENDING ON CHEF':
-        return 'text-amber-600 bg-amber-50 dark:text-amber-400 dark:bg-amber-950/30';
-      case 'APPROVAL PENDING ON CATEGORY':
-      case 'APPROVAL PENDING ON SC':
-      case 'APPROVAL PENDING ON QUALITY':
-      case 'APPROVAL PENDING ON FINANCE':
-        return 'text-blue-600 bg-blue-50 dark:text-blue-400 dark:bg-blue-950/30';
-      case 'APPROVED BY ALL, PENDING ON MDM':
-      case 'ACKNOWLEDGED BY MDM, CHANGES PENDING':
-      case 'DONE BY MDM, AWAITING ROLLOUT':
-        return 'text-purple-600 bg-purple-50 dark:text-purple-400 dark:bg-purple-950/30';
       case 'LIVE':
-        return 'text-green-600 bg-green-50 dark:text-green-400 dark:bg-green-950/30';
+        return 'text-green-600 bg-green-50 border-green-200 dark:text-green-400 dark:bg-green-950/30 dark:border-green-800';
       case 'REJECTED':
-        return 'text-red-600 bg-red-50 dark:text-red-400 dark:bg-red-950/30';
+        return 'text-red-600 bg-red-50 border-red-200 dark:text-red-400 dark:bg-red-950/30 dark:border-red-800';
       default:
-        return 'text-gray-600 bg-gray-50 dark:text-gray-400 dark:bg-gray-950/30';
+        return 'text-amber-600 bg-amber-50 border-amber-200 dark:text-amber-400 dark:bg-amber-950/30 dark:border-amber-800';
     }
   };
 
@@ -411,7 +400,7 @@ export const DashboardTable = ({ className }: DashboardTableProps) => {
             <div className="flex justify-center mt-4">
               <Button 
                 variant="outline"
-                onClick={() => setDisplayCount(prev => prev + 10)}
+                onClick={() => setDisplayCount(prev => prev + 5)}
               >
                 View More
               </Button>
