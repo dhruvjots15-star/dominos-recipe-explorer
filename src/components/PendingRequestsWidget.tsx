@@ -83,6 +83,7 @@ export const PendingRequestsWidget = ({ className }: PendingRequestsWidgetProps)
                       <TableHead className="font-semibold w-40">Requested By</TableHead>
                       <TableHead className="font-semibold w-48">Request Created Date</TableHead>
                       <TableHead className="font-semibold w-64">Current Status</TableHead>
+                      <TableHead className="font-semibold w-48">Go Live Date</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -132,6 +133,9 @@ export const PendingRequestsWidget = ({ className }: PendingRequestsWidgetProps)
                           >
                             {request.currentStatus}
                           </Badge>
+                        </TableCell>
+                        <TableCell className="text-sm text-muted-foreground w-48">
+                          {request.goLiveDate ? formatDate(request.goLiveDate) : '—'}
                         </TableCell>
                       </TableRow>
                     ))}
