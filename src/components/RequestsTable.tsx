@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Calendar, Filter, ArrowUpDown, ArrowUp, ArrowDown, FileText, ChevronDown } from "lucide-react";
+import { Calendar, Filter, ArrowUpDown, ArrowUp, ArrowDown, FileText } from "lucide-react";
 import { format } from "date-fns";
 import { mockRequestsData, RecipeRequest } from "@/data/requestsData";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -301,7 +301,7 @@ export const RequestsTable = ({ className }: RequestsTableProps) => {
             <Table>
               <TableHeader>
                 <TableRow className="bg-muted/50">
-                  <TableHead className="font-semibold">
+                  <TableHead className="font-semibold w-32">
                     <Button
                       variant="ghost"
                       onClick={() => handleSort('requestId')}
@@ -311,21 +311,21 @@ export const RequestsTable = ({ className }: RequestsTableProps) => {
                       {getSortIcon('requestId')}
                     </Button>
                   </TableHead>
-                  <TableHead className="font-semibold">Request Description</TableHead>
-                  <TableHead className="font-semibold">Type</TableHead>
-                  <TableHead className="font-semibold">Requested By</TableHead>
-                  <TableHead className="font-semibold">
+                  <TableHead className="font-semibold min-w-[300px]">Request Desc</TableHead>
+                  <TableHead className="font-semibold w-36">Request Type</TableHead>
+                  <TableHead className="font-semibold w-40">Requested By</TableHead>
+                  <TableHead className="font-semibold w-48">
                     <Button
                       variant="ghost"
                       onClick={() => handleSort('requestCreatedDate')}
                       className="h-auto p-0 font-semibold justify-start gap-1"
                     >
-                      Created Date
+                      Request Created Date
                       {getSortIcon('requestCreatedDate')}
                     </Button>
                   </TableHead>
-                  <TableHead className="font-semibold">Current Status</TableHead>
-                  <TableHead className="font-semibold">
+                  <TableHead className="font-semibold w-64">Current Status</TableHead>
+                  <TableHead className="font-semibold w-48">
                     <Button
                       variant="ghost"
                       onClick={() => handleSort('goLiveDate')}
@@ -341,17 +341,17 @@ export const RequestsTable = ({ className }: RequestsTableProps) => {
                 {displayedRequests.map((request) => (
                   <TableRow 
                     key={request.requestId}
-                    className="cursor-pointer hover:bg-muted/30 transition-colors"
+                    className="cursor-pointer hover:bg-muted/50 transition-colors"
                     onClick={() => handleRowClick(request.requestId)}
                   >
-                    <TableCell className="font-medium text-primary">
+                    <TableCell className="font-medium text-primary w-32">
                       {request.requestId}
                     </TableCell>
-                    <TableCell className="max-w-xs">
+                    <TableCell className="min-w-[300px]">
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <div className="truncate">
+                            <div className="line-clamp-2 leading-tight">
                               {request.requestDesc}
                             </div>
                           </TooltipTrigger>
@@ -361,27 +361,31 @@ export const RequestsTable = ({ className }: RequestsTableProps) => {
                         </Tooltip>
                       </TooltipProvider>
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="w-36">
                       <Badge 
-                        variant={request.requestType === 'RECIPE VERSION EXTEND' ? 'default' : 'secondary'}
-                        className="text-xs"
+                        variant="outline"
+                        className={`text-xs whitespace-nowrap ${
+                          request.requestType === 'RECIPE VERSION EXTEND' 
+                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-800' 
+                            : 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-800'
+                        }`}
                       >
                         {request.requestType === 'RECIPE VERSION EXTEND' ? 'EXTEND' : 'ROLLBACK'}
                       </Badge>
                     </TableCell>
-                    <TableCell className="font-medium">{request.requestedBy}</TableCell>
-                    <TableCell className="text-sm text-muted-foreground">
+                    <TableCell className="font-medium w-40">{request.requestedBy}</TableCell>
+                    <TableCell className="text-sm text-muted-foreground w-48">
                       {formatDate(request.requestCreatedDate)}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="w-64">
                       <Badge 
-                        className={`text-xs ${getStatusColor(request.currentStatus)}`}
+                        className={`text-xs whitespace-nowrap ${getStatusColor(request.currentStatus)}`}
                         variant="outline"
                       >
                         {request.currentStatus}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">
+                    <TableCell className="text-sm text-muted-foreground w-48">
                       {request.goLiveDate ? formatDate(request.goLiveDate) : '—'}
                     </TableCell>
                   </TableRow>
@@ -392,14 +396,12 @@ export const RequestsTable = ({ className }: RequestsTableProps) => {
 
           {/* Load More */}
           {hasMoreRequests && (
-            <div className="text-center pt-4">
+            <div className="flex justify-center mt-4">
               <Button 
                 variant="outline"
                 onClick={() => setDisplayCount(prev => prev + 10)}
-                className="gap-2"
               >
-                View More Requests
-                <ChevronDown className="w-4 h-4" />
+                View More
               </Button>
             </div>
           )}
