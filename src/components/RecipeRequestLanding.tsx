@@ -6,7 +6,7 @@ import { CheckCircle, Clock, AlertCircle, XCircle, ArrowLeft, User, Calendar, Fi
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
-import { getRequestById } from "@/data/requestsData";
+import { getDashboardRequestById } from "@/data/dashboardRequestsData";
 
 interface RecipeRequestLandingProps {
   requestId: string;
@@ -19,7 +19,7 @@ export const RecipeRequestLanding = ({ requestId, onBack }: RecipeRequestLanding
   const [showRejectForm, setShowRejectForm] = useState(false);
 
   // Get the actual request data
-  const request = getRequestById(requestId);
+  const request = getDashboardRequestById(requestId);
   
   if (!request) {
     return (

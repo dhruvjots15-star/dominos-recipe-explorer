@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Clock, Users } from "lucide-react";
+import { Clock, Users, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 import { format } from "date-fns";
 import { mockDashboardRequestsData, DashboardRequest } from "@/data/dashboardRequestsData";
 
@@ -13,16 +13,64 @@ interface PendingRequestsWidgetProps {
   className?: string;
 }
 
+type SortField = 'requestId' | 'requestCreatedDate';
+type SortDirection = 'asc' | 'desc';
+
 export const PendingRequestsWidget = ({ className }: PendingRequestsWidgetProps) => {
   const navigate = useNavigate();
   const [showAll, setShowAll] = useState(false);
+  const [sortField, setSortField] = useState<SortField>('requestCreatedDate');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
 
   // Filter for pending requests (not LIVE or REJECTED)
   const pendingRequests = mockDashboardRequestsData.filter(request => 
     request.currentStatus !== 'LIVE' && request.currentStatus !== 'REJECTED'
   );
 
-  const displayedRequests = showAll ? pendingRequests : pendingRequests.slice(0, 5);
+  // Apply sorting
+  const sortedPendingRequests = [...pendingRequests].sort((a, b) => {
+    let aValue: string | number;
+    let bValue: string | number;
+
+    switch (sortField) {
+      case 'requestId':
+        aValue = a.requestId;
+        bValue = b.requestId;
+        break;
+      case 'requestCreatedDate':
+        aValue = new Date(a.requestCreatedDate).getTime();
+        bValue = new Date(b.requestCreatedDate).getTime();
+        break;
+      default:
+        return 0;
+    }
+
+    if (sortDirection === 'asc') {
+      return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+    } else {
+      return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+    }
+  });
+
+  const displayedRequests = showAll ? sortedPendingRequests : sortedPendingRequests.slice(0, 5);
+
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('desc');
+    }
+  };
+
+  const getSortIcon = (field: SortField) => {
+    if (sortField !== field) {
+      return <ArrowUpDown className="w-4 h-4 text-muted-foreground" />;
+    }
+    return sortDirection === 'asc' ? 
+      <ArrowUp className="w-4 h-4 text-primary" /> : 
+      <ArrowDown className="w-4 h-4 text-primary" />;
+  };
 
   const getStatusColor = (status: string) => {
     return 'text-amber-600 bg-amber-50 border-amber-200 dark:text-amber-400 dark:bg-amber-950/30 dark:border-amber-800';
@@ -78,17 +126,27 @@ export const PendingRequestsWidget = ({ className }: PendingRequestsWidgetProps)
                   <TableHeader>
                     <TableRow className="bg-muted/50">
                       <TableHead className="font-semibold w-32">
-                        <div className="h-auto p-0 font-semibold justify-start gap-1 whitespace-nowrap">
+                        <Button
+                          variant="ghost"
+                          onClick={() => handleSort('requestId')}
+                          className="h-auto p-0 font-semibold justify-start gap-1 whitespace-nowrap"
+                        >
                           Request ID
-                        </div>
+                          {getSortIcon('requestId')}
+                        </Button>
                       </TableHead>
                       <TableHead className="font-semibold min-w-[300px]">Request Desc</TableHead>
                       <TableHead className="font-semibold w-36">Request Type</TableHead>
                       <TableHead className="font-semibold w-40">Requested By</TableHead>
                       <TableHead className="font-semibold w-48">
-                        <div className="h-auto p-0 font-semibold justify-start gap-1 whitespace-nowrap">
+                        <Button
+                          variant="ghost"
+                          onClick={() => handleSort('requestCreatedDate')}
+                          className="h-auto p-0 font-semibold justify-start gap-1 whitespace-nowrap"
+                        >
                           Request Created Date
-                        </div>
+                          {getSortIcon('requestCreatedDate')}
+                        </Button>
                       </TableHead>
                       <TableHead className="font-semibold w-64">Current Status</TableHead>
                       <TableHead className="font-semibold w-48">Go Live Date</TableHead>
@@ -152,7 +210,7 @@ export const PendingRequestsWidget = ({ className }: PendingRequestsWidgetProps)
               </div>
 
               {/* View All Button */}
-              {pendingRequests.length > 5 && !showAll && (
+              {sortedPendingRequests.length > 5 && !showAll && (
                 <div className="flex justify-center mt-4">
                   <Button 
                     variant="outline"
@@ -163,7 +221,7 @@ export const PendingRequestsWidget = ({ className }: PendingRequestsWidgetProps)
                 </div>
               )}
 
-              {showAll && pendingRequests.length > 5 && (
+              {showAll && sortedPendingRequests.length > 5 && (
                 <div className="flex justify-center mt-4">
                   <Button 
                     variant="ghost"
@@ -176,7 +234,7 @@ export const PendingRequestsWidget = ({ className }: PendingRequestsWidgetProps)
 
               {/* Results Summary */}
               <div className="text-sm text-muted-foreground text-center">
-                Showing {displayedRequests.length} of {pendingRequests.length} pending requests
+                Showing {displayedRequests.length} of {sortedPendingRequests.length} pending requests
               </div>
             </>
           )}
