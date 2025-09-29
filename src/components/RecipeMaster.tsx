@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -13,13 +14,13 @@ import { DatabaseFilters } from "./DatabaseFilters";
 import { VersionComparison } from "./VersionComparison";
 import { ExtendVersionForm } from "./ExtendVersionForm";
 import { RollbackVersionForm } from "./RollbackVersionForm";
-import { RecipeRequestLanding } from "./RecipeRequestLanding";
 import type { DatabaseFilters as DatabaseFiltersType } from "./DatabaseFilters";
 import { mockRecipeData, RecipeItem, searchRecipes } from "@/data/recipeData";
 import { useToast } from "@/hooks/use-toast";
 
 
 export const RecipeMaster = () => {
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [selectedVersion, setSelectedVersion] = useState("v1.0");
   const [showLegacyFilters, setShowLegacyFilters] = useState(false);
@@ -34,8 +35,6 @@ export const RecipeMaster = () => {
   const [showVersionComparison, setShowVersionComparison] = useState(false);
   const [showExtendForm, setShowExtendForm] = useState(false);
   const [showRollbackForm, setShowRollbackForm] = useState(false);
-  const [showRequestLanding, setShowRequestLanding] = useState(false);
-  const [currentRequestId, setCurrentRequestId] = useState("");
 
   const handleSearch = (filters: { 
     productSearch: string; 
@@ -181,18 +180,10 @@ export const RecipeMaster = () => {
   };
 
   const handleRequestSubmitted = (requestId: string) => {
-    setCurrentRequestId(requestId);
     setShowExtendForm(false);
     setShowRollbackForm(false);
-    setShowRequestLanding(true);
-    
-    // Delay the toast to ensure the RequestLanding component is fully rendered
-    setTimeout(() => {
-      toast({
-        title: "Request Submitted",
-        description: `Request submitted: ${requestId}`,
-      });
-    }, 100);
+    // Navigate to the new route instead of showing inline
+    navigate(`/recipe-request/${requestId}`);
   };
 
   return (
@@ -430,13 +421,6 @@ export const RecipeMaster = () => {
         onRequestSubmitted={handleRequestSubmitted}
       />
 
-      {/* Request Landing */}
-      {showRequestLanding && currentRequestId && (
-        <RecipeRequestLanding
-          requestId={currentRequestId}
-          onBack={() => setShowRequestLanding(false)}
-        />
-      )}
     </div>
   );
 };
