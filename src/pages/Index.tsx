@@ -5,13 +5,21 @@ import { RecipeMaster } from "@/components/RecipeMaster";
 import { SizeCodesMaster } from "@/components/SizeCodesMaster";
 import { TopNavigation } from "@/components/TopNavigation";
 
-const Index = () => {
-  const [activeTab, setActiveTab] = useState("recipe-bank");
+interface IndexProps {
+  activeTab?: string;
+}
+
+const Index = ({ activeTab: propActiveTab }: IndexProps = {}) => {
+  const [activeTab, setActiveTab] = useState(propActiveTab || "recipe-bank");
   const navigate = useNavigate();
 
   const handleTabChange = (tab: string) => {
     if (tab === "dashboard") {
       navigate("/dashboard");
+    } else if (tab === "recipe-bank") {
+      navigate("/recipe-bank");
+    } else if (tab === "size-codes") {
+      navigate("/size-codes");
     } else {
       setActiveTab(tab);
     }

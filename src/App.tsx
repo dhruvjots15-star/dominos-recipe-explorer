@@ -18,7 +18,8 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Dashboard />} />
-          <Route path="/recipe-bank" element={<Index />} />
+          <Route path="/recipe-bank" element={<Index activeTab="recipe-bank" />} />
+          <Route path="/size-codes" element={<Index activeTab="size-codes" />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/recipe-request/:requestId" element={<RecipeRequestLandingPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
