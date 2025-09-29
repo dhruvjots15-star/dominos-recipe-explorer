@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Download, RefreshCw, Filter, Package, FileText, Utensils, Building2, Search, GitCompare, Edit, ChevronDown } from "lucide-react";
-import { TopNavigation } from "./TopNavigation";
 import { VersionSelector } from "./VersionSelector";
 import { FilterPanel, ActiveFilters } from "./FilterPanel";
 import { AdvancedSearch } from "./AdvancedSearch";
@@ -20,7 +19,6 @@ import { mockRecipeData, RecipeItem, searchRecipes } from "@/data/recipeData";
 
 
 export const RecipeMaster = () => {
-  const [activeTab, setActiveTab] = useState("recipe-bank");
   const [selectedVersion, setSelectedVersion] = useState("v1.0");
   const [showLegacyFilters, setShowLegacyFilters] = useState(false);
   const [activeFilters, setActiveFilters] = useState<ActiveFilters>({});
@@ -189,12 +187,6 @@ export const RecipeMaster = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Top Navigation */}
-      <TopNavigation 
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-      />
-      
       <div className="p-6 space-y-8">
         {/* SECTION 1: RECIPE BANK VERSION & INFO */}
         <div className="bg-gradient-to-r from-blue-50/50 to-indigo-50/50 dark:from-blue-950/30 dark:to-indigo-950/30 rounded-xl p-6 border border-blue-200/50 dark:border-blue-800/50">
