@@ -429,11 +429,12 @@ export const RecipeMaster = () => {
       />
 
       {/* Request Landing */}
-      <RecipeRequestLanding
-        isOpen={showRequestLanding}
-        onClose={() => setShowRequestLanding(false)}
-        requestId={currentRequestId}
-      />
+      {showRequestLanding && currentRequestId && (
+        <RecipeRequestLanding
+          requestId={currentRequestId}
+          onBack={() => setShowRequestLanding(false)}
+        />
+      )}
     </div>
   );
 };
