@@ -186,11 +186,13 @@ export const RecipeMaster = () => {
     setShowRollbackForm(false);
     setShowRequestLanding(true);
     
-    // Show success toast on the request landing page
-    toast({
-      title: "Request Submitted",
-      description: `Request submitted: ${requestId}`,
-    });
+    // Delay the toast to ensure the RequestLanding component is fully rendered
+    setTimeout(() => {
+      toast({
+        title: "Request Submitted",
+        description: `Request submitted: ${requestId}`,
+      });
+    }, 100);
   };
 
   return (
