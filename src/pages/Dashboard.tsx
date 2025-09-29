@@ -11,8 +11,10 @@ const Dashboard = () => {
     if (tab === "dashboard") {
       // Already on dashboard, do nothing
       return;
-    } else if (tab === "recipe-bank" || tab === "size-codes") {
-      navigate("/");
+    } else if (tab === "recipe-bank") {
+      navigate("/recipe-bank");
+    } else if (tab === "size-codes") {
+      navigate("/size-codes");
     }
   };
 

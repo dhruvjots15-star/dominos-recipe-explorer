@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { RecipeMaster } from "@/components/RecipeMaster";
 import { SizeCodesMaster } from "@/components/SizeCodesMaster";
@@ -10,8 +9,9 @@ interface IndexProps {
 }
 
 const Index = ({ activeTab: propActiveTab }: IndexProps = {}) => {
-  const [activeTab, setActiveTab] = useState(propActiveTab || "recipe-bank");
   const navigate = useNavigate();
+  const location = useLocation();
+  const activeTab = propActiveTab || (location.pathname === "/size-codes" ? "size-codes" : "recipe-bank");
 
   const handleTabChange = (tab: string) => {
     if (tab === "dashboard") {
@@ -20,8 +20,6 @@ const Index = ({ activeTab: propActiveTab }: IndexProps = {}) => {
       navigate("/recipe-bank");
     } else if (tab === "size-codes") {
       navigate("/size-codes");
-    } else {
-      setActiveTab(tab);
     }
   };
 
