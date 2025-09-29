@@ -1,10 +1,20 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { RecipeMaster } from "@/components/RecipeMaster";
 import { SizeCodesMaster } from "@/components/SizeCodesMaster";
 import { TopNavigation } from "@/components/TopNavigation";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("recipe-bank");
+  const navigate = useNavigate();
+
+  const handleTabChange = (tab: string) => {
+    if (tab === "dashboard") {
+      navigate("/dashboard");
+    } else {
+      setActiveTab(tab);
+    }
+  };
 
   const renderActiveTab = () => {
     switch (activeTab) {
@@ -19,7 +29,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
-      <TopNavigation activeTab={activeTab} onTabChange={setActiveTab} />
+      <TopNavigation activeTab={activeTab} onTabChange={handleTabChange} />
       {renderActiveTab()}
     </div>
   );
