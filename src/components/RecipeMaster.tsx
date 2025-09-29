@@ -16,9 +16,11 @@ import { RollbackVersionForm } from "./RollbackVersionForm";
 import { RecipeRequestLanding } from "./RecipeRequestLanding";
 import type { DatabaseFilters as DatabaseFiltersType } from "./DatabaseFilters";
 import { mockRecipeData, RecipeItem, searchRecipes } from "@/data/recipeData";
+import { useToast } from "@/hooks/use-toast";
 
 
 export const RecipeMaster = () => {
+  const { toast } = useToast();
   const [selectedVersion, setSelectedVersion] = useState("v1.0");
   const [showLegacyFilters, setShowLegacyFilters] = useState(false);
   const [activeFilters, setActiveFilters] = useState<ActiveFilters>({});
@@ -183,6 +185,12 @@ export const RecipeMaster = () => {
     setShowExtendForm(false);
     setShowRollbackForm(false);
     setShowRequestLanding(true);
+    
+    // Show success toast on the request landing page
+    toast({
+      title: "Request Submitted",
+      description: `Request submitted: ${requestId}`,
+    });
   };
 
   return (

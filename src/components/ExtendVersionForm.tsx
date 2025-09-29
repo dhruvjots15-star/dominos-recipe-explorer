@@ -40,14 +40,14 @@ export const ExtendVersionForm = ({ isOpen, onClose, selectedVersion, onRequestS
 
   const handleConfirm = () => {
     const requestId = `REQ_${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
-    toast({
-      title: "Request Submitted",
-      description: `Request submitted: ${requestId}`,
-    });
-    onRequestSubmitted(requestId);
+    
+    // Close form and reset state first
     onClose();
     setShowConfirmation(false);
     setFormData({ requestDesc: "", targetStores: [], remarks: "" });
+    
+    // Then trigger the request landing page with toast
+    onRequestSubmitted(requestId);
   };
 
   const mockStoreMapping = {
