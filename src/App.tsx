@@ -17,7 +17,8 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/recipe-bank" element={<Index />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/recipe-request/:requestId" element={<RecipeRequestLandingPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Clock, Users, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 import { format } from "date-fns";
 import { mockDashboardRequestsData, DashboardRequest } from "@/data/dashboardRequestsData";
+import { getRequestTypeVariant } from "@/utils/requestTypeUtils";
 
 interface PendingRequestsWidgetProps {
   className?: string;
@@ -163,7 +164,7 @@ export const PendingRequestsWidget = ({ className }: PendingRequestsWidgetProps)
                           {request.requestId}
                         </TableCell>
                         <TableCell className="min-w-[300px]">
-                          <TooltipProvider>
+                                  <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger asChild>
                                 <div className="line-clamp-2 leading-tight">
@@ -177,14 +178,7 @@ export const PendingRequestsWidget = ({ className }: PendingRequestsWidgetProps)
                           </TooltipProvider>
                         </TableCell>
                         <TableCell className="w-36">
-                          <Badge 
-                            variant="outline"
-                            className={`text-xs leading-tight text-center ${
-                              request.requestType === 'NEW RECIPE' 
-                                ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-800' 
-                                : 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-800'
-                            }`}
-                          >
+                          <Badge variant={getRequestTypeVariant(request.requestType) as any}>
                             {request.requestType}
                           </Badge>
                         </TableCell>

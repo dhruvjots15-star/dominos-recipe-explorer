@@ -1,7 +1,7 @@
 export interface DashboardRequest {
   requestId: string;
   requestDesc: string;
-  requestType: 'NEW RECIPE' | 'MODIFICATION' | 'VERSION EXTEND' | 'VERSION ROLLBACK' | 'NEW SIZE CODE';
+  requestType: 'NEW RECIPE' | 'RECIPE MODIFICATION' | 'VERSION EXTEND' | 'VERSION ROLLBACK' | 'NEW SIZE CODE';
   requestedBy: string;
   requestCreatedDate: string;
   currentStatus: 'REQUEST CREATED,PENDING ON CHEF' | 'APPROVAL PENDING ON CATEGORY' | 'APPROVAL PENDING ON SC' | 'APPROVAL PENDING ON QUALITY' | 'APPROVAL PENDING ON FINANCE' | 'APPROVED BY ALL, PENDING ON MDM' | 'ACKNOWLEDGED BY MDM, CHANGES PENDING' | 'DONE BY MDM, AWAITING ROLLOUT' | 'LIVE' | 'REJECTED' | 'REQUEST CREATED, APPROVAL PENDING' | 'REQUEST APPROVED, PENDING ON CHEF' | 'EXTRA TOPPING MASTER UPDATE REQUEST SUBMITTED BY CHEF' | 'EXTRA TOPPING MASTER UPDATED';
@@ -27,7 +27,7 @@ export const mockDashboardRequestsData: DashboardRequest[] = [
   {
     requestId: "REQ_002",
     requestDesc: "Modification to Classic Burger recipe - reduce sodium content by 15% while maintaining taste profile",
-    requestType: "MODIFICATION",
+    requestType: "RECIPE MODIFICATION",
     requestedBy: "James Wilson",
     requestCreatedDate: "2024-02-12T14:30:00Z",
     currentStatus: "APPROVAL PENDING ON QUALITY",
@@ -49,7 +49,7 @@ export const mockDashboardRequestsData: DashboardRequest[] = [
   {
     requestId: "REQ_004",
     requestDesc: "Modification to Caesar Salad dressing - switch to organic ingredients and cage-free eggs",
-    requestType: "MODIFICATION",
+    requestType: "RECIPE MODIFICATION",
     requestedBy: "Alex Rodriguez",
     requestCreatedDate: "2024-02-16T16:20:00Z",
     currentStatus: "ACKNOWLEDGED BY MDM, CHANGES PENDING",
@@ -71,7 +71,7 @@ export const mockDashboardRequestsData: DashboardRequest[] = [
   {
     requestId: "REQ_006",
     requestDesc: "Modification to Margherita Pizza - upgrade to San Marzano tomatoes and buffalo mozzarella",
-    requestType: "MODIFICATION",
+    requestType: "RECIPE MODIFICATION",
     requestedBy: "Tony Ricci",
     requestCreatedDate: "2024-02-20T13:55:00Z",
     currentStatus: "APPROVED BY ALL, PENDING ON MDM",
@@ -93,7 +93,7 @@ export const mockDashboardRequestsData: DashboardRequest[] = [
   {
     requestId: "REQ_008",
     requestDesc: "Modification to Fish & Chips batter - gluten-free alternative using rice flour and cornstarch blend",
-    requestType: "MODIFICATION",
+    requestType: "RECIPE MODIFICATION",
     requestedBy: "David Park",
     requestCreatedDate: "2024-02-24T15:40:00Z",
     currentStatus: "APPROVAL PENDING ON CATEGORY",
@@ -115,7 +115,7 @@ export const mockDashboardRequestsData: DashboardRequest[] = [
   {
     requestId: "REQ_010",
     requestDesc: "Modification to Chicken Tikka Masala - adjust spice level and add coconut milk for creamier texture",
-    requestType: "MODIFICATION",
+    requestType: "RECIPE MODIFICATION",
     requestedBy: "Priya Sharma",
     requestCreatedDate: "2024-02-28T12:15:00Z",
     currentStatus: "APPROVAL PENDING ON SC",
@@ -138,7 +138,7 @@ export const mockDashboardRequestsData: DashboardRequest[] = [
   {
     requestId: "REQ_012",
     requestDesc: "Modification to Classic Mac & Cheese - add truffle oil and breadcrumb topping for premium version",
-    requestType: "MODIFICATION",
+    requestType: "RECIPE MODIFICATION",
     requestedBy: "Jessica Lee",
     requestCreatedDate: "2024-03-03T11:20:00Z",
     currentStatus: "APPROVAL PENDING ON QUALITY",

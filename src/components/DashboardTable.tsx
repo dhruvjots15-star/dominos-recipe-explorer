@@ -12,6 +12,7 @@ import { Calendar, Filter, ArrowUpDown, ArrowUp, ArrowDown, BarChart3 } from "lu
 import { format } from "date-fns";
 import { mockDashboardRequestsData, DashboardRequest } from "@/data/dashboardRequestsData";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { getRequestTypeVariant } from "@/utils/requestTypeUtils";
 
 interface DashboardTableProps {
   className?: string;
@@ -363,14 +364,7 @@ export const DashboardTable = ({ className }: DashboardTableProps) => {
                       </TooltipProvider>
                     </TableCell>
                     <TableCell className="w-36">
-                      <Badge 
-                        variant="outline"
-                        className={`text-xs leading-tight text-center ${
-                          request.requestType === 'NEW RECIPE' 
-                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-800' 
-                            : 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-800'
-                        }`}
-                      >
+                      <Badge variant={getRequestTypeVariant(request.requestType) as any}>
                         {request.requestType}
                       </Badge>
                     </TableCell>
