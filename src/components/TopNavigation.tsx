@@ -16,7 +16,7 @@ const tabs = [
 
 export const TopNavigation = ({ activeTab, onTabChange }: TopNavigationProps) => {
   return (
-    <div className="w-full bg-card border-b border-border">
+    <div className="sticky top-0 z-50 w-full bg-card border-b border-border">
       <div className="flex items-center px-6 py-4">
         <div className="flex space-x-8">
           {tabs.map((tab) => (
