@@ -78,7 +78,7 @@ export const PendingRequestsWidget = ({ className }: PendingRequestsWidgetProps)
                   <TableHeader>
                     <TableRow className="bg-muted/50">
                       <TableHead className="font-semibold w-32">
-                        <div className="h-auto p-0 font-semibold justify-start gap-1">
+                        <div className="h-auto p-0 font-semibold justify-start gap-1 whitespace-nowrap">
                           Request ID
                         </div>
                       </TableHead>
@@ -86,7 +86,7 @@ export const PendingRequestsWidget = ({ className }: PendingRequestsWidgetProps)
                       <TableHead className="font-semibold w-36">Request Type</TableHead>
                       <TableHead className="font-semibold w-40">Requested By</TableHead>
                       <TableHead className="font-semibold w-48">
-                        <div className="h-auto p-0 font-semibold justify-start gap-1">
+                        <div className="h-auto p-0 font-semibold justify-start gap-1 whitespace-nowrap">
                           Request Created Date
                         </div>
                       </TableHead>
