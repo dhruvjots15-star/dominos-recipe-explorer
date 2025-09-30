@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { getDashboardRequestById, DashboardRequest } from "@/data/dashboardRequestsData";
+import { getRequestById as getRecipeBankRequestById, RecipeRequest as RBRequest } from "@/data/requestsData";
 
 interface RecipeRequestLandingProps {
   requestId: string;
@@ -32,7 +33,9 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
     affectedStores: 0,
     remarks: ''
   };
-  const request = getDashboardRequestById(requestId) || placeholderRequest;
+  const recipeBankRequest = getRecipeBankRequestById(requestId);
+  const dashboardRequest = getDashboardRequestById(requestId);
+  const request = (recipeBankRequest || dashboardRequest || placeholderRequest) as any;
 
   const getWorkflowSteps = (requestData: any) => {
     // Handle NEW SIZE CODE requests with specific 3-step workflow
