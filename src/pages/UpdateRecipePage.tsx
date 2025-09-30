@@ -4,8 +4,14 @@ import { TopNavigation } from "@/components/TopNavigation";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ArrowLeft, Pencil } from "lucide-react";
+import { ArrowLeft, Pencil, MoreVertical } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { toast } from "@/hooks/use-toast";
 
 interface Product {
@@ -61,6 +67,8 @@ const UpdateRecipePage = () => {
   };
 
   const handleEdit = (product: Product, index: number) => {
+    // Rows 4, 7, and 10 (indices 3, 6, 9) should show dropdown via the table rendering
+    // This function is only called when "Continue to Enter a Fresh Recipe" is selected
     navigate(`/recipe-request/${requestId}/update-recipe/editor`, {
       state: { 
         product,
@@ -68,6 +76,16 @@ const UpdateRecipePage = () => {
         requestId,
         requestDescription: "New Sourdough Pizza Recipes creation"
       }
+    });
+  };
+
+  const handleReplicateRecipe = (index: number) => {
+    // Mark the row as green (recipe submitted)
+    updateProductStatus(index);
+    toast({
+      title: "Recipe Replicated",
+      description: "Recipe from SD01-PIZ0901 has been replicated successfully",
+      duration: 2000,
     });
   };
 
@@ -170,13 +188,41 @@ const UpdateRecipePage = () => {
                     <TableCell>{product.sizeCode}</TableCell>
                     <TableCell>{product.sizeDescription}</TableCell>
                     <TableCell>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleEdit(product, index)}
-                      >
-                        <Pencil className="h-4 w-4" />
-                      </Button>
+                      {/* Show dropdown for rows 4, 7, and 10 (indices 3, 6, 9) */}
+                      {[3, 6, 9].includes(index) ? (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                            >
+                              <Pencil className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-64 bg-popover z-50">
+                            <DropdownMenuItem
+                              onClick={() => handleReplicateRecipe(index)}
+                              className="cursor-pointer"
+                            >
+                              Replicate Recipe of SD01-PIZ0901
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => handleEdit(product, index)}
+                              className="cursor-pointer"
+                            >
+                              Continue to Enter a Fresh Recipe
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      ) : (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleEdit(product, index)}
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}
