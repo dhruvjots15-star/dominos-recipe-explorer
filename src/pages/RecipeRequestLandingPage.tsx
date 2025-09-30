@@ -30,23 +30,27 @@ const RecipeRequestLandingPage = () => {
   const handleTabChange = (tab: string) => {
     if (tab === "dashboard") {
       navigate("/dashboard");
-    } else if (tab === "recipe-bank" || tab === "size-codes") {
-      navigate("/");
+    } else if (tab === "recipe-bank") {
+      navigate("/recipe-bank");
+    } else if (tab === "size-codes") {
+      navigate("/size-codes");
     }
   };
 
   const handleBack = () => {
     if (source === 'dashboard') {
       navigate("/dashboard");
+    } else if (source === 'size-codes') {
+      navigate("/size-codes");
     } else {
-      navigate("/");
+      navigate("/recipe-bank");
     }
   };
 
   if (!requestId) {
     return (
       <div className="min-h-screen">
-        <TopNavigation activeTab={source === 'dashboard' ? 'dashboard' : 'recipe-bank'} onTabChange={handleTabChange} />
+        <TopNavigation activeTab={source === 'dashboard' ? 'dashboard' : source === 'size-codes' ? 'size-codes' : 'recipe-bank'} onTabChange={handleTabChange} />
         <div className="bg-background p-6">
           <div className="text-center">
             <h1 className="text-2xl font-bold text-destructive mb-4">Request Not Found</h1>
@@ -65,7 +69,7 @@ const RecipeRequestLandingPage = () => {
 
   return (
     <div className="min-h-screen">
-      <TopNavigation activeTab={source === 'dashboard' ? 'dashboard' : 'recipe-bank'} onTabChange={handleTabChange} />
+      <TopNavigation activeTab={source === 'dashboard' ? 'dashboard' : source === 'size-codes' ? 'size-codes' : 'recipe-bank'} onTabChange={handleTabChange} />
       <RecipeRequestLanding 
         requestId={requestId} 
         onBack={handleBack}

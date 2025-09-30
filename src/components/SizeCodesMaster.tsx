@@ -127,7 +127,7 @@ export const SizeCodesMaster = () => {
   const activeFiltersCount = Object.values(filters).filter(value => value && value !== 'all').length;
 
   const handleRowClick = (requestId: string) => {
-    navigate(`/recipe-request/${requestId}?source=dashboard&showToast=false`);
+    navigate(`/recipe-request/${requestId}?source=size-codes&showToast=false`);
   };
 
   if (currentView === "create") {
