@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { RecipeMaster } from "@/components/RecipeMaster";
 import { SizeCodesMaster } from "@/components/SizeCodesMaster";
+import { ExtraToppingsMaster } from "@/components/ExtraToppingsMaster";
 import { TopNavigation } from "@/components/TopNavigation";
 
 interface IndexProps {
@@ -11,7 +12,10 @@ interface IndexProps {
 const Index = ({ activeTab: propActiveTab }: IndexProps = {}) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const activeTab = propActiveTab || (location.pathname === "/size-codes" ? "size-codes" : "recipe-bank");
+  const activeTab = propActiveTab || 
+    (location.pathname === "/size-codes" ? "size-codes" : 
+     location.pathname === "/extra-toppings" ? "extra-toppings" : 
+     "recipe-bank");
 
   const handleTabChange = (tab: string) => {
     if (tab === "dashboard") {
@@ -20,6 +24,8 @@ const Index = ({ activeTab: propActiveTab }: IndexProps = {}) => {
       navigate("/recipe-bank");
     } else if (tab === "size-codes") {
       navigate("/size-codes");
+    } else if (tab === "extra-toppings") {
+      navigate("/extra-toppings");
     }
   };
 
@@ -29,6 +35,8 @@ const Index = ({ activeTab: propActiveTab }: IndexProps = {}) => {
         return <RecipeMaster />;
       case "size-codes":
         return <SizeCodesMaster />;
+      case "extra-toppings":
+        return <ExtraToppingsMaster />;
       default:
         return <RecipeMaster />;
     }
