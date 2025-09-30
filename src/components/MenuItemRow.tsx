@@ -105,28 +105,42 @@ export const MenuItemRow = ({ item, index, onUpdate, onDelete }: MenuItemRowProp
     const totalCombinations = item.sizeCodes.length * item.channels.length;
     
     if (totalCombinations === 1) {
-      onUpdate({ isLocked: true });
+      // Update original row to show only one size code and one channel
+      onUpdate({ 
+        isLocked: true,
+        sizeCodes: [item.sizeCodes[0]],
+        channels: [item.channels[0]]
+      });
     } else {
-      // Generate additional rows for each combination
+      // Generate rows for each size-channel combination
       const newRows: MenuItem[] = [];
+      let channelCounter = 1;
       
-      item.sizeCodes.forEach(sizeCode => {
-        item.channels.forEach((channel, channelIndex) => {
-          if (channelIndex === 0 && sizeCode === item.sizeCodes[0]) {
-            // This is the original row
-            onUpdate({ isLocked: true });
+      item.channels.forEach((channel, channelIndex) => {
+        item.sizeCodes.forEach((sizeCode, sizeIndex) => {
+          if (channelIndex === 0 && sizeIndex === 0) {
+            // Update the original row for first combination
+            onUpdate({ 
+              isLocked: true,
+              sizeCodes: [sizeCode],
+              channels: [channel]
+            });
             return;
           }
           
-          const channelCode = channel;
-          const newMenuCode = `${item.menuCode.slice(0, 3)}${parseInt(item.menuCode.slice(3)) + newRows.length + 1}`;
+          // Generate new menu code only when channel changes
+          const baseNumber = parseInt(item.menuCode.slice(3, 6));
+          let newMenuCode = item.menuCode;
+          if (channelIndex > 0) {
+            newMenuCode = `${item.menuCode.slice(0, 3)}${String(baseNumber + channelIndex).padStart(3, '0')}`;
+          }
           
           newRows.push({
             id: `${item.id}_${sizeCode}_${channel}`,
             categoryCode: item.categoryCode,
             vegNonVeg: item.vegNonVeg,
             menuCode: newMenuCode,
-            menuItemName: `${channelCode}_${item.menuItemName}`,
+            menuItemName: item.menuItemName,
             sizeCodes: [sizeCode],
             channels: [channel],
             isLocked: true
@@ -145,7 +159,7 @@ export const MenuItemRow = ({ item, index, onUpdate, onDelete }: MenuItemRowProp
     return (
       <div className="space-y-2">
         <div className="border rounded-lg p-4 bg-muted/50">
-          <div className="grid grid-cols-6 gap-4 items-center">
+          <div className="grid grid-cols-7 gap-4 items-center">
             <div>
               <Label className="text-xs text-muted-foreground">Category</Label>
               <p className="text-sm">{item.categoryCode}</p>
@@ -163,12 +177,14 @@ export const MenuItemRow = ({ item, index, onUpdate, onDelete }: MenuItemRowProp
               <p className="text-sm">{item.menuItemName}</p>
             </div>
             <div>
-              <Label className="text-xs text-muted-foreground">Size Codes</Label>
-              <div className="flex flex-wrap gap-1">
-                {item.sizeCodes.map(sc => (
-                  <Badge key={sc} variant="outline" className="text-xs">{sc}</Badge>
-                ))}
-              </div>
+              <Label className="text-xs text-muted-foreground">Size Code</Label>
+              <Badge variant="outline" className="text-xs">{item.sizeCodes[0]}</Badge>
+            </div>
+            <div>
+              <Label className="text-xs text-muted-foreground">Channel</Label>
+              <Badge variant="secondary" className="text-xs">
+                {channels.find(ch => ch.value === item.channels[0])?.label || item.channels[0]}
+              </Badge>
             </div>
             <div className="flex gap-2">
               <Button size="icon" variant="ghost">
@@ -184,7 +200,7 @@ export const MenuItemRow = ({ item, index, onUpdate, onDelete }: MenuItemRowProp
         {/* Render expanded rows */}
         {expandedRows.map((expandedItem) => (
           <div key={expandedItem.id} className="border rounded-lg p-4 bg-muted/30 ml-4">
-            <div className="grid grid-cols-6 gap-4 items-center">
+            <div className="grid grid-cols-7 gap-4 items-center">
               <div>
                 <p className="text-sm">{expandedItem.categoryCode}</p>
               </div>
@@ -199,6 +215,11 @@ export const MenuItemRow = ({ item, index, onUpdate, onDelete }: MenuItemRowProp
               </div>
               <div>
                 <Badge variant="outline" className="text-xs">{expandedItem.sizeCodes[0]}</Badge>
+              </div>
+              <div>
+                <Badge variant="secondary" className="text-xs">
+                  {channels.find(ch => ch.value === expandedItem.channels[0])?.label || expandedItem.channels[0]}
+                </Badge>
               </div>
               <div className="flex gap-2">
                 <Button size="icon" variant="ghost">
@@ -330,7 +351,7 @@ export const MenuItemRow = ({ item, index, onUpdate, onDelete }: MenuItemRowProp
                   : "Select channels"
               } />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="z-[100] bg-popover">
               <div className="p-2 space-y-2">
                 {channels.map((channel) => (
                   <div key={channel.value} className="flex items-center space-x-2">
@@ -350,9 +371,15 @@ export const MenuItemRow = ({ item, index, onUpdate, onDelete }: MenuItemRowProp
             </SelectContent>
           </Select>
           {item.sizeCodes.length > 1 || item.channels.length > 1 ? (
-            <p className="text-xs text-muted-foreground mt-1">
-              Multiple selections will auto-generate additional menu codes
-            </p>
+            <div className="mt-1 p-2 bg-blue-50 rounded-md border border-blue-200">
+              <p className="text-xs text-blue-700 font-medium flex items-center gap-1">
+                <span className="text-blue-500">ⓘ</span>
+                Multiple selections will auto-generate additional menu codes
+              </p>
+              <p className="text-xs text-blue-600 mt-1">
+                {item.sizeCodes.length} size{item.sizeCodes.length > 1 ? 's' : ''} × {item.channels.length} channel{item.channels.length > 1 ? 's' : ''} = {item.sizeCodes.length * item.channels.length} rows
+              </p>
+            </div>
           ) : null}
         </div>
 
