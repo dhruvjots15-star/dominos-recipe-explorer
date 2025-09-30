@@ -9,6 +9,8 @@ import Dashboard from "./pages/Dashboard";
 import RecipeRequestLandingPage from "./pages/RecipeRequestLandingPage";
 import NotFound from "./pages/NotFound";
 import NewRecipeRequestPage from "./pages/NewRecipeRequestPage";
+import UpdateRecipePage from "./pages/UpdateRecipePage";
+import RecipeEditorPage from "./pages/RecipeEditorPage";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +27,8 @@ const App = () => (
             <Route path="/size-codes" element={<Index activeTab="size-codes" />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/recipe-request/:requestId" element={<RecipeRequestLandingPage />} />
+            <Route path="/recipe-request/:requestId/update-recipe" element={<UpdateRecipePage />} />
+            <Route path="/recipe-request/:requestId/update-recipe/editor" element={<RecipeEditorPage />} />
             <Route path="/requests/new-recipe" element={<NewRecipeRequestPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

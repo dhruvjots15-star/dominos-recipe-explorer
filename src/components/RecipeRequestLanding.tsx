@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { CheckCircle, Clock, AlertCircle, XCircle, ArrowLeft, User, Calendar, FileText, Settings, Play, Globe, ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { getDashboardRequestById, DashboardRequest } from "@/data/dashboardRequestsData";
 import { getRequestById as getRecipeBankRequestById, RecipeRequest as RBRequest } from "@/data/requestsData";
@@ -18,6 +19,7 @@ interface RecipeRequestLandingProps {
 
 export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank' }: RecipeRequestLandingProps) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [rejectReason, setRejectReason] = useState("");
   const [showRejectForm, setShowRejectForm] = useState(false);
   const [showProducts, setShowProducts] = useState(false);
@@ -819,6 +821,12 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
   };
 
   const handleApprove = () => {
+    // For REQ_144, navigate to update recipe page
+    if (request.requestId === 'REQ_144') {
+      navigate(`/recipe-request/${requestId}/update-recipe`);
+      return;
+    }
+    
     toast({
       title: "Request Approved",
       description: `Request ${request.requestId} has been approved successfully`,
