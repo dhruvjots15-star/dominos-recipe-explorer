@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
@@ -8,6 +7,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
+import { useTeamView } from "@/contexts/TeamViewContext";
 
 interface TopNavigationProps {
   activeTab: string;
@@ -24,7 +24,7 @@ const tabs = [
 ];
 
 export const TopNavigation = ({ activeTab, onTabChange }: TopNavigationProps) => {
-  const [viewAs, setViewAs] = useState("Category Team");
+  const { currentTeam, setTeamView } = useTeamView();
 
   return (
     <div className="sticky top-0 z-50 w-full bg-card border-b border-border">
@@ -53,18 +53,18 @@ export const TopNavigation = ({ activeTab, onTabChange }: TopNavigationProps) =>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="gap-2">
-                {viewAs}
+                {currentTeam}
                 <ChevronDown className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuItem onClick={() => setViewAs("Category Team")}>
+              <DropdownMenuItem onClick={() => setTeamView("Category Team")}>
                 Category Team
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setViewAs("Chef Team")}>
+              <DropdownMenuItem onClick={() => setTeamView("Chef Team")}>
                 Chef Team
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setViewAs("MDM (POS) Team")}>
+              <DropdownMenuItem onClick={() => setTeamView("MDM (POS) Team")}>
                 MDM (POS) Team
               </DropdownMenuItem>
             </DropdownMenuContent>
