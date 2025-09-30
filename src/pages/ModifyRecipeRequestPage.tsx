@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { CreateNewVersionForm } from "@/components/CreateNewVersionForm";
-import { MenuItemRow } from "@/components/MenuItemRow";
+import { ModifyMenuItemRow } from "@/components/ModifyMenuItemRow";
 import { ArrowLeft } from "lucide-react";
 import { generateNextRequestId } from "@/utils/requestIdUtils";
 
@@ -16,8 +16,7 @@ interface MenuItem {
   id: string;
   categoryCode: string;
   vegNonVeg: string;
-  menuCode: string;
-  menuItemName: string;
+  selectedMenuItems: string[]; // Array of menu codes
   sizeCodes: string[];
   channels: string[];
   isLocked: boolean;
@@ -31,7 +30,6 @@ const ModifyRecipeRequestPage = () => {
   const [showCreateVersion, setShowCreateVersion] = useState(false);
   const [newVersionMessage, setNewVersionMessage] = useState("");
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
-  const [lastGeneratedMenuCode, setLastGeneratedMenuCode] = useState("");
   const [lastUsedCategory, setLastUsedCategory] = useState("");
 
   // Mock recipe bank versions
@@ -55,8 +53,7 @@ const ModifyRecipeRequestPage = () => {
       id: `item_${Date.now()}`,
       categoryCode: lastUsedCategory,
       vegNonVeg: "",
-      menuCode: "",
-      menuItemName: "",
+      selectedMenuItems: [],
       sizeCodes: [],
       channels: [],
       isLocked: false,
@@ -68,9 +65,6 @@ const ModifyRecipeRequestPage = () => {
     setMenuItems(items => items.map(item => (item.id === id ? { ...item, ...updates } : item)));
     if (updates.categoryCode) {
       setLastUsedCategory(updates.categoryCode);
-    }
-    if (updates.menuCode) {
-      setLastGeneratedMenuCode(updates.menuCode);
     }
   };
 
@@ -110,12 +104,6 @@ const ModifyRecipeRequestPage = () => {
     navigate("/dashboard");
   };
 
-  const getNextMenuCode = () => {
-    if (!lastGeneratedMenuCode) return "";
-    const prefix = lastGeneratedMenuCode.slice(0, 3);
-    const number = parseInt(lastGeneratedMenuCode.slice(3));
-    return `${prefix}${String(number + 1).padStart(3, '0')}`;
-  };
 
   // SEO title
   if (typeof document !== "undefined") {
@@ -222,9 +210,8 @@ const ModifyRecipeRequestPage = () => {
 
             {/* Headers for locked items */}
             {menuItems.some(item => item.isLocked) && (
-              <div className="grid grid-cols-7 gap-4 p-4 border rounded-lg bg-muted font-semibold text-sm">
+              <div className="grid grid-cols-6 gap-4 p-4 border rounded-lg bg-muted font-semibold text-sm">
                 <div>Category</div>
-                <div>Type</div>
                 <div>Menu Code</div>
                 <div>Item Name</div>
                 <div>Size Code</div>
@@ -235,11 +222,10 @@ const ModifyRecipeRequestPage = () => {
 
             <div className="space-y-4">
               {menuItems.map((item, index) => (
-                <MenuItemRow
+                <ModifyMenuItemRow
                   key={item.id}
                   item={item}
                   index={index}
-                  lastGeneratedMenuCode={lastGeneratedMenuCode}
                   onUpdate={(updates) => updateMenuItem(item.id, updates)}
                   onDelete={() => deleteMenuItem(item.id)}
                 />
