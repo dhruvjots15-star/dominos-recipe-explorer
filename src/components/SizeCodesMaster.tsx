@@ -157,13 +157,6 @@ export const SizeCodesMaster = () => {
               Manage and maintain size code configurations for all pizza crusts and variants
             </p>
           </div>
-          <Button 
-            onClick={() => setCurrentView("create")}
-            className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-white shadow-lg hover:shadow-xl transition-all duration-300"
-          >
-            <Plus className="mr-2 h-4 w-4" />
-            Create New Size Code
-          </Button>
         </div>
 
         {/* Statistics Cards */}

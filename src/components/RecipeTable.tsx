@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Eye, Edit } from "lucide-react";
+import { Eye } from "lucide-react";
 import { RecipeItem, getIngredientCount, getCategoryName } from "@/data/recipeData";
 
 interface RecipeTableProps {
@@ -12,7 +12,7 @@ interface RecipeTableProps {
   onEditRecipe: (menuCode: string, sizeCode: string) => void;
 }
 
-export const RecipeTable = ({ data, onViewRecipe, onEditRecipe }: RecipeTableProps) => {
+export const RecipeTable = ({ data, onViewRecipe }: RecipeTableProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 100;
 
@@ -110,15 +110,6 @@ export const RecipeTable = ({ data, onViewRecipe, onEditRecipe }: RecipeTablePro
                           title="View Recipe"
                         >
                           <Eye className="w-3 h-3" />
-                        </Button>
-                        <Button 
-                          size="sm" 
-                          variant="outline" 
-                          onClick={() => onEditRecipe(recipe.menuCode, recipe.sizeCode)}
-                          className="h-8 w-8 p-0"
-                          title="Edit Recipe"
-                        >
-                          <Edit className="w-3 h-3" />
                         </Button>
                       </div>
                     </TableCell>

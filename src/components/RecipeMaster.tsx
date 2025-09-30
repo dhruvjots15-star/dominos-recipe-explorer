@@ -3,8 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Download, RefreshCw, Filter, Package, FileText, Utensils, Building2, Search, GitCompare, Edit, ChevronDown } from "lucide-react";
+import { Download, RefreshCw, Filter, Package, FileText, Utensils, Building2, Search, GitCompare } from "lucide-react";
 import { VersionSelector } from "./VersionSelector";
 import { FilterPanel, ActiveFilters } from "./FilterPanel";
 import { AdvancedSearch } from "./AdvancedSearch";
@@ -170,11 +169,6 @@ export const RecipeMaster = () => {
     setView('recipe');
   };
 
-  const handleEditRecipe = (menuCode: string, sizeCode: string) => {
-    console.log(`Edit recipe: ${menuCode} - ${sizeCode}`);
-    // TODO: Implement recipe edit functionality
-  };
-
   const handleBackToTable = () => {
     setView('table');
     setSelectedRecipe(null);
@@ -205,29 +199,10 @@ export const RecipeMaster = () => {
                 Select a recipe bank version to view its snapshot and manage recipes
               </p>
             </div>
-            <div className="flex items-center gap-3">
-              <Button variant="outline" size="sm" onClick={() => setShowVersionComparison(true)}>
-                <GitCompare className="w-4 h-4 mr-2" />
-                Compare Versions
-              </Button>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm">
-                    <Edit className="w-4 h-4 mr-2" />
-                    Edit
-                    <ChevronDown className="w-3 h-3 ml-1" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => setShowExtendForm(true)}>
-                    Extend Recipe version to more stores
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setShowRollbackForm(true)}>
-                    Rollback Recipe Version
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+            <Button variant="outline" size="sm" onClick={() => setShowVersionComparison(true)}>
+              <GitCompare className="w-4 h-4 mr-2" />
+              Compare Versions
+            </Button>
           </div>
 
           {/* Version Selector */}
@@ -389,7 +364,7 @@ export const RecipeMaster = () => {
               <RecipeTable 
                 data={filteredResults}
                 onViewRecipe={handleViewRecipe}
-                onEditRecipe={handleEditRecipe}
+                onEditRecipe={() => {}}
               />
             </div>
           ) : (
