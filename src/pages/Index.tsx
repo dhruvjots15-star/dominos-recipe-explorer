@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { RecipeMaster } from "@/components/RecipeMaster";
 import { SizeCodesMaster } from "@/components/SizeCodesMaster";
 import { ExtraToppingsMaster } from "@/components/ExtraToppingsMaster";
+import { InventoryCodesMaster } from "@/components/InventoryCodesMaster";
 import { TopNavigation } from "@/components/TopNavigation";
 
 interface IndexProps {
@@ -14,7 +15,8 @@ const Index = ({ activeTab: propActiveTab }: IndexProps = {}) => {
   const location = useLocation();
   const activeTab = propActiveTab || 
     (location.pathname === "/size-codes" ? "size-codes" : 
-     location.pathname === "/extra-toppings" ? "extra-toppings" : 
+     location.pathname === "/extra-toppings" ? "extra-toppings" :
+     location.pathname === "/inventory-codes" ? "inventory-codes" :
      "recipe-bank");
 
   const handleTabChange = (tab: string) => {
@@ -26,6 +28,8 @@ const Index = ({ activeTab: propActiveTab }: IndexProps = {}) => {
       navigate("/size-codes");
     } else if (tab === "extra-toppings") {
       navigate("/extra-toppings");
+    } else if (tab === "inventory-codes") {
+      navigate("/inventory-codes");
     }
   };
 
@@ -37,6 +41,8 @@ const Index = ({ activeTab: propActiveTab }: IndexProps = {}) => {
         return <SizeCodesMaster />;
       case "extra-toppings":
         return <ExtraToppingsMaster />;
+      case "inventory-codes":
+        return <InventoryCodesMaster />;
       default:
         return <RecipeMaster />;
     }
