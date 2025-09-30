@@ -123,15 +123,18 @@ const NewRecipeRequestPage = () => {
   }
 
   return (
-    <main className="w-full">
-      <header className="border-b">
-        <div className="mx-auto w-full max-w-none px-6 py-6">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-primary">New Recipe Creation Request Form</h1>
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+      <div className="container mx-auto p-6 space-y-8">
+        {/* Header */}
+        <div className="flex items-center gap-4">
+          {hasFormData() ? (
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button variant="outline" className="flex items-center gap-2">
-                  <ArrowLeft className="h-4 w-4" />
+                <Button 
+                  variant="ghost" 
+                  className="hover:bg-muted/50"
+                >
+                  <ArrowLeft className="h-4 w-4 mr-2" />
                   Back to Dashboard
                 </Button>
               </AlertDialogTrigger>
@@ -150,71 +153,92 @@ const NewRecipeRequestPage = () => {
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
-          </div>
+          ) : (
+            <Button 
+              variant="ghost" 
+              onClick={() => navigate("/dashboard")}
+              className="hover:bg-muted/50"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Dashboard
+            </Button>
+          )}
         </div>
-      </header>
 
-      <div className="mx-auto w-full max-w-none px-6 py-6">
+        <div>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+            New Recipe Creation Request
+          </h1>
+          <p className="text-lg text-muted-foreground mt-2">
+            Submit new recipe creation requests for approval and processing
+          </p>
+        </div>
+
         <div className="space-y-6">
           {/* Recipe Request Description */}
-          <section className="space-y-2">
-            <Label htmlFor="requestDesc">Recipe Request Description *</Label>
-            <Textarea
-              id="requestDesc"
-              placeholder="Enter a brief description of the Recipe request (e.g., Create Recipes for launch of sourdough pizzas)"
-              value={requestDesc}
-              onChange={(e) => setRequestDesc(e.target.value)}
-              className="min-h-[80px]"
-            />
-          </section>
+          <div className="bg-card border rounded-lg p-6 space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="requestDesc" className="text-base font-semibold">Recipe Request Description <span className="text-destructive">*</span></Label>
+              <Textarea
+                id="requestDesc"
+                placeholder="Enter a brief description of the Recipe request (e.g., Create Recipes for launch of sourdough pizzas)"
+                value={requestDesc}
+                onChange={(e) => setRequestDesc(e.target.value)}
+                className="min-h-[80px]"
+              />
+            </div>
 
-          {/* Recipe Bank Version */}
-          <section className="space-y-3">
-            <Label>Recipe Bank Version *</Label>
-            <p className="text-sm text-muted-foreground">
-              Select Recipe bank version(s) where you wish to add the new recipes to. Multiple selections possible
-            </p>
-            <Select>
-              <SelectTrigger className="w-full max-w-xl">
-                <SelectValue
-                  placeholder={
-                    selectedVersions.length > 0
-                      ? `${selectedVersions.length} version(s) selected`
-                      : "Select recipe bank versions"
-                  }
-                />
-              </SelectTrigger>
-              <SelectContent className="z-50">
-                <div className="p-2 space-y-2">
-                  {recipeBankVersions.map((version) => (
-                    <div key={version.id} className="flex items-center space-x-2">
-                      <Checkbox
-                        id={version.id}
-                        checked={selectedVersions.includes(version.id)}
-                        onCheckedChange={(checked) => handleVersionChange(version.id, checked as boolean)}
-                      />
-                      <Label htmlFor={version.id} className="text-sm font-normal">
-                        {version.name}
-                      </Label>
+            {/* Recipe Bank Version */}
+            <div className="space-y-3 pt-4">
+              <Label className="text-base font-semibold">Recipe Bank Version <span className="text-destructive">*</span></Label>
+              <p className="text-sm text-muted-foreground">
+                Select Recipe bank version(s) where you wish to add the new recipes to. Multiple selections possible
+              </p>
+              <Select>
+                <SelectTrigger className="w-full max-w-xl">
+                  <SelectValue
+                    placeholder={
+                      selectedVersions.length > 0
+                        ? `${selectedVersions.length} version(s) selected`
+                        : "Select recipe bank versions"
+                    }
+                  />
+                </SelectTrigger>
+                <SelectContent className="z-50">
+                  <div className="p-2 space-y-2">
+                    {recipeBankVersions.map((version) => (
+                      <div key={version.id} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={version.id}
+                          checked={selectedVersions.includes(version.id)}
+                          onCheckedChange={(checked) => handleVersionChange(version.id, checked as boolean)}
+                        />
+                        <Label htmlFor={version.id} className="text-sm font-normal">
+                          {version.name}
+                        </Label>
+                      </div>
+                    ))}
+                    <div className="pt-2 border-t">
+                      <Button variant="link" className="h-auto p-0 text-primary" onClick={() => setShowCreateVersion(true)}>
+                        Create New Recipe Bank version
+                      </Button>
                     </div>
-                  ))}
-                  <div className="pt-2 border-t">
-                    <Button variant="link" className="h-auto p-0 text-primary" onClick={() => setShowCreateVersion(true)}>
-                      Create New Recipe Bank version
-                    </Button>
                   </div>
-                </div>
-              </SelectContent>
-            </Select>
-            {newVersionMessage && <p className="text-sm text-green-600">{newVersionMessage}</p>}
-          </section>
+                </SelectContent>
+              </Select>
+              {newVersionMessage && <p className="text-sm text-green-600">{newVersionMessage}</p>}
+            </div>
+          </div>
 
           {/* Menu Items */}
-          <section className="space-y-4">
+          <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <Label className="text-lg font-semibold">Menu Item Details</Label>
+              <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">Menu Item Details</h2>
               {menuItems.filter(item => !item.isLocked).length === 0 && (
-                <Button onClick={addNewMenuItem} className="gap-2">
+                <Button 
+                  onClick={addNewMenuItem} 
+                  className="gap-2 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary"
+                >
                   + Add New Item Details
                 </Button>
               )}
@@ -249,16 +273,23 @@ const NewRecipeRequestPage = () => {
             {/* Add button at bottom if there are locked items */}
             {menuItems.some(item => item.isLocked) && (
               <div className="flex justify-center pt-4">
-                <Button onClick={addNewMenuItem} className="gap-2">
+                <Button 
+                  onClick={addNewMenuItem} 
+                  className="gap-2 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary"
+                >
                   + Add New Item Details
                 </Button>
               </div>
             )}
-          </section>
+          </div>
 
           {/* Submit Button */}
           <div className="flex justify-end pt-6">
-            <Button onClick={handleSubmit} size="lg">
+            <Button 
+              onClick={handleSubmit} 
+              size="lg"
+              className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-white"
+            >
               Submit Request
             </Button>
           </div>
@@ -273,7 +304,7 @@ const NewRecipeRequestPage = () => {
           setNewVersionMessage(`Recipe Bank version ${version.name} will be created when this Form is submitted`);
         }}
       />
-    </main>
+    </div>
   );
 };
 
