@@ -67,16 +67,7 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
         {
           title: "Request Approvals by Category, SC Planning, Quality Teams",
           description: (() => {
-            const approvals = [];
-            if (status.includes('APPROVED') && !status.includes('PENDING ON CATEGORY')) {
-              approvals.push("Approved by Kshitij on Mar 16, 2024 13:30");
-            }
-            if (status.includes('APPROVED') && !status.includes('PENDING ON SC PLANNING')) {
-              approvals.push("Approved by Satyam on Mar 16, 2024 14:30");
-            }
-            if (status.includes('APPROVED') && !status.includes('PENDING ON QUALITY')) {
-              approvals.push("Approved by Rajesh on Mar 17, 2024 09:30");
-            }
+            // Handle rejections
             if (status === 'REJECTED BY CATEGORY') {
               return "Rejected by Kshitij on Mar 16, 2024 13:30";
             }
@@ -86,7 +77,58 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
             if (status === 'REJECTED BY QUALITY') {
               return "Rejected by Rajesh on Mar 17, 2024 09:30";
             }
-            return approvals.join(", ");
+            
+            // Build approval messages for pending states
+            const approvals = [];
+            const awaiting = [];
+            
+            // Check which teams have pending approvals
+            const pendingCategory = status.includes('PENDING ON CATEGORY');
+            const pendingSC = status.includes('PENDING ON SC PLANNING');
+            const pendingQuality = status.includes('PENDING ON QUALITY');
+            
+            // If all three are pending
+            if (status.includes('APPROVALS PENDING ON CATEGORY & SC PLANNING & QUALITY')) {
+              return "Awaiting approvals from Category, SC Planning & Quality teams";
+            }
+            
+            // If two are pending
+            if (status.includes('APPROVALS PENDING ON CATEGORY & SC PLANNING')) {
+              approvals.push("Approved by Rajesh on Mar 16, 2024 09:30");
+              return approvals.join("\n") + "\nAwaiting approvals from Category & SC Planning teams";
+            }
+            if (status.includes('APPROVALS PENDING ON SC PLANNING & QUALITY')) {
+              approvals.push("Approved by Kshitij on Mar 16, 2024 13:30");
+              return approvals.join("\n") + "\nAwaiting approvals from SC Planning & Quality teams";
+            }
+            if (status.includes('APPROVALS PENDING ON CATEGORY & QUALITY')) {
+              approvals.push("Approved by Satyam on Mar 16, 2024 14:30");
+              return approvals.join("\n") + "\nAwaiting approvals from Category & Quality teams";
+            }
+            
+            // If only one is pending
+            if (status.includes('APPROVAL PENDING ON CATEGORY')) {
+              approvals.push("Approved by Rajesh on Mar 16, 2024 09:30");
+              approvals.push("Approved by Satyam on Mar 16, 2024 14:30");
+              return approvals.join("\n") + "\nAwaiting approval from Category team";
+            }
+            if (status.includes('APPROVAL PENDING ON SC PLANNING')) {
+              approvals.push("Approved by Kshitij on Mar 16, 2024 13:30");
+              approvals.push("Approved by Rajesh on Mar 16, 2024 09:30");
+              return approvals.join("\n") + "\nAwaiting approval from SC Planning team";
+            }
+            if (status.includes('APPROVAL PENDING ON QUALITY')) {
+              approvals.push("Approved by Kshitij on Mar 16, 2024 13:30");
+              approvals.push("Approved by Satyam on Mar 16, 2024 14:30");
+              return approvals.join("\n") + "\nAwaiting approval from Quality team";
+            }
+            
+            // All approved
+            if (status.includes('REQUEST APPROVED') || status.includes('ALL APPROVALS DONE')) {
+              return "Approved by Kshitij on Mar 16, 2024 13:30\nApproved by Rajesh on Mar 16, 2024 09:30\nApproved by Satyam on Mar 16, 2024 14:30";
+            }
+            
+            return "";
           })(),
           status: 
             status.includes('REJECTED BY CATEGORY') || status.includes('REJECTED BY SC PLANNING') || status.includes('REJECTED BY QUALITY') ? 'rejected' as const :
@@ -481,7 +523,7 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
       case "completed": return "text-emerald-600 dark:text-emerald-400";
       case "pending": return "text-amber-600 dark:text-amber-400";
       case "rejected": return "text-red-600 dark:text-red-400";
-      case "upcoming": return "text-muted-foreground";
+      case "upcoming": return "text-muted-foreground/50";
       default: return "text-muted-foreground";
     }
   };
@@ -491,7 +533,7 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
       case "completed": return "bg-emerald-100 dark:bg-emerald-950/30";
       case "pending": return "bg-amber-100 dark:bg-amber-950/30";
       case "rejected": return "bg-red-100 dark:bg-red-950/30";
-      case "upcoming": return "bg-muted/50";
+      case "upcoming": return "bg-muted/30";
       default: return "bg-muted";
     }
   };
@@ -631,11 +673,15 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
                           Step {index + 1}: {step.title}
                         </h3>
                       </div>
-                      <p className="text-sm text-muted-foreground mt-1">{step.description}</p>
+                      {step.description && (
+                        <p className={`text-sm mt-1 whitespace-pre-line ${step.status === 'upcoming' ? 'text-muted-foreground/50' : 'text-muted-foreground'}`}>
+                          {step.description}
+                        </p>
+                      )}
                     </div>
                     {index < steps.length - 1 && step.status !== "rejected" && (
                       <div 
-                        className="absolute left-6 mt-12 w-0.5 h-6 bg-border" 
+                        className={`absolute left-6 mt-12 w-0.5 h-6 ${step.status === 'upcoming' ? 'bg-border/30' : 'bg-border'}`}
                         style={{ marginLeft: '1.75rem' }} 
                       />
                     )}
