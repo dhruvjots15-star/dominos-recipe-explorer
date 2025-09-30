@@ -3,8 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Download, RefreshCw, Filter, Package, FileText, Utensils, Building2, Search, GitCompare, Edit } from "lucide-react";
+import { Download, RefreshCw, Filter, Package, FileText, Utensils, Building2, Search, GitCompare, Edit, ChevronDown } from "lucide-react";
 import { useTeamView } from "@/contexts/TeamViewContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { VersionSelector } from "./VersionSelector";
 import { FilterPanel, ActiveFilters } from "./FilterPanel";
 import { AdvancedSearch } from "./AdvancedSearch";
@@ -207,10 +213,23 @@ export const RecipeMaster = () => {
                 Compare Versions
               </Button>
               {currentTeam === "Category Team" && (
-                <Button variant="outline" size="sm" onClick={() => setShowExtendForm(true)}>
-                  <Edit className="w-4 h-4 mr-2" />
-                  Edit
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm" className="gap-2">
+                      <Edit className="w-4 h-4" />
+                      Edit
+                      <ChevronDown className="w-4 h-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56 bg-background z-50">
+                    <DropdownMenuItem onClick={() => setShowExtendForm(true)}>
+                      Extend Version
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setShowRollbackForm(true)}>
+                      Rollback Version
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               )}
             </div>
           </div>
