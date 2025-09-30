@@ -168,6 +168,36 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
       ];
     }
 
+    // Special handling for REQ_127
+    if (requestData.requestId === 'REQ_127') {
+      return [
+        {
+          title: "Step 1: Request Submission by Category Team",
+          description: "Submitted by Kshitij on Mar 17, 2025, 4:15pm",
+          status: 'completed' as const,
+          icon: CheckCircle
+        },
+        {
+          title: "Step 2: Request Approval by Category Team",
+          description: "Approved by Varun on Mar 18, 2025, 4:15pm",
+          status: 'completed' as const,
+          icon: CheckCircle
+        },
+        {
+          title: "Step 3: Request Execution & Verification by MDM (POS) Team",
+          description: "Executed by Awadesh on Mar 20, 2025, 4:15pm",
+          status: 'completed' as const,
+          icon: CheckCircle
+        },
+        {
+          title: "Step 4: LIVE",
+          description: "Awaiting Go Live by MDM (POS) Team",
+          status: 'pending' as const,
+          icon: Globe
+        }
+      ];
+    }
+
     // Special handling for REQ_087
     if (requestData.requestId === 'REQ_087') {
       return [
@@ -872,6 +902,9 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
   };
 
   const canMarkLive = (status: string) => {
+    if (request.requestId === 'REQ_127') {
+      return status === "REQUEST APPROVED, PENDING EXECUTION BY MDM(POS)";
+    }
     if (request.requestType === "NEW SIZE CODE") {
       return false; // No "Mark Live" action for size code requests
     }
@@ -887,6 +920,9 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
     }
     if (request.requestId === 'REQ_147') {
       return status === "ALL APPROVALS DONE, PENDING EXECUTION BY MDM(POS)";
+    }
+    if (request.requestId === 'REQ_127') {
+      return status === "REQUEST APPROVED, PENDING EXECUTION BY MDM(POS)";
     }
     if (request.requestId === 'REQ_087') {
       return status === "REQUEST APPROVED, EXTRA TOPPING UPDATION PENDING ON CHEF";
@@ -976,7 +1012,7 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
                   size="lg"
                 >
                   <CheckCircle className="h-5 w-5 mr-2" />
-                  Mark LIVE
+                  {request.requestId === 'REQ_127' ? 'GO LIVE' : 'Mark LIVE'}
                 </Button>
               )}
               {canReject(request.currentStatus) && (
