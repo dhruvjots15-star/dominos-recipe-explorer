@@ -155,6 +155,36 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
         }
       ];
     }
+
+    // Special handling for REQ_021
+    if (requestData.requestId === 'REQ_021') {
+      return [
+        {
+          title: "Step 1: Request Submission by Category Team",
+          description: "Submitted by Varun on Mar 10, 2025, 21:15pm",
+          status: 'completed' as const,
+          icon: CheckCircle
+        },
+        {
+          title: "Step 2: Request Approval by Category Team",
+          description: "Awaiting Approval by Category Team",
+          status: 'pending' as const,
+          icon: Clock
+        },
+        {
+          title: "Step 3: Request Execution & Verification by MDM (POS) Team",
+          description: "",
+          status: 'upcoming' as const,
+          icon: Settings
+        },
+        {
+          title: "Step 4: LIVE",
+          description: "",
+          status: 'upcoming' as const,
+          icon: Globe
+        }
+      ];
+    }
     
     // Handle NEW RECIPE and RECIPE MODIFICATION requests with 6-step workflow
     if (requestData.requestType === 'NEW RECIPE' || requestData.requestType === 'RECIPE MODIFICATION') {
@@ -707,7 +737,7 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
     if (request.requestId === 'REQ_142') {
       return status === "RECIPE SUBMITTED BY CHEF, PENDING APPROVAL ON CATEGORY & SC PLANNING";
     }
-    if (request.requestId === 'REQ_125') {
+    if (request.requestId === 'REQ_125' || request.requestId === 'REQ_021') {
       return status === "REQUEST CREATED, APPROVAL PENDING ON CATEGORY";
     }
     if (request.requestId === 'REQ_088') {
@@ -738,7 +768,7 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
     if (request.requestId === 'REQ_142') {
       return status === "RECIPE SUBMITTED BY CHEF, PENDING APPROVAL ON CATEGORY & SC PLANNING";
     }
-    if (request.requestId === 'REQ_125') {
+    if (request.requestId === 'REQ_125' || request.requestId === 'REQ_021') {
       return status === "REQUEST CREATED, APPROVAL PENDING ON CATEGORY";
     }
     if (request.requestId === 'REQ_088') {
@@ -1168,7 +1198,26 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
               </>
             )}
             
-            {request.requestId !== 'REQ_142' && request.requestId !== 'REQ_125' && request.requestId !== 'REQ_088' && (
+            {request.requestId === 'REQ_021' && (
+              <>
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">Selected Versions</label>
+                  <p className="text-foreground font-medium mt-1">v10 Moz change for CHD stores</p>
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">Target Version</label>
+                  <p className="text-foreground font-medium mt-1 text-primary">v5 All India Stores</p>
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">Remarks</label>
+                  <p className="text-foreground font-medium mt-1">Rolling back the CHD Moz SCC expriment. Mapping all its stores to parent: v5 version</p>
+                </div>
+              </>
+            )}
+            
+            {request.requestId !== 'REQ_142' && request.requestId !== 'REQ_125' && request.requestId !== 'REQ_088' && request.requestId !== 'REQ_021' && (
               <>
                 <div>
                   <label className="text-sm font-medium text-muted-foreground">Selected Version</label>
@@ -1189,7 +1238,7 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
               <div>
                 <label className="text-sm font-medium text-muted-foreground">Requested By</label>
                 <p className="text-foreground font-medium mt-1">
-                  {request.requestId === 'REQ_125' || request.requestId === 'REQ_088' 
+                  {request.requestId === 'REQ_125' || request.requestId === 'REQ_088' || request.requestId === 'REQ_021'
                     ? 'Varun' 
                     : `${request.requestedBy} on ${format(new Date(request.requestCreatedDate), 'MMM dd, yyyy, h:mma')}`}
                 </p>
@@ -1199,6 +1248,7 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
                 <p className="text-foreground font-medium mt-1">
                   {request.requestId === 'REQ_125' ? 'Mar 15, 2025, 9:45PM' : 
                    request.requestId === 'REQ_088' ? 'Mar 13, 2025 21:45' :
+                   request.requestId === 'REQ_021' ? 'Mar 10, 2025, 9:45PM' :
                    format(new Date(request.requestCreatedDate), 'MMM dd, yyyy, h:mma')}
                 </p>
               </div>
