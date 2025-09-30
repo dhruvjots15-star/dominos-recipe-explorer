@@ -21,6 +21,7 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
   const [rejectReason, setRejectReason] = useState("");
   const [showRejectForm, setShowRejectForm] = useState(false);
   const [showProducts, setShowProducts] = useState(false);
+  const [showStores, setShowStores] = useState(false);
 
   // Get the actual request data or create a placeholder for newly created requests
   const baseRequestType = source === 'size-codes' ? 'NEW SIZE CODE' : source === 'dashboard' ? 'NEW RECIPE' : 'VERSION EXTEND';
@@ -75,6 +76,36 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
         },
         {
           title: "Step 6: LIVE",
+          description: "",
+          status: 'upcoming' as const,
+          icon: Globe
+        }
+      ];
+    }
+
+    // Special handling for REQ_125
+    if (requestData.requestId === 'REQ_125') {
+      return [
+        {
+          title: "Step 1: Request Submission by Category Team",
+          description: "Submitted by Varun on Mar 15, 2025, 4:15pm",
+          status: 'completed' as const,
+          icon: CheckCircle
+        },
+        {
+          title: "Step 2: Request Approval by Category Team",
+          description: "Awaiting Approval by Category Team",
+          status: 'pending' as const,
+          icon: Clock
+        },
+        {
+          title: "Step 3: Request Execution & Verification by MDM (POS) Team",
+          description: "",
+          status: 'upcoming' as const,
+          icon: Settings
+        },
+        {
+          title: "Step 4: LIVE",
           description: "",
           status: 'upcoming' as const,
           icon: Globe
@@ -633,6 +664,9 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
     if (request.requestId === 'REQ_142') {
       return status === "RECIPE SUBMITTED BY CHEF, PENDING APPROVAL ON CATEGORY & SC PLANNING";
     }
+    if (request.requestId === 'REQ_125') {
+      return status === "REQUEST CREATED, APPROVAL PENDING ON CATEGORY";
+    }
     if (request.requestType === "NEW SIZE CODE") {
       return status === "REQUEST CREATED, APPROVAL PENDING";
     }
@@ -657,6 +691,9 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
   const canReject = (status: string) => {
     if (request.requestId === 'REQ_142') {
       return status === "RECIPE SUBMITTED BY CHEF, PENDING APPROVAL ON CATEGORY & SC PLANNING";
+    }
+    if (request.requestId === 'REQ_125') {
+      return status === "REQUEST CREATED, APPROVAL PENDING ON CATEGORY";
     }
     if (request.requestType === "NEW SIZE CODE") {
       return status === "REQUEST CREATED, APPROVAL PENDING" || 
@@ -986,7 +1023,53 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
               </>
             )}
             
-            {request.requestId !== 'REQ_142' && (
+            {request.requestId === 'REQ_125' && (
+              <>
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">Selected Versions</label>
+                  <p className="text-foreground font-medium mt-1 text-primary">{request.targetVersion}</p>
+                </div>
+                
+                <div>
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium text-muted-foreground">Target Stores</label>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowStores(!showStores)}
+                      className="text-primary hover:text-primary/80"
+                    >
+                      {showStores ? (
+                        <>
+                          <ChevronUp className="h-4 w-4 mr-1" />
+                          Hide Stores
+                        </>
+                      ) : (
+                        <>
+                          <ChevronDown className="h-4 w-4 mr-1" />
+                          View {request.affectedStores} Stores
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                  <p className="text-foreground font-medium mt-1">{request.affectedStores} stores selected</p>
+                  
+                  {showStores && request.stores && (
+                    <div className="mt-4 border rounded-lg p-4 max-h-96 overflow-y-auto bg-muted/30">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        {request.stores.map((store, index) => (
+                          <div key={index} className="text-sm text-foreground p-2 hover:bg-muted/50 rounded">
+                            {store}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
+            
+            {request.requestId !== 'REQ_142' && request.requestId !== 'REQ_125' && (
               <>
                 <div>
                   <label className="text-sm font-medium text-muted-foreground">Selected Version</label>
