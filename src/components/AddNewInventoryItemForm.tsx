@@ -121,6 +121,11 @@ export const AddNewInventoryItemForm = () => {
 
   const allItemsLocked = inventoryItems.every((item) => item.isLocked);
 
+  // SEO title
+  if (typeof document !== "undefined") {
+    document.title = "Add New Inventory Item | Recipe System";
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       <div className="container mx-auto p-6 space-y-8">
@@ -128,29 +133,33 @@ export const AddNewInventoryItemForm = () => {
         <div className="flex items-center gap-4">
           <Button
             variant="ghost"
-            size="icon"
             onClick={() => navigate("/inventory-codes")}
+            className="hover:bg-muted/50"
           >
-            <ArrowLeft className="h-5 w-5" />
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Inventory Codes Master
           </Button>
-          <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-              Add a New Inventory Item
-            </h1>
-            <p className="text-lg text-muted-foreground mt-2">
-              Add a newly created Inventory item & its details
-            </p>
-          </div>
+        </div>
+
+        <div>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+            Add a New Inventory Item
+          </h1>
+          <p className="text-lg text-muted-foreground mt-2">
+            Add a newly created Inventory item & its details
+          </p>
         </div>
 
         {/* Request Information Section */}
         <Card>
           <CardHeader>
-            <CardTitle>Request Information</CardTitle>
+            <CardTitle className="text-xl">Request Information</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="requestDesc">Request Description</Label>
+              <Label htmlFor="requestDesc" className="text-base font-semibold">
+                Request Description <span className="text-destructive">*</span>
+              </Label>
               <Input
                 id="requestDesc"
                 placeholder="Enter Request Desc"
@@ -164,7 +173,7 @@ export const AddNewInventoryItemForm = () => {
         {/* Inventory Item Addition Section */}
         <Card>
           <CardHeader>
-            <CardTitle>Inventory Item Addition</CardTitle>
+            <CardTitle className="text-xl">Inventory Item Addition</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             {inventoryItems.map((item, index) => (
@@ -317,7 +326,10 @@ export const AddNewInventoryItemForm = () => {
                 Add New Inventory Item
               </Button>
 
-              <Button onClick={handleSubmit} className="gap-2">
+              <Button 
+                onClick={handleSubmit} 
+                className="gap-2 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-white"
+              >
                 Submit Request
               </Button>
             </div>

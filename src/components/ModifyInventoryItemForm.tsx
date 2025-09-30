@@ -116,30 +116,45 @@ export const ModifyInventoryItemForm = () => {
     );
   });
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
-      <div className="container mx-auto p-4 md:p-6 space-y-6">
-        <Button
-          variant="ghost"
-          onClick={() => navigate("/inventory-codes")}
-          className="mb-4"
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Inventory Codes Master
-        </Button>
+  // SEO title
+  if (typeof document !== "undefined") {
+    document.title = "Modify Inventory Item | Recipe System";
+  }
 
-        <div className="space-y-2">
-          <h1 className="text-3xl font-bold text-gray-900">Modify an Existing Inventory Item</h1>
-          <p className="text-gray-600">Update an existing Inventory item & its details</p>
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+      <div className="container mx-auto p-6 space-y-8">
+        {/* Header */}
+        <div className="flex items-center gap-4">
+          <Button
+            variant="ghost"
+            onClick={() => navigate("/inventory-codes")}
+            className="hover:bg-muted/50"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Inventory Codes Master
+          </Button>
         </div>
 
+        <div>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+            Modify an Existing Inventory Item
+          </h1>
+          <p className="text-lg text-muted-foreground mt-2">
+            Update an existing Inventory item & its details
+          </p>
+        </div>
+
+        {/* Request Information */}
         <Card>
           <CardHeader>
-            <CardTitle>Request Information</CardTitle>
+            <CardTitle className="text-xl">Request Information</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="requestDesc">Request Description</Label>
+              <Label htmlFor="requestDesc" className="text-base font-semibold">
+                Request Description <span className="text-destructive">*</span>
+              </Label>
               <Input
                 id="requestDesc"
                 placeholder="Enter Request Desc"
@@ -153,7 +168,7 @@ export const ModifyInventoryItemForm = () => {
         {modifiedItems.length > 0 && (
           <Card>
             <CardHeader>
-              <CardTitle>Modified Inventory Items</CardTitle>
+              <CardTitle className="text-xl">Modified Inventory Items</CardTitle>
             </CardHeader>
             <CardContent>
               <Table>
@@ -185,11 +200,11 @@ export const ModifyInventoryItemForm = () => {
         {currentItem && (
           <Card>
             <CardHeader>
-              <CardTitle>Select Inventory Item</CardTitle>
+              <CardTitle className="text-xl">Select Inventory Item</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="space-y-2">
-                <Label>Search Inventory Item</Label>
+            <div className="space-y-2">
+              <Label className="text-base font-semibold">Search Inventory Item</Label>
                 <Popover open={open} onOpenChange={setOpen}>
                   <PopoverTrigger asChild>
                     <Button
@@ -277,20 +292,28 @@ export const ModifyInventoryItemForm = () => {
         )}
 
         {!currentItem && modifiedItems.length > 0 && (
-          <div className="flex gap-4 justify-end">
-            <Button variant="outline" onClick={handleAddAnother}>
+          <div className="flex gap-4 justify-end pt-4">
+            <Button variant="outline" onClick={handleAddAnother} size="lg">
               <Plus className="mr-2 h-4 w-4" />
               Update Another Inventory Item
             </Button>
-            <Button onClick={handleSubmitRequest}>
-              Submit
+            <Button 
+              onClick={handleSubmitRequest}
+              size="lg"
+              className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-white"
+            >
+              Submit Request
             </Button>
           </div>
         )}
 
         {modifiedItems.length === 0 && !currentItem && (
-          <div className="flex justify-center">
-            <Button onClick={handleAddAnother}>
+          <div className="flex justify-center pt-4">
+            <Button 
+              onClick={handleAddAnother}
+              size="lg"
+              className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-white"
+            >
               <Plus className="mr-2 h-4 w-4" />
               Select Inventory Item
             </Button>
