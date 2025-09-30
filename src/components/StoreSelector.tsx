@@ -29,11 +29,12 @@ export const StoreSelector = ({ selectedStores, onStoresChange }: StoreSelectorP
     const id = `DPI${String(i + 1).padStart(4, '0')}`;
     const regions = ["North 1", "North 2", "South 1", "South 2", "East", "West 1", "West 2"];
     const cities = ["Mumbai", "Delhi", "Bangalore", "Pune", "Chennai", "Hyderabad", "Kolkata", "Ahmedabad"];
+    const localities = ["Central", "CP", "Gachibowli", "Whitefield", "Andheri", "Karol Bagh", "Indiranagar", "Banjara Hills"];
     const sccs = ["Mumbai", "Delhi", "Bangalore", "Pune", "Chennai", "Mohali", "Guwahati"];
     
     return {
       id,
-      name: `Store ${id}`,
+      name: `${cities[i % cities.length]} ${localities[i % localities.length]} Store`,
       region: regions[i % regions.length],
       city: cities[i % cities.length],
       scc: sccs[i % sccs.length]
@@ -64,7 +65,8 @@ export const StoreSelector = ({ selectedStores, onStoresChange }: StoreSelectorP
   };
 
   const checkMethodChange = (newMethod: string) => {
-    if (activeMethod && activeMethod !== newMethod) {
+    if ((activeMethod && activeMethod !== newMethod) || 
+        (selectedStores.length > 0 && activeMethod !== newMethod)) {
       if (confirm("Previous selection will be discarded. Continue?")) {
         onStoresChange([]);
         setStoreChips([]);
@@ -109,24 +111,42 @@ export const StoreSelector = ({ selectedStores, onStoresChange }: StoreSelectorP
   const handleRegionToggle = (region: string, checked: boolean) => {
     if (checked) {
       setSelectedRegions([...selectedRegions, region]);
+      // Add stores from this region to selected stores
+      const regionStores = mockStores.filter(store => store.region === region).map(store => store.id);
+      onStoresChange([...selectedStores, ...regionStores]);
     } else {
       setSelectedRegions(selectedRegions.filter(r => r !== region));
+      // Remove stores from this region from selected stores
+      const regionStores = mockStores.filter(store => store.region === region).map(store => store.id);
+      onStoresChange(selectedStores.filter(id => !regionStores.includes(id)));
     }
   };
 
   const handleStateToggle = (state: string, checked: boolean) => {
     if (checked) {
       setSelectedStates([...selectedStates, state]);
+      // Add stores from this state to selected stores (simplified logic)
+      const stateStores = mockStores.filter((_, i) => i % states.length === states.indexOf(state)).map(store => store.id);
+      onStoresChange([...selectedStores, ...stateStores]);
     } else {
       setSelectedStates(selectedStates.filter(s => s !== state));
+      // Remove stores from this state from selected stores
+      const stateStores = mockStores.filter((_, i) => i % states.length === states.indexOf(state)).map(store => store.id);
+      onStoresChange(selectedStores.filter(id => !stateStores.includes(id)));
     }
   };
 
   const handleSCCToggle = (scc: string, checked: boolean) => {
     if (checked) {
       setSelectedSCCs([...selectedSCCs, scc]);
+      // Add stores from this SCC to selected stores
+      const sccStores = mockStores.filter(store => store.scc === scc).map(store => store.id);
+      onStoresChange([...selectedStores, ...sccStores]);
     } else {
       setSelectedSCCs(selectedSCCs.filter(s => s !== scc));
+      // Remove stores from this SCC from selected stores
+      const sccStores = mockStores.filter(store => store.scc === scc).map(store => store.id);
+      onStoresChange(selectedStores.filter(id => !sccStores.includes(id)));
     }
   };
 
@@ -173,7 +193,10 @@ export const StoreSelector = ({ selectedStores, onStoresChange }: StoreSelectorP
           <Input
             placeholder="Search stores by name or ID..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              if (!checkMethodChange("search")) return;
+              setSearchTerm(e.target.value);
+            }}
           />
           <div className="max-h-48 overflow-y-auto border rounded p-3 space-y-2">
             {filteredStores.map((store) => (
@@ -197,7 +220,10 @@ export const StoreSelector = ({ selectedStores, onStoresChange }: StoreSelectorP
           <Input
             placeholder="Enter store IDs (comma separated)"
             value={storeGroup}
-            onChange={(e) => handleStoreInputChange(e.target.value)}
+            onChange={(e) => {
+              if (!checkMethodChange("group")) return;
+              handleStoreInputChange(e.target.value);
+            }}
           />
           {storeError && (
             <p className="text-sm text-destructive">{storeError}</p>
@@ -219,7 +245,10 @@ export const StoreSelector = ({ selectedStores, onStoresChange }: StoreSelectorP
 
         <TabsContent value="region" className="space-y-3">
           <div className="space-y-3">
-            <Select value={regionType} onValueChange={setRegionType}>
+            <Select value={regionType} onValueChange={(value) => {
+              if (!checkMethodChange("region")) return;
+              setRegionType(value);
+            }}>
               <SelectTrigger>
                 <SelectValue placeholder="Select by Region, State, Circle or City" />
               </SelectTrigger>
@@ -247,11 +276,6 @@ export const StoreSelector = ({ selectedStores, onStoresChange }: StoreSelectorP
                     </Label>
                   </div>
                 ))}
-                {selectedRegions.length > 0 && (
-                  <p className="text-sm text-muted-foreground pt-2 border-t">
-                    All stores mapped to this Region(s) have been selected.
-                  </p>
-                )}
               </div>
             )}
 
@@ -271,16 +295,55 @@ export const StoreSelector = ({ selectedStores, onStoresChange }: StoreSelectorP
                     </Label>
                   </div>
                 ))}
-                {selectedStates.length > 0 && (
-                  <p className="text-sm text-muted-foreground pt-2 border-t">
-                    All stores mapped to this State(s) have been selected.
-                  </p>
-                )}
               </div>
             )}
           </div>
+
+          {/* Selected Regions/States Chips */}
+          {selectedRegions.length > 0 && (
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Selected Regions:</Label>
+              <div className="flex flex-wrap gap-1">
+                {selectedRegions.map((region) => (
+                  <Badge key={region} variant="secondary" className="gap-1">
+                    {region}
+                    <X 
+                      className="h-3 w-3 cursor-pointer" 
+                      onClick={() => handleRegionToggle(region, false)}
+                    />
+                  </Badge>
+                ))}
+              </div>
+              <p className="text-sm text-muted-foreground">
+                {mockStores.filter(store => selectedRegions.includes(store.region)).length} stores mapped to these Regions have been selected.
+              </p>
+            </div>
+          )}
+
+          {selectedStates.length > 0 && (
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Selected States:</Label>
+              <div className="flex flex-wrap gap-1">
+                {selectedStates.map((state) => (
+                  <Badge key={state} variant="secondary" className="gap-1">
+                    {state}
+                    <X 
+                      className="h-3 w-3 cursor-pointer" 
+                      onClick={() => handleStateToggle(state, false)}
+                    />
+                  </Badge>
+                ))}
+              </div>
+              <p className="text-sm text-muted-foreground">
+                {Math.floor(mockStores.length * selectedStates.length / states.length)} stores mapped to these States have been selected.
+              </p>
+            </div>
+          )}
           
-          <Button onClick={handleAllPanIndia} variant="outline" className="w-full">
+          <Button onClick={() => {
+            if (!checkMethodChange("region")) return;
+            handleAllPanIndia();
+          }} variant="outline" className="w-full">
             All Pan India Stores
           </Button>
         </TabsContent>
@@ -292,21 +355,38 @@ export const StoreSelector = ({ selectedStores, onStoresChange }: StoreSelectorP
                 <Checkbox
                   id={`scc-${scc}`}
                   checked={selectedSCCs.includes(scc)}
-                  onCheckedChange={(checked) => 
-                    handleSCCToggle(scc, checked as boolean)
-                  }
+                  onCheckedChange={(checked) => {
+                    if (!checkMethodChange("scc")) return;
+                    handleSCCToggle(scc, checked as boolean);
+                  }}
                 />
                 <Label htmlFor={`scc-${scc}`} className="text-sm">
                   {scc}
                 </Label>
               </div>
             ))}
-            {selectedSCCs.length > 0 && (
-              <p className="text-sm text-muted-foreground pt-2 border-t">
-                All stores mapped to this SCC(s) have been selected.
-              </p>
-            )}
           </div>
+
+          {/* Selected SCCs Chips */}
+          {selectedSCCs.length > 0 && (
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Selected SCCs:</Label>
+              <div className="flex flex-wrap gap-1">
+                {selectedSCCs.map((scc) => (
+                  <Badge key={scc} variant="secondary" className="gap-1">
+                    {scc}
+                    <X 
+                      className="h-3 w-3 cursor-pointer" 
+                      onClick={() => handleSCCToggle(scc, false)}
+                    />
+                  </Badge>
+                ))}
+              </div>
+              <p className="text-sm text-muted-foreground">
+                {mockStores.filter(store => selectedSCCs.includes(store.scc)).length} stores mapped to these SCCs have been selected.
+              </p>
+            </div>
+          )}
         </TabsContent>
       </Tabs>
 

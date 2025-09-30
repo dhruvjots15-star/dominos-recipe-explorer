@@ -10,7 +10,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus, Trash2, Edit } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { CreateNewVersionForm } from "./CreateNewVersionForm";
-import { StoreSelector } from "./StoreSelector";
 import { MenuItemRow } from "./MenuItemRow";
 
 interface NewRecipeRequestFormProps {
@@ -35,7 +34,7 @@ export const NewRecipeRequestForm = ({ open, onOpenChange }: NewRecipeRequestFor
   const [requestDesc, setRequestDesc] = useState("");
   const [selectedVersions, setSelectedVersions] = useState<string[]>([]);
   const [showCreateVersion, setShowCreateVersion] = useState(false);
-  const [selectedStores, setSelectedStores] = useState<string[]>([]);
+  const [newVersionMessage, setNewVersionMessage] = useState("");
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
 
   // Mock recipe bank versions
@@ -145,40 +144,45 @@ export const NewRecipeRequestForm = ({ open, onOpenChange }: NewRecipeRequestFor
               <p className="text-sm text-muted-foreground">
                 Select Recipe bank version(s) where you wish to add the new recipes to. Multiple selections possible
               </p>
-              <div className="border rounded-lg p-4 space-y-3 max-h-48 overflow-y-auto">
-                {recipeBankVersions.map((version) => (
-                  <div key={version.id} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={version.id}
-                      checked={selectedVersions.includes(version.id)}
-                      onCheckedChange={(checked) => 
-                        handleVersionChange(version.id, checked as boolean)
-                      }
-                    />
-                    <Label htmlFor={version.id} className="text-sm font-normal">
-                      {version.name}
-                    </Label>
+              <Select>
+                <SelectTrigger>
+                  <SelectValue placeholder={
+                    selectedVersions.length > 0 
+                      ? `${selectedVersions.length} version(s) selected` 
+                      : "Select recipe bank versions"
+                  } />
+                </SelectTrigger>
+                <SelectContent>
+                  <div className="p-2 space-y-2">
+                    {recipeBankVersions.map((version) => (
+                      <div key={version.id} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={version.id}
+                          checked={selectedVersions.includes(version.id)}
+                          onCheckedChange={(checked) => 
+                            handleVersionChange(version.id, checked as boolean)
+                          }
+                        />
+                        <Label htmlFor={version.id} className="text-sm font-normal">
+                          {version.name}
+                        </Label>
+                      </div>
+                    ))}
+                    <div className="pt-2 border-t">
+                      <Button
+                        variant="link"
+                        className="h-auto p-0 text-primary"
+                        onClick={() => setShowCreateVersion(true)}
+                      >
+                        Create New Recipe Bank version
+                      </Button>
+                    </div>
                   </div>
-                ))}
-                <div className="pt-2 border-t">
-                  <Button
-                    variant="link"
-                    className="h-auto p-0 text-primary"
-                    onClick={() => setShowCreateVersion(true)}
-                  >
-                    Create New Recipe Bank version
-                  </Button>
-                </div>
-              </div>
-            </div>
-
-            {/* Store Selection */}
-            <div className="space-y-2">
-              <Label>Select Stores *</Label>
-              <StoreSelector
-                selectedStores={selectedStores}
-                onStoresChange={setSelectedStores}
-              />
+                </SelectContent>
+              </Select>
+              {newVersionMessage && (
+                <p className="text-sm text-green-600">{newVersionMessage}</p>
+              )}
             </div>
 
             {/* Menu Items */}
@@ -223,6 +227,7 @@ export const NewRecipeRequestForm = ({ open, onOpenChange }: NewRecipeRequestFor
         onOpenChange={setShowCreateVersion}
         onVersionCreated={(version) => {
           setSelectedVersions([...selectedVersions, version.id]);
+          setNewVersionMessage(`Recipe Bank version ${version.name} will be created when this Form is submitted`);
         }}
       />
     </>
