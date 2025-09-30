@@ -35,6 +35,109 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
   const request = getDashboardRequestById(requestId) || placeholderRequest;
 
   const getWorkflowSteps = (requestData: any) => {
+    // Handle NEW SIZE CODE requests with specific 3-step workflow
+    if (requestData.requestType === "NEW SIZE CODE") {
+      const steps = [
+        {
+          title: "Request Submitted by Category Team",
+          description: `Submitted by ${requestData.requestedBy} on ${format(new Date(requestData.requestCreatedDate), 'MMM dd, yyyy HH:mm')}`,
+          status: "completed",
+          icon: FileText
+        }
+      ];
+
+      // Step 2: Request Approval by Category Team
+      if (requestData.currentStatus === "REQUEST CREATED, APPROVAL PENDING") {
+        steps.push({
+          title: "Request Approval by Category Team",
+          description: "Awaiting approval from Category Team",
+          status: "pending",
+          icon: Clock
+        });
+        // Step 3 is upcoming (grayed out)
+        steps.push({
+          title: "Extra Topping Master to be Updated by Chef",
+          description: "Awaiting Category Team approval",
+          status: "upcoming",
+          icon: Settings
+        });
+      } else if (requestData.currentStatus === "REQUEST APPROVED, PENDING ON CHEF") {
+        steps.push({
+          title: "Request Approval by Category Team",
+          description: "Approved by Kshitij on Mar 16, 2024 13:30",
+          status: "completed",
+          icon: CheckCircle
+        });
+        steps.push({
+          title: "Extra Topping Master to be Updated by Chef",
+          description: "Awaiting update by Chef",
+          status: "pending",
+          icon: Clock
+        });
+      } else if (requestData.currentStatus === "EXTRA TOPPING MASTER UPDATE REQUEST SUBMITTED BY CHEF") {
+        steps.push({
+          title: "Request Approval by Category Team",
+          description: "Approved by Kshitij on Mar 16, 2024 13:30",
+          status: "completed",
+          icon: CheckCircle
+        });
+        steps.push({
+          title: "Extra Topping Master to be Updated by Chef",
+          description: "Update request submitted by Chef",
+          status: "pending",
+          icon: Clock
+        });
+      } else if (requestData.currentStatus === "EXTRA TOPPING MASTER UPDATED") {
+        steps.push({
+          title: "Request Approval by Category Team",
+          description: "Approved by Kshitij on Mar 16, 2024 13:30",
+          status: "completed",
+          icon: CheckCircle
+        });
+        steps.push({
+          title: "Extra Topping Master to be Updated by Chef",
+          description: "Updated by Shamsher on Mar 17, 2024 16:30",
+          status: "completed",
+          icon: CheckCircle
+        });
+      } else if (requestData.currentStatus === "REJECTED") {
+        // Check if rejection was at Category level or Chef level
+        const isChefRejection = requestData.currentStatus.includes("CHEF") || 
+                               ["REQUEST APPROVED, PENDING ON CHEF", "EXTRA TOPPING MASTER UPDATE REQUEST SUBMITTED BY CHEF"].includes(requestData.previousStatus);
+        
+        if (isChefRejection) {
+          steps.push({
+            title: "Request Approval by Category Team",
+            description: "Approved by Kshitij on Mar 16, 2024 13:30",
+            status: "completed",
+            icon: CheckCircle
+          });
+          steps.push({
+            title: "Extra Topping Master to be Updated by Chef",
+            description: "Rejected by Shamsher on Mar 17, 2024 16:30",
+            status: "rejected",
+            icon: XCircle
+          });
+        } else {
+          steps.push({
+            title: "Request Approval by Category Team",
+            description: "Rejected by Kshitij on Mar 16, 2024 13:30",
+            status: "rejected",
+            icon: XCircle
+          });
+          steps.push({
+            title: "Extra Topping Master to be Updated by Chef",
+            description: "Awaiting Category Team approval",
+            status: "upcoming",
+            icon: Settings
+          });
+        }
+      }
+
+      return steps;
+    }
+
+    // Original workflow for other request types (VERSION EXTEND, VERSION ROLLBACK, etc.)
     const steps = [
       {
         title: "Request Submitted by Category Team",
@@ -114,6 +217,7 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
       case "completed": return "text-emerald-600 dark:text-emerald-400";
       case "pending": return "text-amber-600 dark:text-amber-400";
       case "rejected": return "text-red-600 dark:text-red-400";
+      case "upcoming": return "text-muted-foreground";
       default: return "text-muted-foreground";
     }
   };
@@ -123,6 +227,7 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
       case "completed": return "bg-emerald-100 dark:bg-emerald-950/30";
       case "pending": return "bg-amber-100 dark:bg-amber-950/30";
       case "rejected": return "bg-red-100 dark:bg-red-950/30";
+      case "upcoming": return "bg-muted/50";
       default: return "bg-muted";
     }
   };
@@ -136,9 +241,14 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
   };
 
   const handleExecute = () => {
+    const title = request.requestType === "NEW SIZE CODE" ? "Extra Topping Master Updated" : "Request Executed";
+    const description = request.requestType === "NEW SIZE CODE" ? 
+      `Extra Topping Master updated for request ${request.requestId}` :
+      `Request ${request.requestId} has been executed successfully`;
+    
     toast({
-      title: "Request Executed",
-      description: `Request ${request.requestId} has been executed successfully`,
+      title,
+      description,
     });
     onBack();
   };
@@ -170,18 +280,33 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
   };
 
   const canApprove = (status: string) => {
+    if (request.requestType === "NEW SIZE CODE") {
+      return status === "REQUEST CREATED, APPROVAL PENDING";
+    }
     return status === "REQUEST CREATED, APPROVAL PENDING ON CATEGORY";
   };
 
   const canExecute = (status: string) => {
+    if (request.requestType === "NEW SIZE CODE") {
+      return status === "REQUEST APPROVED, PENDING ON CHEF" || 
+             status === "EXTRA TOPPING MASTER UPDATE REQUEST SUBMITTED BY CHEF";
+    }
     return status === "REQUEST APPROVED BY CATEGORY, PENDING EXECUTION ON MDM(POS)";
   };
 
   const canMarkLive = (status: string) => {
+    if (request.requestType === "NEW SIZE CODE") {
+      return false; // No "Mark Live" action for size code requests
+    }
     return status === "REQUEST EXECUTED BY MDM(POS), PENDING GO LIVE";
   };
 
   const canReject = (status: string) => {
+    if (request.requestType === "NEW SIZE CODE") {
+      return status === "REQUEST CREATED, APPROVAL PENDING" || 
+             status === "REQUEST APPROVED, PENDING ON CHEF" ||
+             status === "EXTRA TOPPING MASTER UPDATE REQUEST SUBMITTED BY CHEF";
+    }
     return status === "REQUEST CREATED, APPROVAL PENDING ON CATEGORY" || 
            status === "REQUEST APPROVED BY CATEGORY, PENDING EXECUTION ON MDM(POS)" ||
            status === "REQUEST EXECUTED BY MDM(POS), PENDING GO LIVE";
@@ -280,7 +405,7 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
                     className="bg-blue-600 hover:bg-blue-700 text-white"
                   >
                     <CheckCircle className="h-4 w-4 mr-2" />
-                    Execute
+                    {request.requestType === "NEW SIZE CODE" ? "Update Extra Topping Master" : "Execute"}
                   </Button>
                 )}
                 {canMarkLive(request.currentStatus) && (
