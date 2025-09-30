@@ -42,6 +42,48 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
   const request = (recipeBankRequest || dashboardRequest || placeholderRequest) as any;
 
   const getWorkflowSteps = (requestData: any) => {
+    // Special handling for REQ_147
+    if (requestData.requestId === 'REQ_147') {
+      return [
+        {
+          title: "Step 1: Request Submission by Category Team",
+          description: "Submitted by Kshitij on Mar 17, 2025, 4:15pm",
+          status: 'completed' as const,
+          icon: CheckCircle
+        },
+        {
+          title: "Step 2: Recipe Submission by Chef Team",
+          description: "Submitted by Shamsher on Mar 18, 2025, 4:15pm",
+          status: 'completed' as const,
+          icon: CheckCircle
+        },
+        {
+          title: "Step 3: Recipe Approvals by Category, SC Planning & Quality Teams",
+          description: "Approved by Varun on Mar 19, 2025, 4:15pm\nApproved by Satyam on Mar 19, 2025, 4:15pm\nApproved by Rajesh on Mar 20, 2025, 4:15pm",
+          status: 'completed' as const,
+          icon: CheckCircle
+        },
+        {
+          title: "Step 4: Final Recipe Approval by Finance Team",
+          description: "Approved by Vijender on Mar 20, 2025, 4:15pm",
+          status: 'completed' as const,
+          icon: CheckCircle
+        },
+        {
+          title: "Step 5: Request Execution & Verification by MDM (POS) Team",
+          description: "Awaiting Execution by MDM (POS) Team",
+          status: 'pending' as const,
+          icon: Clock
+        },
+        {
+          title: "Step 6: LIVE",
+          description: "Awaiting previous steps",
+          status: 'upcoming' as const,
+          icon: Globe
+        }
+      ];
+    }
+
     // Special handling for REQ_144
     if (requestData.requestId === 'REQ_144') {
       return [
@@ -800,6 +842,9 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
     if (request.requestId === 'REQ_142') {
       return status === "RECIPE SUBMITTED BY CHEF, PENDING APPROVAL ON CATEGORY & SC PLANNING";
     }
+    if (request.requestId === 'REQ_147') {
+      return false; // No approve action for REQ_147
+    }
     if (request.requestId === 'REQ_087') {
       return status === "REQUEST APPROVED, EXTRA TOPPING UPDATION PENDING ON CHEF";
     }
@@ -816,6 +861,9 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
   };
 
   const canExecute = (status: string) => {
+    if (request.requestId === 'REQ_147') {
+      return status === "ALL APPROVALS DONE, PENDING EXECUTION BY MDM(POS)";
+    }
     if (request.requestType === "NEW SIZE CODE") {
       return status === "REQUEST APPROVED, PENDING ON CHEF" || 
              status === "EXTRA TOPPING MASTER UPDATE REQUEST SUBMITTED BY CHEF";
@@ -836,6 +884,9 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
     }
     if (request.requestId === 'REQ_142') {
       return status === "RECIPE SUBMITTED BY CHEF, PENDING APPROVAL ON CATEGORY & SC PLANNING";
+    }
+    if (request.requestId === 'REQ_147') {
+      return status === "ALL APPROVALS DONE, PENDING EXECUTION BY MDM(POS)";
     }
     if (request.requestId === 'REQ_087') {
       return status === "REQUEST APPROVED, EXTRA TOPPING UPDATION PENDING ON CHEF";
