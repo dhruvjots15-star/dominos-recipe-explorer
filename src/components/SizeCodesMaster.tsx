@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTeamView } from "@/contexts/TeamViewContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -18,6 +19,7 @@ import { getStatusVariant } from "@/utils/requestTypeUtils";
 
 export const SizeCodesMaster = () => {
   const navigate = useNavigate();
+  const { currentTeam } = useTeamView();
   const [currentView, setCurrentView] = useState<"master" | "create" | "request">("master");
   const [selectedRequestId, setSelectedRequestId] = useState<string>("");
   const [visibleRequests, setVisibleRequests] = useState(5);
@@ -157,6 +159,12 @@ export const SizeCodesMaster = () => {
               Manage and maintain size code configurations for all pizza crusts and variants
             </p>
           </div>
+          {currentTeam === "Category Team" && (
+            <Button onClick={() => setCurrentView("create")} className="gap-2">
+              <Plus className="h-4 w-4" />
+              Create New Size Code
+            </Button>
+          )}
         </div>
 
         {/* Statistics Cards */}

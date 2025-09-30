@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Download, RefreshCw, Filter, Package, FileText, Utensils, Building2, Search, GitCompare } from "lucide-react";
+import { Download, RefreshCw, Filter, Package, FileText, Utensils, Building2, Search, GitCompare, Edit } from "lucide-react";
+import { useTeamView } from "@/contexts/TeamViewContext";
 import { VersionSelector } from "./VersionSelector";
 import { FilterPanel, ActiveFilters } from "./FilterPanel";
 import { AdvancedSearch } from "./AdvancedSearch";
@@ -22,6 +23,7 @@ import { useToast } from "@/hooks/use-toast";
 export const RecipeMaster = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { currentTeam } = useTeamView();
   const [selectedVersion, setSelectedVersion] = useState("v1.0");
   const [showLegacyFilters, setShowLegacyFilters] = useState(false);
   const [activeFilters, setActiveFilters] = useState<ActiveFilters>({});
@@ -199,10 +201,18 @@ export const RecipeMaster = () => {
                 Select a recipe bank version to view its snapshot and manage recipes
               </p>
             </div>
-            <Button variant="outline" size="sm" onClick={() => setShowVersionComparison(true)}>
-              <GitCompare className="w-4 h-4 mr-2" />
-              Compare Versions
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" onClick={() => setShowVersionComparison(true)}>
+                <GitCompare className="w-4 h-4 mr-2" />
+                Compare Versions
+              </Button>
+              {currentTeam === "Category Team" && (
+                <Button variant="outline" size="sm" onClick={() => setShowExtendForm(true)}>
+                  <Edit className="w-4 h-4 mr-2" />
+                  Edit
+                </Button>
+              )}
+            </div>
           </div>
 
           {/* Version Selector */}
