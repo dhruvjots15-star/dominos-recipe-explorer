@@ -1,4 +1,13 @@
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { ChevronDown } from "lucide-react";
 
 interface TopNavigationProps {
   activeTab: string;
@@ -15,9 +24,11 @@ const tabs = [
 ];
 
 export const TopNavigation = ({ activeTab, onTabChange }: TopNavigationProps) => {
+  const [viewAs, setViewAs] = useState("Category Team");
+
   return (
     <div className="sticky top-0 z-50 w-full bg-card border-b border-border">
-      <div className="flex items-center px-6 py-4">
+      <div className="flex items-center justify-between px-6 py-4">
         <div className="flex space-x-8">
           {tabs.map((tab) => (
             <button
@@ -35,6 +46,29 @@ export const TopNavigation = ({ activeTab, onTabChange }: TopNavigationProps) =>
               )}
             </button>
           ))}
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-muted-foreground">View as:</span>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="gap-2">
+                {viewAs}
+                <ChevronDown className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem onClick={() => setViewAs("Category Team")}>
+                Category Team
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setViewAs("Chef Team")}>
+                Chef Team
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setViewAs("MDM (POS) Team")}>
+                MDM (POS) Team
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </div>
