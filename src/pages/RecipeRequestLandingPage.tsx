@@ -53,9 +53,9 @@ const RecipeRequestLandingPage = () => {
             <p className="text-muted-foreground mb-6">The requested request ID was not found.</p>
             <button 
               onClick={handleBack}
-              className="text-primary hover:underline"
+              className="text-primary hover:underline transition-colors duration-200"
             >
-              {source === 'dashboard' ? 'Back to Dashboard' : 'Back to Recipe Bank'}
+              {source === 'dashboard' ? 'Back to Dashboard' : source === 'size-codes' ? 'Back to Size Codes Master' : 'Back to Recipe Bank'}
             </button>
           </div>
         </div>
