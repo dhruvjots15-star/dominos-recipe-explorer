@@ -137,7 +137,166 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
       return steps;
     }
 
-    // Original workflow for other request types (VERSION EXTEND, VERSION ROLLBACK, etc.)
+    // Handle VERSION EXTEND and VERSION ROLLBACK requests with specific 4-step workflow
+    if (requestData.requestType === "VERSION EXTEND" || requestData.requestType === "VERSION ROLLBACK") {
+      const steps = [
+        {
+          title: "Request Submitted by Category Team",
+          description: `Submitted by ${requestData.requestedBy} on ${format(new Date(requestData.requestCreatedDate), 'MMM dd, yyyy HH:mm')}`,
+          status: "completed",
+          icon: FileText
+        }
+      ];
+
+      // Step 2: Request Approval by Category Team
+      if (requestData.currentStatus === "REQUEST CREATED, APPROVAL PENDING ON CATEGORY") {
+        steps.push({
+          title: "Request Approval by Category Team",
+          description: "Awaiting approval from Category Team",
+          status: "pending",
+          icon: Clock
+        });
+        // Steps 3 and 4 are upcoming (grayed out)
+        steps.push({
+          title: "Request Execution by MDM (POS) Team",
+          description: "Awaiting Category Team approval",
+          status: "upcoming",
+          icon: Settings
+        });
+        steps.push({
+          title: "Request Go Live by MDM (POS) Team",
+          description: "Awaiting execution completion",
+          status: "upcoming",
+          icon: Globe
+        });
+      } else if (requestData.currentStatus === "REQUEST APPROVED BY CATEGORY, PENDING EXECUTION ON MDM(POS)") {
+        steps.push({
+          title: "Request Approval by Category Team",
+          description: "Approved by Kshitij on Mar 16, 2024 13:30",
+          status: "completed",
+          icon: CheckCircle
+        });
+        steps.push({
+          title: "Request Execution by MDM (POS) Team",
+          description: "Awaiting execution by MDM (POS) Team",
+          status: "pending",
+          icon: Clock
+        });
+        steps.push({
+          title: "Request Go Live by MDM (POS) Team",
+          description: "Awaiting execution completion",
+          status: "upcoming",
+          icon: Globe
+        });
+      } else if (requestData.currentStatus === "REQUEST EXECUTED BY MDM(POS), PENDING GO LIVE") {
+        steps.push({
+          title: "Request Approval by Category Team",
+          description: "Approved by Kshitij on Mar 16, 2024 13:30",
+          status: "completed",
+          icon: CheckCircle
+        });
+        steps.push({
+          title: "Request Execution by MDM (POS) Team",
+          description: "Executed by Awadesh on Mar 17, 2024 13:30",
+          status: "completed",
+          icon: CheckCircle
+        });
+        steps.push({
+          title: "Request Go Live by MDM (POS) Team",
+          description: "Awaiting go live activation",
+          status: "pending",
+          icon: Clock
+        });
+      } else if (requestData.currentStatus === "REQUEST LIVE, VERSION EXTENDED TO STORES" || 
+                 requestData.currentStatus === "REQUEST LIVE, VERSION ROLLED BACK") {
+        steps.push({
+          title: "Request Approval by Category Team",
+          description: "Approved by Kshitij on Mar 16, 2024 13:30",
+          status: "completed",
+          icon: CheckCircle
+        });
+        steps.push({
+          title: "Request Execution by MDM (POS) Team",
+          description: "Executed by Awadesh on Mar 17, 2024 13:30",
+          status: "completed",
+          icon: CheckCircle
+        });
+        steps.push({
+          title: "Request Go Live by MDM (POS) Team",
+          description: "Go LIVE by Awadesh on Mar 17, 2024 13:30",
+          status: "completed",
+          icon: CheckCircle
+        });
+      } else if (requestData.currentStatus === "REJECTED") {
+        // Check which step the rejection occurred at
+        if (requestData.previousStatus === "REQUEST CREATED, APPROVAL PENDING ON CATEGORY" || 
+            !requestData.previousStatus) {
+          // Rejection at Category Team level
+          steps.push({
+            title: "Request Approval by Category Team",
+            description: "Rejected by Kshitij on Mar 16, 2024 13:30",
+            status: "rejected",
+            icon: XCircle
+          });
+          steps.push({
+            title: "Request Execution by MDM (POS) Team",
+            description: "Awaiting Category Team approval",
+            status: "upcoming",
+            icon: Settings
+          });
+          steps.push({
+            title: "Request Go Live by MDM (POS) Team",
+            description: "Awaiting execution completion",
+            status: "upcoming",
+            icon: Globe
+          });
+        } else if (requestData.previousStatus === "REQUEST APPROVED BY CATEGORY, PENDING EXECUTION ON MDM(POS)") {
+          // Rejection at MDM execution level
+          steps.push({
+            title: "Request Approval by Category Team",
+            description: "Approved by Kshitij on Mar 16, 2024 13:30",
+            status: "completed",
+            icon: CheckCircle
+          });
+          steps.push({
+            title: "Request Execution by MDM (POS) Team",
+            description: "Rejected by Awadesh on Mar 17, 2024 13:30",
+            status: "rejected",
+            icon: XCircle
+          });
+          steps.push({
+            title: "Request Go Live by MDM (POS) Team",
+            description: "Awaiting execution completion",
+            status: "upcoming",
+            icon: Globe
+          });
+        } else {
+          // Rejection at Go Live level
+          steps.push({
+            title: "Request Approval by Category Team",
+            description: "Approved by Kshitij on Mar 16, 2024 13:30",
+            status: "completed",
+            icon: CheckCircle
+          });
+          steps.push({
+            title: "Request Execution by MDM (POS) Team",
+            description: "Executed by Awadesh on Mar 17, 2024 13:30",
+            status: "completed",
+            icon: CheckCircle
+          });
+          steps.push({
+            title: "Request Go Live by MDM (POS) Team",
+            description: "Rejected by Awadesh on Mar 17, 2024 13:30",
+            status: "rejected",
+            icon: XCircle
+          });
+        }
+      }
+
+      return steps;
+    }
+
+    // Original workflow for other request types (fallback)
     const steps = [
       {
         title: "Request Submitted by Category Team",
