@@ -23,7 +23,7 @@ const Dashboard = () => {
     <div className="min-h-screen">
       <TopNavigation activeTab="dashboard" onTabChange={handleTabChange} />
       <div className="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-950 dark:via-blue-950 dark:to-indigo-950">
-        <div className="container mx-auto px-4 py-8">
+        <div className="w-full px-4 py-8 max-w-[95%] mx-auto">
           <div className="mb-8 flex justify-between items-start">
             <div>
               <h1 className="text-4xl font-bold text-foreground mb-2">Dashboard</h1>
