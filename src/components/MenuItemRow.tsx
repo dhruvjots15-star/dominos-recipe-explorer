@@ -63,15 +63,21 @@ export const MenuItemRow = ({ item, index, onUpdate, onDelete }: MenuItemRowProp
     if (!item.categoryCode || !item.vegNonVeg) return;
     
     let prefix = "";
-    if (item.categoryCode === "MCT0001") {
-      prefix = item.vegNonVeg === "Veg" ? "PIZ" : "PIZ";
-    } else if (item.categoryCode === "MCT0002") {
-      prefix = "BEV";
-    } else if (item.categoryCode === "MCT0003") {
-      prefix = "BRD";
+    if (item.categoryCode === "MCT0001") { // Pizza
+      prefix = item.vegNonVeg === "Veg" ? "PIZ0" : "PIZ5";
+    } else if (item.categoryCode === "MCT0002") { // Beverages
+      prefix = "BEV0";
+    } else if (item.categoryCode === "MCT0003") { // Breads
+      prefix = "BRD0";
+    } else if (item.categoryCode === "MCT0004") { // Sides
+      prefix = "SID0";
+    } else if (item.categoryCode === "MCT0005") { // Desserts
+      prefix = "DST0";
+    } else if (item.categoryCode === "MCT0006") { // Combos
+      prefix = "CMB0";
     }
     
-    const randomNum = Math.floor(Math.random() * 900) + 50000;
+    const randomNum = Math.floor(Math.random() * 900) + 100; // 3 digit number (100-999)
     const newMenuCode = `${prefix}${randomNum}`;
     onUpdate({ menuCode: newMenuCode });
   };
@@ -211,13 +217,14 @@ export const MenuItemRow = ({ item, index, onUpdate, onDelete }: MenuItemRowProp
 
   return (
     <div className="border rounded-lg p-4 space-y-4">
-      <div className="grid grid-cols-2 gap-4">
+      {/* All fields in one row */}
+      <div className="grid grid-cols-7 gap-3 items-end">
         {/* Category Code */}
         <div className="space-y-2">
-          <Label>Category Code *</Label>
+          <Label className="text-sm">Category *</Label>
           <Select value={item.categoryCode} onValueChange={(value) => onUpdate({ categoryCode: value })}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select category" />
+            <SelectTrigger className="h-9">
+              <SelectValue placeholder="Category" />
             </SelectTrigger>
             <SelectContent>
               {categories.map((cat) => (
@@ -231,10 +238,10 @@ export const MenuItemRow = ({ item, index, onUpdate, onDelete }: MenuItemRowProp
 
         {/* Veg/Non Veg */}
         <div className="space-y-2">
-          <Label>Veg/Non Veg *</Label>
+          <Label className="text-sm">Type *</Label>
           <Select value={item.vegNonVeg} onValueChange={(value) => onUpdate({ vegNonVeg: value })}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select type" />
+            <SelectTrigger className="h-9">
+              <SelectValue placeholder="Type" />
             </SelectTrigger>
             <SelectContent>
               {vegNonVegOptions.map((option) => (
@@ -248,92 +255,117 @@ export const MenuItemRow = ({ item, index, onUpdate, onDelete }: MenuItemRowProp
 
         {/* Menu Code */}
         <div className="space-y-2">
-          <Label>Menu Code *</Label>
-          <div className="flex gap-2">
+          <Label className="text-sm">Menu Code *</Label>
+          <div className="flex gap-1">
             <Input
               value={item.menuCode}
               placeholder="Auto-generated"
               readOnly
-              className="font-mono"
+              className="font-mono h-9 text-xs"
             />
             <Button
               type="button"
               variant="outline"
-              size="icon"
+              size="sm"
               onClick={generateMenuCode}
               disabled={!item.categoryCode || !item.vegNonVeg}
+              className="h-9 w-9 p-0"
             >
-              <Wand2 className="h-4 w-4" />
+              <Wand2 className="h-3 w-3" />
             </Button>
           </div>
         </div>
 
         {/* Menu Item Name */}
         <div className="space-y-2">
-          <Label>Menu Item Name *</Label>
+          <Label className="text-sm">Item Name *</Label>
           <Input
             value={item.menuItemName}
             onChange={(e) => onUpdate({ menuItemName: e.target.value })}
             placeholder="e.g., Sourdough Corn Pizza"
+            className="h-9"
           />
         </div>
-      </div>
 
-      {/* Size Codes */}
-      <div className="space-y-2">
-        <Label>Size Code *</Label>
-        <div className="grid grid-cols-3 gap-2">
-          {sizeCodes.map((size) => (
-            <div key={size.value} className="flex items-center space-x-2">
-              <Checkbox
-                id={`${item.id}-${size.value}`}
-                checked={item.sizeCodes.includes(size.value)}
-                onCheckedChange={(checked) => 
-                  handleSizeCodeChange(size.value, checked as boolean)
-                }
-              />
-              <Label htmlFor={`${item.id}-${size.value}`} className="text-sm">
-                {size.label}
-              </Label>
-            </div>
-          ))}
+        {/* Size Codes */}
+        <div className="space-y-2">
+          <Label className="text-sm">Size Code *</Label>
+          <Select>
+            <SelectTrigger className="h-9">
+              <SelectValue placeholder={
+                item.sizeCodes.length > 0 
+                  ? `${item.sizeCodes.length} selected` 
+                  : "Select sizes"
+              } />
+            </SelectTrigger>
+            <SelectContent>
+              <div className="p-2 space-y-2">
+                {sizeCodes.map((size) => (
+                  <div key={size.value} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={`${item.id}-${size.value}`}
+                      checked={item.sizeCodes.includes(size.value)}
+                      onCheckedChange={(checked) => 
+                        handleSizeCodeChange(size.value, checked as boolean)
+                      }
+                    />
+                    <Label htmlFor={`${item.id}-${size.value}`} className="text-sm font-normal">
+                      {size.label}
+                    </Label>
+                  </div>
+                ))}
+              </div>
+            </SelectContent>
+          </Select>
         </div>
-      </div>
 
-      {/* Channels */}
-      <div className="space-y-2">
-        <Label>Channels *</Label>
-        <div className="grid grid-cols-2 gap-2">
-          {channels.map((channel) => (
-            <div key={channel.value} className="flex items-center space-x-2">
-              <Checkbox
-                id={`${item.id}-${channel.value}`}
-                checked={item.channels.includes(channel.value)}
-                onCheckedChange={(checked) => 
-                  handleChannelChange(channel.value, checked as boolean)
-                }
-              />
-              <Label htmlFor={`${item.id}-${channel.value}`} className="text-sm">
-                {channel.label}
-              </Label>
-            </div>
-          ))}
+        {/* Channels */}
+        <div className="space-y-2">
+          <Label className="text-sm">Channels *</Label>
+          <Select>
+            <SelectTrigger className="h-9">
+              <SelectValue placeholder={
+                item.channels.length > 0 
+                  ? `${item.channels.length} selected` 
+                  : "Select channels"
+              } />
+            </SelectTrigger>
+            <SelectContent>
+              <div className="p-2 space-y-2">
+                {channels.map((channel) => (
+                  <div key={channel.value} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={`${item.id}-${channel.value}`}
+                      checked={item.channels.includes(channel.value)}
+                      onCheckedChange={(checked) => 
+                        handleChannelChange(channel.value, checked as boolean)
+                      }
+                    />
+                    <Label htmlFor={`${item.id}-${channel.value}`} className="text-sm font-normal">
+                      {channel.label}
+                    </Label>
+                  </div>
+                ))}
+              </div>
+            </SelectContent>
+          </Select>
+          {item.sizeCodes.length > 1 || item.channels.length > 1 ? (
+            <p className="text-xs text-muted-foreground mt-1">
+              Multiple selections will auto-generate additional menu codes
+            </p>
+          ) : null}
         </div>
-        {item.sizeCodes.length > 1 || item.channels.length > 1 ? (
-          <p className="text-xs text-muted-foreground">
-            Multiple selections will auto-generate additional menu codes
-          </p>
-        ) : null}
-      </div>
 
-      {/* Submit Button */}
-      <div className="flex justify-end">
-        <Button
-          onClick={handleSubmitRow}
-          disabled={!isFormValid}
-        >
-          Submit
-        </Button>
+        {/* Submit Button */}
+        <div>
+          <Button
+            onClick={handleSubmitRow}
+            disabled={!isFormValid}
+            className="h-9"
+          >
+            Submit
+          </Button>
+        </div>
       </div>
     </div>
   );
