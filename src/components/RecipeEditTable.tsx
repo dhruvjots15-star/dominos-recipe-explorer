@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
-import { Check, X, Trash2, Plus } from "lucide-react";
+import { Check, X, Trash2, Plus, ChevronsUpDown, Search } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,6 +14,21 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { inventoryItems } from "@/data/inventoryData";
+import { cn } from "@/lib/utils";
 
 interface RecipeRow {
   id: string;
@@ -106,15 +121,37 @@ export const RecipeEditTable = ({ product, size, onSubmit, onBack }: RecipeEditT
       id: Date.now().toString(),
       inventoryDescription: "",
       inventoryCode: "",
-      portionUnit: "NOS",
-      amount: "0.00",
+      portionUnit: "",
+      amount: "",
       extraTopping: false,
-      applyCarryOut: true,
-      applyDelivery: true,
-      applyDineIn: true,
-      applyPickUp: true,
+      applyCarryOut: false,
+      applyDelivery: false,
+      applyDineIn: false,
+      applyPickUp: false,
     };
-    setRows([...rows, newRow]);
+    setRows([newRow, ...rows]);
+  };
+
+  const selectInventoryItem = (id: string, code: string) => {
+    const item = inventoryItems.find(i => i.code === code);
+    if (item) {
+      setRows(rows.map(row => {
+        if (row.id === id) {
+          return {
+            ...row,
+            inventoryCode: item.code,
+            inventoryDescription: item.description,
+            portionUnit: item.portionUnit,
+            amount: "0.00",
+            applyCarryOut: true,
+            applyDelivery: true,
+            applyDineIn: true,
+            applyPickUp: true,
+          };
+        }
+        return row;
+      }));
+    }
   };
 
   const handleSubmitClick = () => {
@@ -156,103 +193,187 @@ export const RecipeEditTable = ({ product, size, onSubmit, onBack }: RecipeEditT
               </TableRow>
             </TableHeader>
             <TableBody>
-              {rows.map((row) => (
-                <TableRow key={row.id}>
-                  <TableCell className="font-medium">{row.inventoryDescription}</TableCell>
-                  <TableCell>{row.inventoryCode}</TableCell>
-                  <TableCell>{row.portionUnit}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-1 w-32">
+              {rows.map((row) => {
+                const isNewRow = !row.inventoryCode && !row.inventoryDescription;
+                const isDisabled = isNewRow;
+
+                return (
+                  <TableRow key={row.id}>
+                    <TableCell className="font-medium">
+                      {isNewRow ? (
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              className="w-full justify-between"
+                            >
+                              {row.inventoryDescription || "Select inventory..."}
+                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-[400px] p-0 bg-popover z-50">
+                            <Command>
+                              <CommandInput placeholder="Search by description..." />
+                              <CommandList>
+                                <CommandEmpty>No inventory found.</CommandEmpty>
+                                <CommandGroup>
+                                  {inventoryItems.map((item) => (
+                                    <CommandItem
+                                      key={item.code}
+                                      value={`${item.description} ${item.code}`}
+                                      onSelect={() => selectInventoryItem(row.id, item.code)}
+                                    >
+                                      {item.description}
+                                    </CommandItem>
+                                  ))}
+                                </CommandGroup>
+                              </CommandList>
+                            </Command>
+                          </PopoverContent>
+                        </Popover>
+                      ) : (
+                        row.inventoryDescription
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {isNewRow ? (
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              className="w-full justify-between"
+                            >
+                              {row.inventoryCode || "Select code..."}
+                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-[300px] p-0 bg-popover z-50">
+                            <Command>
+                              <CommandInput placeholder="Search by code..." />
+                              <CommandList>
+                                <CommandEmpty>No inventory found.</CommandEmpty>
+                                <CommandGroup>
+                                  {inventoryItems.map((item) => (
+                                    <CommandItem
+                                      key={item.code}
+                                      value={`${item.code} ${item.description}`}
+                                      onSelect={() => selectInventoryItem(row.id, item.code)}
+                                    >
+                                      {item.code}
+                                    </CommandItem>
+                                  ))}
+                                </CommandGroup>
+                              </CommandList>
+                            </Command>
+                          </PopoverContent>
+                        </Popover>
+                      ) : (
+                        row.inventoryCode
+                      )}
+                    </TableCell>
+                    <TableCell>{row.portionUnit}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-1 w-32">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-7 w-7"
+                          onClick={() => decrementAmount(row.id)}
+                          disabled={isDisabled}
+                        >
+                          -
+                        </Button>
+                        <Input
+                          type="text"
+                          value={row.amount}
+                          onChange={(e) => updateAmount(row.id, e.target.value)}
+                          className="h-7 text-center"
+                          disabled={isDisabled}
+                        />
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-7 w-7"
+                          onClick={() => incrementAmount(row.id)}
+                          disabled={isDisabled}
+                        >
+                          +
+                        </Button>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {row.extraTopping ? "Y" : ""}
+                    </TableCell>
+                    <TableCell className="text-center">
                       <Button
-                        variant="outline"
+                        variant="ghost"
                         size="icon"
-                        className="h-7 w-7"
-                        onClick={() => decrementAmount(row.id)}
+                        onClick={() => toggleField(row.id, 'applyCarryOut')}
+                        disabled={isDisabled}
                       >
-                        -
+                        {row.applyCarryOut ? (
+                          <Check className="h-4 w-4 text-success" />
+                        ) : (
+                          <X className="h-4 w-4 text-destructive" />
+                        )}
                       </Button>
-                      <Input
-                        type="text"
-                        value={row.amount}
-                        onChange={(e) => updateAmount(row.id, e.target.value)}
-                        className="h-7 text-center"
-                      />
+                    </TableCell>
+                    <TableCell className="text-center">
                       <Button
-                        variant="outline"
+                        variant="ghost"
                         size="icon"
-                        className="h-7 w-7"
-                        onClick={() => incrementAmount(row.id)}
+                        onClick={() => toggleField(row.id, 'applyDelivery')}
+                        disabled={isDisabled}
                       >
-                        +
+                        {row.applyDelivery ? (
+                          <Check className="h-4 w-4 text-success" />
+                        ) : (
+                          <X className="h-4 w-4 text-destructive" />
+                        )}
                       </Button>
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {row.extraTopping ? "Y" : ""}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => toggleField(row.id, 'applyCarryOut')}
-                    >
-                      {row.applyCarryOut ? (
-                        <Check className="h-4 w-4 text-success" />
-                      ) : (
-                        <X className="h-4 w-4 text-destructive" />
-                      )}
-                    </Button>
-                  </TableCell>
-                  <TableCell className="text-center">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => toggleField(row.id, 'applyDelivery')}
-                    >
-                      {row.applyDelivery ? (
-                        <Check className="h-4 w-4 text-success" />
-                      ) : (
-                        <X className="h-4 w-4 text-destructive" />
-                      )}
-                    </Button>
-                  </TableCell>
-                  <TableCell className="text-center">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => toggleField(row.id, 'applyDineIn')}
-                    >
-                      {row.applyDineIn ? (
-                        <Check className="h-4 w-4 text-success" />
-                      ) : (
-                        <X className="h-4 w-4 text-destructive" />
-                      )}
-                    </Button>
-                  </TableCell>
-                  <TableCell className="text-center">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => toggleField(row.id, 'applyPickUp')}
-                    >
-                      {row.applyPickUp ? (
-                        <Check className="h-4 w-4 text-success" />
-                      ) : (
-                        <X className="h-4 w-4 text-destructive" />
-                      )}
-                    </Button>
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => deleteRow(row.id)}
-                    >
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => toggleField(row.id, 'applyDineIn')}
+                        disabled={isDisabled}
+                      >
+                        {row.applyDineIn ? (
+                          <Check className="h-4 w-4 text-success" />
+                        ) : (
+                          <X className="h-4 w-4 text-destructive" />
+                        )}
+                      </Button>
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => toggleField(row.id, 'applyPickUp')}
+                        disabled={isDisabled}
+                      >
+                        {row.applyPickUp ? (
+                          <Check className="h-4 w-4 text-success" />
+                        ) : (
+                          <X className="h-4 w-4 text-destructive" />
+                        )}
+                      </Button>
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => deleteRow(row.id)}
+                      >
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </div>

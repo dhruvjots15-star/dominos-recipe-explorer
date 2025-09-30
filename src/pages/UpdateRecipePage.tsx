@@ -1,10 +1,12 @@
-import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { TopNavigation } from "@/components/TopNavigation";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ArrowLeft, Pencil } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { toast } from "@/hooks/use-toast";
 
 interface Product {
   menuCode: string;
@@ -18,6 +20,7 @@ interface Product {
 const UpdateRecipePage = () => {
   const { requestId } = useParams<{ requestId: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   
   const [products, setProducts] = useState<Product[]>([
     { menuCode: "PIZ0901", menuCategoryCode: "MCT0001", description: "OA_Sourdough Corn Pizza", sizeCode: "SD01", sizeDescription: "Reg Sourdough" },
@@ -66,18 +69,27 @@ const UpdateRecipePage = () => {
     setProducts(updatedProducts);
   };
 
-  // Listen for navigation state changes
-  useState(() => {
-    const handleNavigation = () => {
-      const state = window.history.state?.usr;
-      if (state?.productIndex !== undefined && state?.recipeSubmitted) {
-        updateProductStatus(state.productIndex);
-      }
-    };
-    
-    window.addEventListener('popstate', handleNavigation);
-    return () => window.removeEventListener('popstate', handleNavigation);
-  });
+  // Check location state for recipe submission
+  useEffect(() => {
+    if (location.state?.productIndex !== undefined && location.state?.recipeSubmitted) {
+      updateProductStatus(location.state.productIndex);
+      // Clear the state
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
+
+  const allRecipesSubmitted = products.every(p => p.recipeSubmitted);
+
+  const handleFinalSubmit = () => {
+    toast({
+      title: "Success",
+      description: `Recipes Submitted for ${requestId}`,
+      duration: 3000,
+    });
+    setTimeout(() => {
+      navigate("/dashboard");
+    }, 300);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -115,7 +127,7 @@ const UpdateRecipePage = () => {
                 {products.map((product, index) => (
                   <TableRow 
                     key={`${product.menuCode}-${product.sizeCode}-${index}`}
-                    className={product.recipeSubmitted ? "bg-success/10" : ""}
+                    className={product.recipeSubmitted ? "bg-success/20 hover:bg-success/30" : ""}
                   >
                     <TableCell className="font-medium">{product.menuCode}</TableCell>
                     <TableCell>{product.menuCategoryCode}</TableCell>
@@ -137,6 +149,30 @@ const UpdateRecipePage = () => {
             </Table>
           </div>
         </Card>
+
+        <div className="mt-6 flex justify-center">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div>
+                  <Button
+                    size="lg"
+                    onClick={handleFinalSubmit}
+                    disabled={!allRecipesSubmitted}
+                    className="min-w-[200px]"
+                  >
+                    SUBMIT
+                  </Button>
+                </div>
+              </TooltipTrigger>
+              {!allRecipesSubmitted && (
+                <TooltipContent>
+                  <p>Complete updating recipes for All items</p>
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
+        </div>
       </div>
     </div>
   );
