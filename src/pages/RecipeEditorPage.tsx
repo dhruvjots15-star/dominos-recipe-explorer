@@ -140,6 +140,7 @@ const RecipeEditorPage = () => {
             size={selectedSize || product.sizeCode}
             onSubmit={handleRecipeSubmit}
             onBack={handleBackToSelection}
+            startFromScratch={selectedPath === "scratch"}
           />
         )}
       </div>

@@ -48,6 +48,7 @@ interface RecipeEditTableProps {
   size: string;
   onSubmit: () => void;
   onBack: () => void;
+  startFromScratch?: boolean;
 }
 
 const initialRecipeData: RecipeRow[] = [
@@ -71,8 +72,25 @@ const initialRecipeData: RecipeRow[] = [
   { id: "18", inventoryDescription: "SES_Bake Sprinkle", inventoryCode: "SES0010", portionUnit: "GMS", amount: "0.56", extraTopping: false, applyCarryOut: true, applyDelivery: true, applyDineIn: true, applyPickUp: true },
 ];
 
-export const RecipeEditTable = ({ product, size, onSubmit, onBack }: RecipeEditTableProps) => {
-  const [rows, setRows] = useState<RecipeRow[]>(initialRecipeData);
+export const RecipeEditTable = ({ product, size, onSubmit, onBack, startFromScratch = false }: RecipeEditTableProps) => {
+  const [rows, setRows] = useState<RecipeRow[]>(() => {
+    if (startFromScratch) {
+      // Start with one empty row for scratch creation
+      return [{
+        id: "1",
+        inventoryDescription: "",
+        inventoryCode: "",
+        portionUnit: "",
+        amount: "",
+        extraTopping: false,
+        applyCarryOut: false,
+        applyDelivery: false,
+        applyDineIn: false,
+        applyPickUp: false,
+      }];
+    }
+    return initialRecipeData;
+  });
   const [showSubmitDialog, setShowSubmitDialog] = useState(false);
 
   const updateAmount = (id: string, newAmount: string) => {
@@ -167,9 +185,16 @@ export const RecipeEditTable = ({ product, size, onSubmit, onBack }: RecipeEditT
     <>
       <Card className="p-6">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-xl font-semibold">
-            Showing Recipe for {product}, Size: {size}
-          </h2>
+          <div>
+            <h2 className="text-xl font-semibold">
+              {startFromScratch ? "Creating Recipe from Scratch" : `Showing Recipe for ${product}, Size: ${size}`}
+            </h2>
+            {startFromScratch && (
+              <p className="text-sm text-muted-foreground mt-1">
+                For {product}, Size: {size}
+              </p>
+            )}
+          </div>
           <Button onClick={addRow} variant="outline" size="sm" className="gap-2">
             <Plus className="h-4 w-4" />
             Add Row
