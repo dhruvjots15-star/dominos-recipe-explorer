@@ -212,30 +212,6 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
           description: "Awaiting Approval by Category Team",
           status: 'pending' as const,
           icon: Clock
-        },
-        {
-          title: "Step 3: Extra Topping Master Updation by Chef Team",
-          description: "",
-          status: 'upcoming' as const,
-          icon: Settings
-        },
-        {
-          title: "Step 4: Extra Topping Master Update Approval by Chef Team",
-          description: "",
-          status: 'upcoming' as const,
-          icon: Settings
-        },
-        {
-          title: "Step 5: Request Execution & Verification by MDM (POS) Team",
-          description: "",
-          status: 'upcoming' as const,
-          icon: Settings
-        },
-        {
-          title: "Step 6: LIVE",
-          description: "",
-          status: 'upcoming' as const,
-          icon: Globe
         }
       ];
     }
