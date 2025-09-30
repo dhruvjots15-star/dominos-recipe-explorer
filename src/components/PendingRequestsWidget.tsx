@@ -91,42 +91,54 @@ export const PendingRequestsWidget = ({ className }: PendingRequestsWidgetProps)
 
   return (
     <div className={className}>
-      <Card className="border-none bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-950 dark:to-amber-950">
-        <CardHeader>
+      <Card className="border-2 border-orange-200 dark:border-orange-900 bg-gradient-to-br from-orange-50 via-amber-50 to-orange-50 dark:from-orange-950/50 dark:via-amber-950/50 dark:to-orange-950/50 shadow-lg">
+        {/* Prominent Count Section */}
+        <div className="bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 dark:from-orange-700 dark:via-amber-700 dark:to-orange-800 px-8 py-6 rounded-t-lg">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-600 rounded-lg flex items-center justify-center">
-                <Clock className="w-6 h-6 text-white" />
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center border-2 border-white/30">
+                <Clock className="w-9 h-9 text-white" />
               </div>
               <div>
-                <CardTitle className="text-2xl">Pending Requests on Team</CardTitle>
-                <p className="text-muted-foreground">Requests currently awaiting action from your team</p>
+                <h2 className="text-white text-3xl font-bold mb-1">Pending Requests</h2>
+                <p className="text-white/90 text-sm font-medium">Awaiting action from {currentTeam}</p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-2 bg-amber-100 dark:bg-amber-900/30 px-4 py-2 rounded-lg">
-                <Users className="w-5 h-5 text-amber-600 dark:text-amber-400" />
-                <span className="text-2xl font-bold text-amber-700 dark:text-amber-300">
+            
+            {/* Large Prominent Count */}
+            <div className="bg-white dark:bg-slate-900 rounded-2xl px-8 py-5 shadow-xl border-4 border-white/40 dark:border-slate-700">
+              <div className="text-center">
+                <div className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-br from-orange-600 to-amber-600 dark:from-orange-400 dark:to-amber-400 leading-none mb-1">
                   {pendingRequests.length}
-                </span>
-                <span className="text-sm text-amber-600 dark:text-amber-400">
+                </div>
+                <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
                   Pending
-                </span>
+                </div>
               </div>
             </div>
           </div>
-        </CardHeader>
+        </div>
 
-        <CardContent className="space-y-4">
+        <CardContent className="pt-6 space-y-4">
           {pendingRequests.length === 0 ? (
-            <div className="text-center py-8">
-              <Clock className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-              <p className="text-muted-foreground">No pending requests on your team</p>
+            <div className="text-center py-12">
+              <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                <Clock className="w-10 h-10 text-muted-foreground" />
+              </div>
+              <h3 className="text-lg font-semibold mb-1">All Clear!</h3>
+              <p className="text-muted-foreground">No pending requests on your team at the moment</p>
             </div>
           ) : (
             <>
+              {/* Subtitle for table section */}
+              <div className="flex items-center gap-2 mb-3">
+                <div className="h-1 w-1 rounded-full bg-orange-500"></div>
+                <h3 className="text-lg font-semibold text-foreground">Request Details</h3>
+                <div className="flex-1 h-px bg-gradient-to-r from-orange-200 to-transparent dark:from-orange-800"></div>
+              </div>
+              
               {/* Table */}
-              <div className="rounded-lg border bg-background">
+              <div className="rounded-xl border-2 border-orange-100 dark:border-orange-900 bg-background shadow-sm overflow-hidden">
                 <Table>
                   <TableHeader>
                     <TableRow className="bg-muted/50">
@@ -208,31 +220,20 @@ export const PendingRequestsWidget = ({ className }: PendingRequestsWidgetProps)
               </div>
 
               {/* View All Button */}
-              {sortedPendingRequests.length > 5 && !showAll && (
-                <div className="flex justify-center mt-4">
-                  <Button 
-                    variant="outline"
-                    onClick={() => setShowAll(true)}
-                  >
-                    View All Pending Requests
-                  </Button>
+              <div className="flex items-center justify-between pt-4 border-t border-orange-100 dark:border-orange-900">
+                <div className="text-sm font-medium text-muted-foreground">
+                  Showing <span className="text-orange-600 dark:text-orange-400 font-bold">{displayedRequests.length}</span> of <span className="text-orange-600 dark:text-orange-400 font-bold">{sortedPendingRequests.length}</span> pending requests
                 </div>
-              )}
-
-              {showAll && sortedPendingRequests.length > 5 && (
-                <div className="flex justify-center mt-4">
+                
+                {sortedPendingRequests.length > 5 && (
                   <Button 
-                    variant="ghost"
-                    onClick={() => setShowAll(false)}
+                    variant={showAll ? "ghost" : "default"}
+                    onClick={() => setShowAll(!showAll)}
+                    className={!showAll ? "bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700" : ""}
                   >
-                    Show Less
+                    {showAll ? "Show Less" : `View All ${sortedPendingRequests.length} Requests`}
                   </Button>
-                </div>
-              )}
-
-              {/* Results Summary */}
-              <div className="text-sm text-muted-foreground text-center">
-                Showing {displayedRequests.length} of {sortedPendingRequests.length} pending requests
+                )}
               </div>
             </>
           )}
