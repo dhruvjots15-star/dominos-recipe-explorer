@@ -18,6 +18,10 @@ const Dashboard = () => {
       navigate("/recipe-bank");
     } else if (tab === "size-codes") {
       navigate("/size-codes");
+    } else if (tab === "extra-toppings") {
+      navigate("/extra-toppings");
+    } else if (tab === "inventory-codes") {
+      navigate("/inventory-codes");
     }
   };
 
