@@ -704,39 +704,116 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
         </div>
 
         {/* Workflow Timeline */}
-        <Card className="border-2 shadow-lg">
-          <CardHeader className="bg-muted/30">
-            <CardTitle className="text-xl">Request Workflow</CardTitle>
+        <Card className="border-2 shadow-xl overflow-hidden">
+          <CardHeader className="bg-gradient-to-r from-primary/10 via-primary/5 to-background border-b">
+            <CardTitle className="text-2xl">Request Workflow</CardTitle>
           </CardHeader>
-          <CardContent className="pt-6">
-            <div className="space-y-6">
+          <CardContent className="pt-8 pb-8">
+            <div className="space-y-2">
               {steps.map((step, index) => {
                 const IconComponent = step.icon;
                 const isPending = step.status === 'pending';
+                const isCompleted = step.status === 'completed';
                 const isUpcoming = step.status === 'upcoming';
+                const isRejected = step.status === 'rejected';
+                
                 return (
-                  <div key={index} className={`flex items-start gap-4 relative transition-all duration-200 ${isPending ? 'scale-105' : ''}`}>
-                    <div className={`rounded-full p-3 ${getStatusBg(step.status)} transition-all duration-200`}>
-                      <IconComponent className={`h-6 w-6 ${getStatusColor(step.status)}`} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <h3 className={`font-semibold text-base ${getStatusColor(step.status)} ${isPending ? 'text-lg' : ''}`}>
-                          {step.title}
-                        </h3>
-                      </div>
-                      {step.description && (
-                        <p className={`text-sm mt-1 whitespace-pre-line ${isUpcoming ? 'text-muted-foreground/40' : 'text-muted-foreground'}`}>
-                          {step.description}
-                        </p>
-                      )}
-                    </div>
-                    {index < steps.length - 1 && step.status !== "rejected" && (
+                  <div key={index} className="relative">
+                    {/* Connecting Line */}
+                    {index < steps.length - 1 && (
                       <div 
-                        className={`absolute left-6 mt-14 w-0.5 h-8 ${isUpcoming ? 'bg-border/20' : step.status === 'pending' ? 'bg-amber-300 dark:bg-amber-600' : 'bg-emerald-300 dark:bg-emerald-600'}`}
-                        style={{ marginLeft: '1.75rem' }} 
+                        className={`absolute left-8 top-20 w-1 h-12 -mb-12 transition-all duration-300 ${
+                          isCompleted ? 'bg-emerald-400 dark:bg-emerald-500' : 
+                          isPending ? 'bg-gradient-to-b from-amber-400 to-muted/30 dark:from-amber-500' : 
+                          'bg-muted/30'
+                        }`}
                       />
                     )}
+                    
+                    {/* Step Card */}
+                    <div className={`relative flex items-start gap-6 p-6 rounded-xl transition-all duration-300 ${
+                      isPending ? 'bg-amber-50 dark:bg-amber-950/20 border-2 border-amber-400 dark:border-amber-600 shadow-lg scale-[1.02] ring-4 ring-amber-200/50 dark:ring-amber-900/30' :
+                      isCompleted ? 'bg-emerald-50/50 dark:bg-emerald-950/10 border border-emerald-200 dark:border-emerald-800/50' :
+                      isRejected ? 'bg-red-50/50 dark:bg-red-950/10 border border-red-200 dark:border-red-800/50' :
+                      'bg-muted/20 border border-muted/40 opacity-60'
+                    }`}>
+                      {/* Icon Circle */}
+                      <div className={`relative shrink-0 flex items-center justify-center rounded-full transition-all duration-300 ${
+                        isPending ? 'w-16 h-16 bg-gradient-to-br from-amber-400 to-amber-500 shadow-lg shadow-amber-400/50' :
+                        isCompleted ? 'w-14 h-14 bg-gradient-to-br from-emerald-400 to-emerald-500 shadow-md' :
+                        isRejected ? 'w-14 h-14 bg-gradient-to-br from-red-400 to-red-500 shadow-md' :
+                        'w-14 h-14 bg-muted/40 border-2 border-muted/60'
+                      }`}>
+                        <IconComponent className={`transition-all duration-300 ${
+                          isPending ? 'h-8 w-8 text-white animate-pulse' :
+                          isCompleted ? 'h-7 w-7 text-white' :
+                          isRejected ? 'h-7 w-7 text-white' :
+                          'h-6 w-6 text-muted-foreground/40'
+                        }`} />
+                        
+                        {/* Pulse ring for pending */}
+                        {isPending && (
+                          <div className="absolute inset-0 rounded-full bg-amber-400 animate-ping opacity-20" />
+                        )}
+                      </div>
+                      
+                      {/* Content */}
+                      <div className="flex-1 min-w-0 pt-1">
+                        <h3 className={`font-bold mb-2 transition-all duration-300 ${
+                          isPending ? 'text-xl text-amber-900 dark:text-amber-100' :
+                          isCompleted ? 'text-lg text-emerald-800 dark:text-emerald-200' :
+                          isRejected ? 'text-lg text-red-800 dark:text-red-200' :
+                          'text-base text-muted-foreground/50'
+                        }`}>
+                          {step.title}
+                        </h3>
+                        
+                        {step.description && (
+                          <div className={`text-sm space-y-1 transition-all duration-300 ${
+                            isPending ? 'text-amber-800 dark:text-amber-200 font-medium' :
+                            isCompleted ? 'text-emerald-700 dark:text-emerald-300' :
+                            isRejected ? 'text-red-700 dark:text-red-300' :
+                            'text-muted-foreground/40'
+                          }`}>
+                            {step.description.split('\n').map((line, i) => (
+                              <p key={i} className={i > 0 ? 'font-semibold' : ''}>
+                                {line}
+                              </p>
+                            ))}
+                          </div>
+                        )}
+                        
+                        {!step.description && isUpcoming && (
+                          <p className="text-sm text-muted-foreground/40 italic">
+                            Awaiting previous steps
+                          </p>
+                        )}
+                      </div>
+                      
+                      {/* Status Badge */}
+                      <div className="shrink-0 pt-1">
+                        {isPending && (
+                          <Badge className="bg-amber-500 hover:bg-amber-600 text-white font-semibold px-3 py-1 shadow-md">
+                            IN PROGRESS
+                          </Badge>
+                        )}
+                        {isCompleted && (
+                          <Badge className="bg-emerald-500 hover:bg-emerald-600 text-white font-medium px-3 py-1">
+                            COMPLETED
+                          </Badge>
+                        )}
+                        {isRejected && (
+                          <Badge className="bg-red-500 hover:bg-red-600 text-white font-medium px-3 py-1">
+                            REJECTED
+                          </Badge>
+                        )}
+                        {isUpcoming && (
+                          <Badge variant="outline" className="border-muted/40 text-muted-foreground/40 px-3 py-1">
+                            PENDING
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 );
               })}
