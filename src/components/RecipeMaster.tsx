@@ -18,8 +18,6 @@ import { RecipeView } from "./RecipeView";
 import { RecipeTable } from "./RecipeTable";
 import { DatabaseFilters } from "./DatabaseFilters";
 import { VersionComparison } from "./VersionComparison";
-import { ExtendVersionForm } from "./ExtendVersionForm";
-import { RollbackVersionForm } from "./RollbackVersionForm";
 import { RequestsTable } from "./RequestsTable";
 import type { DatabaseFilters as DatabaseFiltersType } from "./DatabaseFilters";
 import { mockRecipeData, RecipeItem, searchRecipes } from "@/data/recipeData";
@@ -41,8 +39,6 @@ export const RecipeMaster = () => {
   const [selectedRecipe, setSelectedRecipe] = useState<{ menuCode: string; sizeCode: string } | null>(null);
   const [showFilters, setShowFilters] = useState(false);
   const [showVersionComparison, setShowVersionComparison] = useState(false);
-  const [showExtendForm, setShowExtendForm] = useState(false);
-  const [showRollbackForm, setShowRollbackForm] = useState(false);
 
   const handleSearch = (filters: { 
     productSearch: string; 
@@ -182,13 +178,6 @@ export const RecipeMaster = () => {
     setSelectedRecipe(null);
   };
 
-  const handleRequestSubmitted = (requestId: string) => {
-    setShowExtendForm(false);
-    setShowRollbackForm(false);
-    // Navigate to the new route instead of showing inline
-    navigate(`/recipe-request/${requestId}`);
-  };
-
   return (
     <div className="min-h-screen bg-background">
       <div className="p-6 space-y-8">
@@ -222,10 +211,10 @@ export const RecipeMaster = () => {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56 bg-background z-50">
-                    <DropdownMenuItem onClick={() => setShowExtendForm(true)}>
+                    <DropdownMenuItem onClick={() => navigate(`/recipe-bank/extend-version?version=${selectedVersion}`)}>
                       Extend Version
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setShowRollbackForm(true)}>
+                    <DropdownMenuItem onClick={() => navigate(`/recipe-bank/rollback-version?version=${selectedVersion}`)}>
                       Rollback Version
                     </DropdownMenuItem>
                   </DropdownMenuContent>
@@ -411,22 +400,6 @@ export const RecipeMaster = () => {
         isOpen={showVersionComparison}
         onClose={() => setShowVersionComparison(false)}
         currentVersion={selectedVersion}
-      />
-
-      {/* Extend Version Form */}
-      <ExtendVersionForm
-        isOpen={showExtendForm}
-        onClose={() => setShowExtendForm(false)}
-        selectedVersion={selectedVersion}
-        onRequestSubmitted={handleRequestSubmitted}
-      />
-
-      {/* Rollback Version Form */}
-      <RollbackVersionForm
-        isOpen={showRollbackForm}
-        onClose={() => setShowRollbackForm(false)}
-        selectedVersion={selectedVersion}
-        onRequestSubmitted={handleRequestSubmitted}
       />
 
     </div>
