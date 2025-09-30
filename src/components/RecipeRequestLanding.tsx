@@ -22,6 +22,7 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
   const [showRejectForm, setShowRejectForm] = useState(false);
   const [showProducts, setShowProducts] = useState(false);
   const [showStores, setShowStores] = useState(false);
+  const [showSizeCodes, setShowSizeCodes] = useState(false);
 
   // Get the actual request data or create a placeholder for newly created requests
   const baseRequestType = source === 'size-codes' ? 'NEW SIZE CODE' : source === 'dashboard' ? 'NEW RECIPE' : 'VERSION EXTEND';
@@ -106,6 +107,48 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
         },
         {
           title: "Step 4: LIVE",
+          description: "",
+          status: 'upcoming' as const,
+          icon: Globe
+        }
+      ];
+    }
+
+    // Special handling for REQ_088
+    if (requestData.requestId === 'REQ_088') {
+      return [
+        {
+          title: "Step 1: Request Submission by Category Team",
+          description: "Submitted by Varun on Mar 13, 2025 21:45",
+          status: 'completed' as const,
+          icon: CheckCircle
+        },
+        {
+          title: "Step 2: Request Approval by Category Team",
+          description: "Awaiting Approval by Category Team",
+          status: 'pending' as const,
+          icon: Clock
+        },
+        {
+          title: "Step 3: Extra Topping Master Updation by Chef Team",
+          description: "",
+          status: 'upcoming' as const,
+          icon: Settings
+        },
+        {
+          title: "Step 4: Extra Topping Master Update Approval by Chef Team",
+          description: "",
+          status: 'upcoming' as const,
+          icon: Settings
+        },
+        {
+          title: "Step 5: Request Execution & Verification by MDM (POS) Team",
+          description: "",
+          status: 'upcoming' as const,
+          icon: Settings
+        },
+        {
+          title: "Step 6: LIVE",
           description: "",
           status: 'upcoming' as const,
           icon: Globe
@@ -667,6 +710,9 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
     if (request.requestId === 'REQ_125') {
       return status === "REQUEST CREATED, APPROVAL PENDING ON CATEGORY";
     }
+    if (request.requestId === 'REQ_088') {
+      return status === "REQUEST CREATED, APPROVAL PENDING ON CATEGORY";
+    }
     if (request.requestType === "NEW SIZE CODE") {
       return status === "REQUEST CREATED, APPROVAL PENDING";
     }
@@ -693,6 +739,9 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
       return status === "RECIPE SUBMITTED BY CHEF, PENDING APPROVAL ON CATEGORY & SC PLANNING";
     }
     if (request.requestId === 'REQ_125') {
+      return status === "REQUEST CREATED, APPROVAL PENDING ON CATEGORY";
+    }
+    if (request.requestId === 'REQ_088') {
       return status === "REQUEST CREATED, APPROVAL PENDING ON CATEGORY";
     }
     if (request.requestType === "NEW SIZE CODE") {
@@ -1069,7 +1118,57 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
               </>
             )}
             
-            {request.requestId !== 'REQ_142' && request.requestId !== 'REQ_125' && (
+            {request.requestId === 'REQ_088' && (
+              <>
+                <div>
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium text-muted-foreground">Size Codes</label>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowSizeCodes(!showSizeCodes)}
+                      className="text-primary hover:text-primary/80"
+                    >
+                      {showSizeCodes ? (
+                        <>
+                          <ChevronUp className="h-4 w-4 mr-1" />
+                          Hide Size Codes
+                        </>
+                      ) : (
+                        <>
+                          <ChevronDown className="h-4 w-4 mr-1" />
+                          View {request.sizeCodes?.length || 3} Size Codes
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                  <p className="text-foreground font-medium mt-1">{request.sizeCodes?.length || 3} size codes added</p>
+                  
+                  {showSizeCodes && request.sizeCodes && (
+                    <div className="mt-4 border rounded-lg overflow-hidden">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Size Code</TableHead>
+                            <TableHead>Size Description</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {request.sizeCodes.map((sizeCode, index) => (
+                            <TableRow key={index}>
+                              <TableCell className="font-medium">{sizeCode.code}</TableCell>
+                              <TableCell>{sizeCode.description}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
+            
+            {request.requestId !== 'REQ_142' && request.requestId !== 'REQ_125' && request.requestId !== 'REQ_088' && (
               <>
                 <div>
                   <label className="text-sm font-medium text-muted-foreground">Selected Version</label>
@@ -1090,13 +1189,17 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
               <div>
                 <label className="text-sm font-medium text-muted-foreground">Requested By</label>
                 <p className="text-foreground font-medium mt-1">
-                  {request.requestId === 'REQ_125' ? 'Varun' : `${request.requestedBy} on ${format(new Date(request.requestCreatedDate), 'MMM dd, yyyy, h:mma')}`}
+                  {request.requestId === 'REQ_125' || request.requestId === 'REQ_088' 
+                    ? 'Varun' 
+                    : `${request.requestedBy} on ${format(new Date(request.requestCreatedDate), 'MMM dd, yyyy, h:mma')}`}
                 </p>
               </div>
               <div>
                 <label className="text-sm font-medium text-muted-foreground">Created On</label>
                 <p className="text-foreground font-medium mt-1">
-                  {request.requestId === 'REQ_125' ? 'Mar 15, 2025, 9:45PM' : format(new Date(request.requestCreatedDate), 'MMM dd, yyyy, h:mma')}
+                  {request.requestId === 'REQ_125' ? 'Mar 15, 2025, 9:45PM' : 
+                   request.requestId === 'REQ_088' ? 'Mar 13, 2025 21:45' :
+                   format(new Date(request.requestCreatedDate), 'MMM dd, yyyy, h:mma')}
                 </p>
               </div>
             </div>

@@ -17,6 +17,10 @@ export interface DashboardRequest {
     sizeDescription: string;
   }>;
   stores?: string[];
+  sizeCodes?: Array<{
+    code: string;
+    description: string;
+  }>;
 }
 
 export const mockDashboardRequestsData: DashboardRequest[] = [
@@ -105,11 +109,16 @@ export const mockDashboardRequestsData: DashboardRequest[] = [
     requestDesc: "3 New Size Codes for Big Big Pizza",
     requestType: "NEW SIZE CODE",
     requestedBy: "Varun",
-    requestCreatedDate: "2025-03-13T16:15:00Z",
+    requestCreatedDate: "2025-03-13T21:45:00Z",
     currentStatus: "REQUEST CREATED, APPROVAL PENDING ON CATEGORY",
     targetVersion: "v1.0",
     affectedStores: 180,
-    remarks: "Extra large size introduction"
+    remarks: "Extra large size introduction",
+    sizeCodes: [
+      { code: "BB125", description: "Lar BBP" },
+      { code: "BB175", description: "Xlar BBP" },
+      { code: "BB175", description: "XXL BBP" }
+    ]
   },
   {
     requestId: "REQ_075",
