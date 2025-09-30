@@ -199,12 +199,12 @@ const UpdateRecipePage = () => {
                               <Pencil className="h-4 w-4" />
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-64 bg-popover z-50">
+                          <DropdownMenuContent align="end" className="w-80 bg-popover z-50">
                             <DropdownMenuItem
                               onClick={() => handleReplicateRecipe(index)}
                               className="cursor-pointer"
                             >
-                              Replicate Recipe of SD01-PIZ0901
+                              Replicate Recipe of Reg Sourdough - OA_Sourdough Corn Pizza
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() => handleEdit(product, index)}
