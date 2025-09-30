@@ -26,6 +26,18 @@ export interface DashboardRequest {
 
 export const mockDashboardRequestsData: DashboardRequest[] = [
   {
+    requestId: "REQ_147",
+    requestDesc: "New Sourdough Pizza Recipes creation",
+    requestType: "NEW RECIPE",
+    requestedBy: "Kshitij",
+    requestCreatedDate: "2025-03-17T16:15:00Z",
+    currentStatus: "ALL APPROVALS DONE, PENDING EXECUTION BY MDM(POS)",
+    pendingOnTeam: "MDM (POS) Team",
+    targetVersion: "v1.0",
+    affectedStores: 0,
+    remarks: "New premium pizza line"
+  },
+  {
     requestId: "REQ_144",
     requestDesc: "New Sourdough Pizza Recipes creation",
     requestType: "NEW RECIPE",
@@ -64,6 +76,18 @@ export const mockDashboardRequestsData: DashboardRequest[] = [
     ]
   },
   {
+    requestId: "REQ_139",
+    requestDesc: "Modify Recipes for Pizza Mania Pizzas in v7",
+    requestType: "RECIPE MODIFICATION",
+    requestedBy: "Kshitij",
+    requestCreatedDate: "2025-03-16T16:15:00Z",
+    currentStatus: "REQUEST EXECUTED & VERIFIED BY MDM(POS), PENDING GO LIVE",
+    pendingOnTeam: "MDM (POS) Team",
+    targetVersion: "v7",
+    affectedStores: 200,
+    remarks: "Recipe updates for existing line"
+  },
+  {
     requestId: "REQ_136",
     requestDesc: "Modify Recipes for Pizza Mania Pizzas in v7",
     requestType: "RECIPE MODIFICATION",
@@ -74,6 +98,40 @@ export const mockDashboardRequestsData: DashboardRequest[] = [
     targetVersion: "v7",
     affectedStores: 200,
     remarks: "Recipe updates for existing line"
+  },
+  {
+    requestId: "REQ_127",
+    requestDesc: "Extend v5 on 100 more stores",
+    requestType: "VERSION EXTEND",
+    requestedBy: "Varun",
+    requestCreatedDate: "2025-03-15T16:15:00Z",
+    currentStatus: "REQUEST APPROVED, PENDING EXECUTION BY MDM(POS)",
+    pendingOnTeam: "MDM (POS) Team",
+    targetVersion: "v5 All India",
+    affectedStores: 100,
+    remarks: "Store expansion",
+    stores: [
+      "DPI1001 Mumbai Andheri store", "DPI1002 Mumbai Bandra store", "DPI1003 Mumbai Juhu store", "DPI1004 Mumbai Powai store", "DPI1005 Mumbai Goregaon store",
+      "DPI1006 Delhi Connaught Place store", "DPI1007 Delhi Saket store", "DPI1008 Delhi Rohini store", "DPI1009 Delhi Dwarka store", "DPI1010 Delhi Nehru Place store",
+      "DPI1011 Bangalore Koramangala store", "DPI1012 Bangalore Indiranagar store", "DPI1013 Bangalore Whitefield store", "DPI1014 Bangalore Marathahalli store", "DPI1015 Bangalore Electronic City store",
+      "DPI1016 Chennai T Nagar store", "DPI1017 Chennai Anna Nagar store", "DPI1018 Chennai Velachery store", "DPI1019 Chennai Adyar store", "DPI1020 Chennai Malaigaon store",
+      "DPI1021 Hyderabad Banjara Hills store", "DPI1022 Hyderabad Hitech City store", "DPI1023 Hyderabad Gachibowli store", "DPI1024 Hyderabad Kukatpally store", "DPI1025 Hyderabad Madhapur store",
+      "DPI1026 Pune Koregaon Park store", "DPI1027 Pune Hinjewadi store", "DPI1028 Pune Kothrud store", "DPI1029 Pune Viman Nagar store", "DPI1030 Pune Wakad store",
+      "DPI1031 Kolkata Park Street store", "DPI1032 Kolkata Salt Lake store", "DPI1033 Kolkata Howrah store", "DPI1034 Kolkata Ballygunge store", "DPI1035 Kolkata New Town store",
+      "DPI1036 Ahmedabad Satellite store", "DPI1037 Ahmedabad Vastrapur store", "DPI1038 Ahmedabad Bopal store", "DPI1039 Ahmedabad Thaltej store", "DPI1040 Ahmedabad Maninagar store",
+      "DPI1041 Jaipur C Scheme store", "DPI1042 Jaipur Vaishali Nagar store", "DPI1043 Jaipur Malviya Nagar store", "DPI1044 Jaipur Mansarovar store", "DPI1045 Jaipur Raja Park store",
+      "DPI1046 Chandigarh Sector 17 store", "DPI1047 Chandigarh Sector 35 store", "DPI1048 Chandigarh Sector 22 store", "DPI1049 Chandigarh Zirakpur store", "DPI1050 Chandigarh Mohali store",
+      "DPI1051 Lucknow Hazratganj store", "DPI1052 Lucknow Gomti Nagar store", "DPI1053 Lucknow Alambagh store", "DPI1054 Lucknow Aliganj store", "DPI1055 Lucknow Indira Nagar store",
+      "DPI1056 Kochi Marine Drive store", "DPI1057 Kochi Kaloor store", "DPI1058 Kochi Edappally store", "DPI1059 Kochi Kakkanad store", "DPI1060 Kochi Vytilla store",
+      "DPI1061 Coimbatore RS Puram store", "DPI1062 Coimbatore Gandhipuram store", "DPI1063 Coimbatore Saibaba Colony store", "DPI1064 Coimbatore Peelamedu store", "DPI1065 Coimbatore Ukkadam store",
+      "DPI1066 Indore Vijay Nagar store", "DPI1067 Indore Palasia store", "DPI1068 Indore MG Road store", "DPI1069 Indore Sapna Sangeeta store", "DPI1070 Indore South Tukoganj store",
+      "DPI1071 Nagpur Dharampeth store", "DPI1072 Nagpur Sadar store", "DPI1073 Nagpur Sitabuldi store", "DPI1074 Nagpur Civil Lines store", "DPI1075 Nagpur Wardha Road store",
+      "DPI1076 Vadodara Alkapuri store", "DPI1077 Vadodara Sayajigunj store", "DPI1078 Vadodara Manjalpur store", "DPI1079 Vadodara Fatehgunj store", "DPI1080 Vadodara Waghodia Road store",
+      "DPI1081 Surat Adajan store", "DPI1082 Surat Athwalines store", "DPI1083 Surat Vesu store", "DPI1084 Surat Udhna store", "DPI1085 Surat City Light store",
+      "DPI1086 Visakhapatnam Beach Road store", "DPI1087 Visakhapatnam Dwaraka Nagar store", "DPI1088 Visakhapatnam MVP Colony store", "DPI1089 Visakhapatnam Madhurawada store", "DPI1090 Visakhapatnam Gajuwaka store",
+      "DPI1091 Bhopal MP Nagar store", "DPI1092 Bhopal Arera Colony store", "DPI1093 Bhopal New Market store", "DPI1094 Bhopal Hoshangabad Road store", "DPI1095 Bhopal Bawadiya Kalan store",
+      "DPI1096 Patna Boring Road store", "DPI1097 Patna Fraser Road store", "DPI1098 Patna Kankarbagh store", "DPI1099 Patna Patliputra store", "DPI1100 Patna Bailey Road store"
+    ]
   },
   {
     requestId: "REQ_125",
