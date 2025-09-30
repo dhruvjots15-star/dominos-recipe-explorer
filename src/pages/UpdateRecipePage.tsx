@@ -22,20 +22,39 @@ const UpdateRecipePage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
-  const [products, setProducts] = useState<Product[]>([
-    { menuCode: "PIZ0901", menuCategoryCode: "MCT0001", description: "OA_Sourdough Corn Pizza", sizeCode: "SD01", sizeDescription: "Reg Sourdough" },
-    { menuCode: "PIZ0901", menuCategoryCode: "MCT0001", description: "OA_Sourdough Corn Pizza", sizeCode: "SD02", sizeDescription: "Med Sourdough" },
-    { menuCode: "PIZ0901", menuCategoryCode: "MCT0001", description: "OA_Sourdough Corn Pizza", sizeCode: "SD03", sizeDescription: "Lar Sourdough" },
-    { menuCode: "PIZ0902", menuCategoryCode: "MCT0001", description: "IR_Sourdough Corn Pizza", sizeCode: "SD01", sizeDescription: "Reg Sourdough" },
-    { menuCode: "PIZ0902", menuCategoryCode: "MCT0001", description: "IR_Sourdough Corn Pizza", sizeCode: "SD02", sizeDescription: "Med Sourdough" },
-    { menuCode: "PIZ0902", menuCategoryCode: "MCT0001", description: "IR_Sourdough Corn Pizza", sizeCode: "SD03", sizeDescription: "Lar Sourdough" },
-    { menuCode: "PIZ0903", menuCategoryCode: "MCT0001", description: "DI_Sourdough Corn Pizza", sizeCode: "SD01", sizeDescription: "Reg Sourdough" },
-    { menuCode: "PIZ0903", menuCategoryCode: "MCT0001", description: "DI_Sourdough Corn Pizza", sizeCode: "SD02", sizeDescription: "Med Sourdough" },
-    { menuCode: "PIZ0903", menuCategoryCode: "MCT0001", description: "DI_Sourdough Corn Pizza", sizeCode: "SD03", sizeDescription: "Lar Sourdough" },
-    { menuCode: "PIZ0904", menuCategoryCode: "MCT0001", description: "DI_Sourdough Corn Pizza", sizeCode: "SD01", sizeDescription: "Reg Sourdough" },
-    { menuCode: "PIZ0904", menuCategoryCode: "MCT0001", description: "DI_Sourdough Corn Pizza", sizeCode: "SD02", sizeDescription: "Med Sourdough" },
-    { menuCode: "PIZ0904", menuCategoryCode: "MCT0001", description: "DI_Sourdough Corn Pizza", sizeCode: "SD03", sizeDescription: "Lar Sourdough" }
-  ]);
+  // Initialize products state with persisted submission status from localStorage
+  const [products, setProducts] = useState<Product[]>(() => {
+    const initialProducts: Product[] = [
+      { menuCode: "PIZ0901", menuCategoryCode: "MCT0001", description: "OA_Sourdough Corn Pizza", sizeCode: "SD01", sizeDescription: "Reg Sourdough" },
+      { menuCode: "PIZ0901", menuCategoryCode: "MCT0001", description: "OA_Sourdough Corn Pizza", sizeCode: "SD02", sizeDescription: "Med Sourdough" },
+      { menuCode: "PIZ0901", menuCategoryCode: "MCT0001", description: "OA_Sourdough Corn Pizza", sizeCode: "SD03", sizeDescription: "Lar Sourdough" },
+      { menuCode: "PIZ0902", menuCategoryCode: "MCT0001", description: "IR_Sourdough Corn Pizza", sizeCode: "SD01", sizeDescription: "Reg Sourdough" },
+      { menuCode: "PIZ0902", menuCategoryCode: "MCT0001", description: "IR_Sourdough Corn Pizza", sizeCode: "SD02", sizeDescription: "Med Sourdough" },
+      { menuCode: "PIZ0902", menuCategoryCode: "MCT0001", description: "IR_Sourdough Corn Pizza", sizeCode: "SD03", sizeDescription: "Lar Sourdough" },
+      { menuCode: "PIZ0903", menuCategoryCode: "MCT0001", description: "DI_Sourdough Corn Pizza", sizeCode: "SD01", sizeDescription: "Reg Sourdough" },
+      { menuCode: "PIZ0903", menuCategoryCode: "MCT0001", description: "DI_Sourdough Corn Pizza", sizeCode: "SD02", sizeDescription: "Med Sourdough" },
+      { menuCode: "PIZ0903", menuCategoryCode: "MCT0001", description: "DI_Sourdough Corn Pizza", sizeCode: "SD03", sizeDescription: "Lar Sourdough" },
+      { menuCode: "PIZ0904", menuCategoryCode: "MCT0001", description: "DI_Sourdough Corn Pizza", sizeCode: "SD01", sizeDescription: "Reg Sourdough" },
+      { menuCode: "PIZ0904", menuCategoryCode: "MCT0001", description: "DI_Sourdough Corn Pizza", sizeCode: "SD02", sizeDescription: "Med Sourdough" },
+      { menuCode: "PIZ0904", menuCategoryCode: "MCT0001", description: "DI_Sourdough Corn Pizza", sizeCode: "SD03", sizeDescription: "Lar Sourdough" }
+    ];
+
+    // Load persisted submission status from localStorage
+    const storageKey = `recipe-submission-${requestId}`;
+    const savedStatus = localStorage.getItem(storageKey);
+    if (savedStatus) {
+      try {
+        const submittedIndices = JSON.parse(savedStatus) as number[];
+        return initialProducts.map((product, index) => ({
+          ...product,
+          recipeSubmitted: submittedIndices.includes(index)
+        }));
+      } catch (e) {
+        console.error("Failed to parse saved submission status", e);
+      }
+    }
+    return initialProducts;
+  });
 
   const handleBack = () => {
     navigate(`/recipe-request/${requestId}?source=dashboard`);
@@ -62,11 +81,22 @@ const UpdateRecipePage = () => {
     }
   };
 
-  // Update product status when returning from editor
+  // Update product status and persist to localStorage
   const updateProductStatus = (index: number) => {
-    const updatedProducts = [...products];
-    updatedProducts[index].recipeSubmitted = true;
-    setProducts(updatedProducts);
+    setProducts(prevProducts => {
+      const updatedProducts = prevProducts.map((product, i) => 
+        i === index ? { ...product, recipeSubmitted: true } : product
+      );
+      
+      // Save to localStorage
+      const storageKey = `recipe-submission-${requestId}`;
+      const submittedIndices = updatedProducts
+        .map((product, i) => product.recipeSubmitted ? i : -1)
+        .filter(i => i !== -1);
+      localStorage.setItem(storageKey, JSON.stringify(submittedIndices));
+      
+      return updatedProducts;
+    });
   };
 
   // Check location state for recipe submission
@@ -82,6 +112,10 @@ const UpdateRecipePage = () => {
   const allRecipesSubmitted = products.every(p => p.recipeSubmitted);
 
   const handleFinalSubmit = () => {
+    // Clear localStorage after successful submission
+    const storageKey = `recipe-submission-${requestId}`;
+    localStorage.removeItem(storageKey);
+    
     toast({
       title: "Success",
       description: `Recipes Submitted for ${requestId}`,
