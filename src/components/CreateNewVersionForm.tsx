@@ -53,14 +53,20 @@ export const CreateNewVersionForm = ({ open, onOpenChange, onVersionCreated }: C
         <div className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="versionName">Version Name *</Label>
-            <Input
-              id="versionName"
-              placeholder="e.g., Sourdough Pizza rollout"
-              value={versionName}
-              onChange={(e) => setVersionName(e.target.value)}
-            />
+            <div className="flex items-center">
+              <span className="px-3 py-2 bg-muted text-muted-foreground border border-r-0 rounded-l-md text-sm">
+                v9
+              </span>
+              <Input
+                id="versionName"
+                placeholder="e.g., Sourdough Pizza rollout"
+                value={versionName}
+                onChange={(e) => setVersionName(e.target.value)}
+                className="rounded-l-none"
+              />
+            </div>
             <p className="text-sm text-muted-foreground">
-              Version number will be auto-generated
+              Version number is auto-generated
             </p>
           </div>
 

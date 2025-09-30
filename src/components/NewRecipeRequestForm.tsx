@@ -142,6 +142,9 @@ export const NewRecipeRequestForm = ({ open, onOpenChange }: NewRecipeRequestFor
             {/* Recipe Bank Version */}
             <div className="space-y-3">
               <Label>Recipe Bank Version *</Label>
+              <p className="text-sm text-muted-foreground">
+                Select Recipe bank version(s) where you wish to add the new recipes to. Multiple selections possible
+              </p>
               <div className="border rounded-lg p-4 space-y-3 max-h-48 overflow-y-auto">
                 {recipeBankVersions.map((version) => (
                   <div key={version.id} className="flex items-center space-x-2">
