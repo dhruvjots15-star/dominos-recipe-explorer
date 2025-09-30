@@ -150,7 +150,7 @@ export const InventoryCodesMaster = () => {
               <DropdownMenuItem onClick={() => navigate("/inventory-codes/add-new")}>
                 Add a New Inventory Item
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => toast.info("Modify functionality coming soon")}>
+              <DropdownMenuItem onClick={() => navigate("/inventory-codes/modify")}>
                 Modify an Existing Inventory Item
               </DropdownMenuItem>
             </DropdownMenuContent>
