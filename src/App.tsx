@@ -9,6 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import RecipeRequestLandingPage from "./pages/RecipeRequestLandingPage";
 import NotFound from "./pages/NotFound";
 import NewRecipeRequestPage from "./pages/NewRecipeRequestPage";
+import ModifyRecipeRequestPage from "./pages/ModifyRecipeRequestPage";
 import UpdateRecipePage from "./pages/UpdateRecipePage";
 import RecipeEditorPage from "./pages/RecipeEditorPage";
 import { AddNewInventoryItemForm } from "./components/AddNewInventoryItemForm";
@@ -36,6 +37,7 @@ const App = () => (
             <Route path="/recipe-request/:requestId/update-recipe" element={<UpdateRecipePage />} />
             <Route path="/recipe-request/:requestId/update-recipe/editor" element={<RecipeEditorPage />} />
             <Route path="/requests/new-recipe" element={<NewRecipeRequestPage />} />
+            <Route path="/requests/modify-recipe" element={<ModifyRecipeRequestPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
