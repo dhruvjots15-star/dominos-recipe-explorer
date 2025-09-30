@@ -1089,12 +1089,14 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t">
               <div>
                 <label className="text-sm font-medium text-muted-foreground">Requested By</label>
-                <p className="text-foreground font-medium mt-1">{request.requestedBy} on {format(new Date(request.requestCreatedDate), 'MMM dd, yyyy, h:mma')}</p>
+                <p className="text-foreground font-medium mt-1">
+                  {request.requestId === 'REQ_125' ? 'Varun' : `${request.requestedBy} on ${format(new Date(request.requestCreatedDate), 'MMM dd, yyyy, h:mma')}`}
+                </p>
               </div>
               <div>
                 <label className="text-sm font-medium text-muted-foreground">Created On</label>
                 <p className="text-foreground font-medium mt-1">
-                  {format(new Date(request.requestCreatedDate), 'MMM dd, yyyy, h:mma')}
+                  {request.requestId === 'REQ_125' ? 'Mar 15, 2025, 9:45PM' : format(new Date(request.requestCreatedDate), 'MMM dd, yyyy, h:mma')}
                 </p>
               </div>
             </div>
