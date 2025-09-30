@@ -11,6 +11,7 @@ import NotFound from "./pages/NotFound";
 import NewRecipeRequestPage from "./pages/NewRecipeRequestPage";
 import UpdateRecipePage from "./pages/UpdateRecipePage";
 import RecipeEditorPage from "./pages/RecipeEditorPage";
+import { AddNewInventoryItemForm } from "./components/AddNewInventoryItemForm";
 
 const queryClient = new QueryClient();
 
@@ -24,9 +25,10 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/recipe-bank" element={<Index activeTab="recipe-bank" />} />
-            <Route path="/size-codes" element={<Index activeTab="size-codes" />} />
-            <Route path="/extra-toppings" element={<Index activeTab="extra-toppings" />} />
-            <Route path="/inventory-codes" element={<Index activeTab="inventory-codes" />} />
+          <Route path="/size-codes" element={<Index activeTab="size-codes" />} />
+          <Route path="/extra-toppings" element={<Index activeTab="extra-toppings" />} />
+          <Route path="/inventory-codes" element={<Index activeTab="inventory-codes" />} />
+          <Route path="/inventory-codes/add-new" element={<AddNewInventoryItemForm />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/recipe-request/:requestId" element={<RecipeRequestLandingPage />} />
             <Route path="/recipe-request/:requestId/update-recipe" element={<UpdateRecipePage />} />

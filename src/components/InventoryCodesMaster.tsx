@@ -8,11 +8,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Users, Calendar, Filter, FileText, ArrowUpDown, ArrowUp, ArrowDown, Eye } from "lucide-react";
+import { Users, Calendar, Filter, FileText, ArrowUpDown, ArrowUp, ArrowDown, Eye, Edit } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
 import { format } from "date-fns";
 import { inventoryCodesData, inventoryRequests } from "@/data/inventoryCodesData";
 import { getStatusVariant } from "@/utils/requestTypeUtils";
+import { toast } from "sonner";
 
 export const InventoryCodesMaster = () => {
   const navigate = useNavigate();
@@ -128,13 +130,31 @@ export const InventoryCodesMaster = () => {
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       <div className="container mx-auto p-6 space-y-8">
         {/* Header Section */}
-        <div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-            Inventory Codes Master
-          </h1>
-          <p className="text-lg text-muted-foreground mt-2">
-            Manage and maintain Inventory Items for all products
-          </p>
+        <div className="flex justify-between items-start">
+          <div>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+              Inventory Codes Master
+            </h1>
+            <p className="text-lg text-muted-foreground mt-2">
+              Manage and maintain Inventory Items for all products
+            </p>
+          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button className="gap-2">
+                <Edit className="h-4 w-4" />
+                Edit
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuItem onClick={() => navigate("/inventory-codes/add-new")}>
+                Add a New Inventory Item
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => toast.info("Modify functionality coming soon")}>
+                Modify an Existing Inventory Item
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         {/* Statistics Cards */}
