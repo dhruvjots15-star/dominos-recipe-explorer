@@ -6,7 +6,7 @@ import { CheckCircle, Clock, AlertCircle, XCircle, ArrowLeft, User, Calendar, Fi
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
-import { getDashboardRequestById } from "@/data/dashboardRequestsData";
+import { getDashboardRequestById, DashboardRequest } from "@/data/dashboardRequestsData";
 
 interface RecipeRequestLandingProps {
   requestId: string;
@@ -19,23 +19,20 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
   const [rejectReason, setRejectReason] = useState("");
   const [showRejectForm, setShowRejectForm] = useState(false);
 
-  // Get the actual request data
-  const request = getDashboardRequestById(requestId);
-  
-  if (!request) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-950 dark:to-blue-950 p-6">
-        <div className="text-center max-w-md mx-auto mt-20">
-          <h1 className="text-2xl font-bold text-destructive mb-4">Request Not Found</h1>
-          <p className="text-muted-foreground mb-6">The requested ID {requestId} was not found.</p>
-          <Button onClick={onBack} variant="outline" className="gap-2">
-            <ArrowLeft className="w-4 h-4" />
-            {source === 'dashboard' ? 'Back to Dashboard' : 'Back to Recipe Bank'}
-          </Button>
-        </div>
-      </div>
-    );
-  }
+  // Get the actual request data or create a placeholder for newly created requests
+  const baseRequestType = source === 'size-codes' ? 'NEW SIZE CODE' : source === 'dashboard' ? 'NEW RECIPE' : 'VERSION EXTEND';
+  const placeholderRequest: DashboardRequest = {
+    requestId,
+    requestDesc: 'Request created. Details will be available shortly.',
+    requestType: baseRequestType as any,
+    requestedBy: 'You',
+    requestCreatedDate: new Date().toISOString(),
+    currentStatus: 'REQUEST CREATED, APPROVAL PENDING',
+    targetVersion: 'v1.0',
+    affectedStores: 0,
+    remarks: ''
+  };
+  const request = getDashboardRequestById(requestId) || placeholderRequest;
 
   const getWorkflowSteps = (requestData: any) => {
     const steps = [
