@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -7,11 +8,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Plus } from "lucide-react";
-import { NewRecipeRequestForm } from "./NewRecipeRequestForm";
 import { ModifyRecipeRequestForm } from "./ModifyRecipeRequestForm";
 
 export const CreateNewRequestDropdown = () => {
-  const [showNewRecipeForm, setShowNewRecipeForm] = useState(false);
+  const navigate = useNavigate();
   const [showModifyRecipeForm, setShowModifyRecipeForm] = useState(false);
 
   return (
@@ -24,7 +24,7 @@ export const CreateNewRequestDropdown = () => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56">
-          <DropdownMenuItem onClick={() => setShowNewRecipeForm(true)}>
+          <DropdownMenuItem onClick={() => navigate("/requests/new-recipe")}>
             Create New Recipes
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setShowModifyRecipeForm(true)}>
@@ -33,10 +33,6 @@ export const CreateNewRequestDropdown = () => {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <NewRecipeRequestForm 
-        open={showNewRecipeForm} 
-        onOpenChange={setShowNewRecipeForm}
-      />
       <ModifyRecipeRequestForm 
         open={showModifyRecipeForm} 
         onOpenChange={setShowModifyRecipeForm}
