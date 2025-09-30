@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTeamView } from "@/contexts/TeamViewContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Users, Calendar, Filter, FileText, ArrowUpDown, ArrowUp, ArrowDown, Eye } from "lucide-react";
+import { Users, Calendar, Filter, FileText, ArrowUpDown, ArrowUp, ArrowDown, Eye, Edit } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -23,12 +24,15 @@ import {
   CollapsibleContent,
 } from "@/components/ui/collapsible";
 import { getStatusVariant } from "@/utils/requestTypeUtils";
+import { UpdateExtraToppingsForm } from "./UpdateExtraToppingsForm";
 
 type SortField = "requestId" | "requestCreatedDate";
 type SortDirection = "asc" | "desc";
 
 export const ExtraToppingsMaster = () => {
   const navigate = useNavigate();
+  const { currentTeam } = useTeamView();
+  const [currentView, setCurrentView] = useState<"master" | "update">("master");
   const [visibleRequests, setVisibleRequests] = useState(5);
   const [sortField, setSortField] = useState<SortField>("requestCreatedDate");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
@@ -140,6 +144,10 @@ export const ExtraToppingsMaster = () => {
     );
   });
 
+  if (currentView === "update") {
+    return <UpdateExtraToppingsForm onBack={() => setCurrentView("master")} />;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       <div className="container mx-auto p-6 space-y-8">
@@ -153,6 +161,12 @@ export const ExtraToppingsMaster = () => {
               Manage and maintain Extra Topping portions for all sizes
             </p>
           </div>
+          {currentTeam === "Chef Team" && (
+            <Button onClick={() => setCurrentView("update")} className="gap-2">
+              <Edit className="h-4 w-4" />
+              Edit
+            </Button>
+          )}
         </div>
 
         {/* Statistics Cards */}

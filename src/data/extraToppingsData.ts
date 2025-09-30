@@ -10,6 +10,15 @@ export interface ExtraTopping {
   tripleAmount: number;
 }
 
+// All available size codes
+export const allSizeCodes = [
+  "HT07", "BHT07", "CB07", "CM07", "TC07", "CF07", "CK07",
+  "PT09", "BPT09", "MT08", "LT10", "XLT12", "ST06", "RST07",
+  "DTH08", "DBTH08", "PCB09", "PCM10", "PTC11", "WCB07", "WCM08",
+  "TCF06", "BTCF06", "GCB08", "GCM09", "GTC10", "SCB07", "SCM08",
+  "FCB09", "FCM10", "FTC11", "BCB08", "BCM09", "BTC10", "NCB07"
+];
+
 export interface ExtraToppingRequest {
   id: string;
   requestDesc: string;
