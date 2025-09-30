@@ -71,12 +71,13 @@ const UpdateRecipePage = () => {
 
   // Check location state for recipe submission
   useEffect(() => {
-    if (location.state?.productIndex !== undefined && location.state?.recipeSubmitted) {
-      updateProductStatus(location.state.productIndex);
-      // Clear the state
-      window.history.replaceState({}, document.title);
+    const state = location.state as any;
+    if (state?.productIndex !== undefined && state?.recipeSubmitted) {
+      updateProductStatus(state.productIndex);
+      // Clear the state to prevent re-triggering
+      navigate(location.pathname, { replace: true, state: {} });
     }
-  }, [location.state]);
+  }, [location.state, location.pathname, navigate]);
 
   const allRecipesSubmitted = products.every(p => p.recipeSubmitted);
 
@@ -127,7 +128,7 @@ const UpdateRecipePage = () => {
                 {products.map((product, index) => (
                   <TableRow 
                     key={`${product.menuCode}-${product.sizeCode}-${index}`}
-                    className={product.recipeSubmitted ? "bg-success/20 hover:bg-success/30" : ""}
+                    className={product.recipeSubmitted ? "bg-green-100 dark:bg-green-900/20 hover:bg-green-200 dark:hover:bg-green-900/30" : ""}
                   >
                     <TableCell className="font-medium">{product.menuCode}</TableCell>
                     <TableCell>{product.menuCategoryCode}</TableCell>
@@ -152,9 +153,9 @@ const UpdateRecipePage = () => {
 
         <div className="mt-6 flex justify-center">
           <TooltipProvider>
-            <Tooltip>
+            <Tooltip delayDuration={0}>
               <TooltipTrigger asChild>
-                <div>
+                <span className="inline-block">
                   <Button
                     size="lg"
                     onClick={handleFinalSubmit}
@@ -163,10 +164,10 @@ const UpdateRecipePage = () => {
                   >
                     SUBMIT
                   </Button>
-                </div>
+                </span>
               </TooltipTrigger>
               {!allRecipesSubmitted && (
-                <TooltipContent>
+                <TooltipContent side="top">
                   <p>Complete updating recipes for All items</p>
                 </TooltipContent>
               )}
