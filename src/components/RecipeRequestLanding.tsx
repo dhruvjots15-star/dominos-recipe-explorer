@@ -2,12 +2,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-import { CheckCircle, Clock, AlertCircle, XCircle, ArrowLeft, User, Calendar, FileText, Settings, Play, Globe } from "lucide-react";
+import { CheckCircle, Clock, AlertCircle, XCircle, ArrowLeft, User, Calendar, FileText, Settings, Play, Globe, ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { getDashboardRequestById, DashboardRequest } from "@/data/dashboardRequestsData";
 import { getRequestById as getRecipeBankRequestById, RecipeRequest as RBRequest } from "@/data/requestsData";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 interface RecipeRequestLandingProps {
   requestId: string;
@@ -19,6 +20,7 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
   const { toast } = useToast();
   const [rejectReason, setRejectReason] = useState("");
   const [showRejectForm, setShowRejectForm] = useState(false);
+  const [showProducts, setShowProducts] = useState(false);
 
   // Get the actual request data or create a placeholder for newly created requests
   const baseRequestType = source === 'size-codes' ? 'NEW SIZE CODE' : source === 'dashboard' ? 'NEW RECIPE' : 'VERSION EXTEND';
@@ -38,6 +40,48 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
   const request = (recipeBankRequest || dashboardRequest || placeholderRequest) as any;
 
   const getWorkflowSteps = (requestData: any) => {
+    // Special handling for REQ_142
+    if (requestData.requestId === 'REQ_142') {
+      return [
+        {
+          title: "Step 1: Request Submission by Category Team",
+          description: "Submitted by Kshitij on Mar 17, 2025, 4:15pm",
+          status: 'completed' as const,
+          icon: CheckCircle
+        },
+        {
+          title: "Step 2: Recipe Submission by Chef Team",
+          description: "Submitted by Shamsher on Mar 18, 2025, 4:15pm",
+          status: 'completed' as const,
+          icon: CheckCircle
+        },
+        {
+          title: "Step 3: Recipe Approvals by Category, SC Planning & Quality Teams",
+          description: "Approved by Rajesh on Mar 19, 2025, 4:15pm\nAwaiting Approvals by Category & SC Planning",
+          status: 'pending' as const,
+          icon: Clock
+        },
+        {
+          title: "Step 4: Final Recipe Approval by Finance Team",
+          description: "",
+          status: 'upcoming' as const,
+          icon: Settings
+        },
+        {
+          title: "Step 5: Request Execution & Verification by MDM (POS) Team",
+          description: "",
+          status: 'upcoming' as const,
+          icon: Settings
+        },
+        {
+          title: "Step 6: LIVE",
+          description: "",
+          status: 'upcoming' as const,
+          icon: Globe
+        }
+      ];
+    }
+    
     // Handle NEW RECIPE and RECIPE MODIFICATION requests with 6-step workflow
     if (requestData.requestType === 'NEW RECIPE' || requestData.requestType === 'RECIPE MODIFICATION') {
       const status = requestData.currentStatus;
@@ -530,10 +574,10 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
 
   const getStatusBg = (status: string) => {
     switch (status) {
-      case "completed": return "bg-emerald-100 dark:bg-emerald-950/30";
-      case "pending": return "bg-amber-100 dark:bg-amber-950/30";
-      case "rejected": return "bg-red-100 dark:bg-red-950/30";
-      case "upcoming": return "bg-muted/30";
+      case "completed": return "bg-emerald-100 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800";
+      case "pending": return "bg-amber-100 dark:bg-amber-950/30 border-2 border-amber-400 dark:border-amber-600";
+      case "rejected": return "bg-red-100 dark:bg-red-950/30 border border-red-200 dark:border-red-800";
+      case "upcoming": return "bg-muted/20 border border-muted/30 opacity-50";
       default: return "bg-muted";
     }
   };
@@ -586,6 +630,9 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
   };
 
   const canApprove = (status: string) => {
+    if (request.requestId === 'REQ_142') {
+      return status === "RECIPE SUBMITTED BY CHEF, PENDING APPROVAL ON CATEGORY & SC PLANNING";
+    }
     if (request.requestType === "NEW SIZE CODE") {
       return status === "REQUEST CREATED, APPROVAL PENDING";
     }
@@ -608,6 +655,9 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
   };
 
   const canReject = (status: string) => {
+    if (request.requestId === 'REQ_142') {
+      return status === "RECIPE SUBMITTED BY CHEF, PENDING APPROVAL ON CATEGORY & SC PLANNING";
+    }
     if (request.requestType === "NEW SIZE CODE") {
       return status === "REQUEST CREATED, APPROVAL PENDING" || 
              status === "REQUEST APPROVED, PENDING ON CHEF" ||
@@ -654,34 +704,36 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
         </div>
 
         {/* Workflow Timeline */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Request Workflow</CardTitle>
+        <Card className="border-2 shadow-lg">
+          <CardHeader className="bg-muted/30">
+            <CardTitle className="text-xl">Request Workflow</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-6">
             <div className="space-y-6">
               {steps.map((step, index) => {
                 const IconComponent = step.icon;
+                const isPending = step.status === 'pending';
+                const isUpcoming = step.status === 'upcoming';
                 return (
-                  <div key={index} className="flex items-start gap-4 relative">
-                    <div className={`rounded-full p-2 ${getStatusBg(step.status)}`}>
-                      <IconComponent className={`h-5 w-5 ${getStatusColor(step.status)}`} />
+                  <div key={index} className={`flex items-start gap-4 relative transition-all duration-200 ${isPending ? 'scale-105' : ''}`}>
+                    <div className={`rounded-full p-3 ${getStatusBg(step.status)} transition-all duration-200`}>
+                      <IconComponent className={`h-6 w-6 ${getStatusColor(step.status)}`} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <h3 className={`font-semibold ${getStatusColor(step.status)}`}>
-                          Step {index + 1}: {step.title}
+                        <h3 className={`font-semibold text-base ${getStatusColor(step.status)} ${isPending ? 'text-lg' : ''}`}>
+                          {step.title}
                         </h3>
                       </div>
                       {step.description && (
-                        <p className={`text-sm mt-1 whitespace-pre-line ${step.status === 'upcoming' ? 'text-muted-foreground/50' : 'text-muted-foreground'}`}>
+                        <p className={`text-sm mt-1 whitespace-pre-line ${isUpcoming ? 'text-muted-foreground/40' : 'text-muted-foreground'}`}>
                           {step.description}
                         </p>
                       )}
                     </div>
                     {index < steps.length - 1 && step.status !== "rejected" && (
                       <div 
-                        className={`absolute left-6 mt-12 w-0.5 h-6 ${step.status === 'upcoming' ? 'bg-border/30' : 'bg-border'}`}
+                        className={`absolute left-6 mt-14 w-0.5 h-8 ${isUpcoming ? 'bg-border/20' : step.status === 'pending' ? 'bg-amber-300 dark:bg-amber-600' : 'bg-emerald-300 dark:bg-emerald-600'}`}
                         style={{ marginLeft: '1.75rem' }} 
                       />
                     )}
@@ -694,36 +746,39 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
 
         {/* Action Buttons */}
         {(canApprove(request.currentStatus) || canExecute(request.currentStatus) || canMarkLive(request.currentStatus) || canReject(request.currentStatus)) && (
-          <Card>
-            <CardHeader>
+          <Card className="border-2 border-primary/20">
+            <CardHeader className="bg-primary/5">
               <CardTitle>Available Actions</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex gap-4">
+            <CardContent className="space-y-4 pt-6">
+              <div className="flex gap-4 flex-wrap">
                 {canApprove(request.currentStatus) && (
                   <Button 
                     onClick={handleApprove}
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg"
+                    size="lg"
                   >
-                    <CheckCircle className="h-4 w-4 mr-2" />
+                    <CheckCircle className="h-5 w-5 mr-2" />
                     Approve
                   </Button>
                 )}
                 {canExecute(request.currentStatus) && (
                   <Button 
                     onClick={handleExecute}
-                    className="bg-blue-600 hover:bg-blue-700 text-white"
+                    className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg"
+                    size="lg"
                   >
-                    <CheckCircle className="h-4 w-4 mr-2" />
+                    <CheckCircle className="h-5 w-5 mr-2" />
                     {request.requestType === "NEW SIZE CODE" ? "Update Extra Topping Master" : "Execute"}
                   </Button>
                 )}
                 {canMarkLive(request.currentStatus) && (
                   <Button 
                     onClick={handleMarkLive}
-                    className="bg-green-600 hover:bg-green-700 text-white"
+                    className="bg-green-600 hover:bg-green-700 text-white shadow-lg"
+                    size="lg"
                   >
-                    <CheckCircle className="h-4 w-4 mr-2" />
+                    <CheckCircle className="h-5 w-5 mr-2" />
                     Mark LIVE
                   </Button>
                 )}
@@ -731,33 +786,42 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
                   <Button 
                     variant="destructive"
                     onClick={() => setShowRejectForm(!showRejectForm)}
+                    size="lg"
+                    className="shadow-lg"
                   >
-                    <XCircle className="h-4 w-4 mr-2" />
+                    <XCircle className="h-5 w-5 mr-2" />
                     Reject
                   </Button>
                 )}
               </div>
               
               {showRejectForm && (
-                <div className="space-y-4 border-t pt-4">
+                <div className="space-y-4 border-t pt-4 mt-4">
                   <div className="space-y-2">
-                    <label className="text-sm font-medium">Rejection Reason</label>
+                    <label className="text-sm font-semibold">Rejection Reason <span className="text-destructive">*</span></label>
                     <Textarea
-                      placeholder="Please provide a reason for rejection..."
+                      placeholder="Please provide a reason for rejection (required)..."
                       value={rejectReason}
                       onChange={(e) => setRejectReason(e.target.value)}
+                      className="min-h-[100px]"
+                      required
                     />
                   </div>
                   <div className="flex gap-2">
                     <Button 
                       variant="destructive"
                       onClick={handleReject}
+                      size="lg"
                     >
                       Confirm Rejection
                     </Button>
                     <Button 
                       variant="outline"
-                      onClick={() => setShowRejectForm(false)}
+                      onClick={() => {
+                        setShowRejectForm(false);
+                        setRejectReason("");
+                      }}
+                      size="lg"
                     >
                       Cancel
                     </Button>
@@ -773,32 +837,104 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
           <CardHeader>
             <CardTitle>Request Details</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">Request Description</label>
-                <p className="text-foreground font-medium mt-1">{request.requestDesc}</p>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">Selected Version</label>
-                <p className="text-foreground font-medium mt-1 text-primary">{request.targetVersion}</p>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">Target Stores</label>
-                <p className="text-foreground font-medium mt-1">{request.affectedStores} stores</p>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">Remarks</label>
-                <p className="text-foreground font-medium mt-1">{request.remarks || "No remarks provided"}</p>
-              </div>
+          <CardContent className="space-y-6">
+            <div>
+              <label className="text-sm font-medium text-muted-foreground">Request Description</label>
+              <p className="text-foreground font-medium mt-1">{request.requestDesc}</p>
+            </div>
+            
+            {request.requestId === 'REQ_142' && (
+              <>
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">Selected Versions</label>
+                  <ul className="mt-2 space-y-1 list-disc list-inside">
+                    <li className="text-foreground font-medium">v5 All India</li>
+                    <li className="text-foreground font-medium">v6 Maharashtra Only</li>
+                    <li className="text-foreground font-medium">v7 Moz + Cheddar for CHD</li>
+                    <li className="text-foreground font-medium">v8 BBP Doughball change</li>
+                  </ul>
+                </div>
+                
+                <div>
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium text-muted-foreground">Products</label>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowProducts(!showProducts)}
+                      className="text-primary hover:text-primary/80"
+                    >
+                      {showProducts ? (
+                        <>
+                          <ChevronUp className="h-4 w-4 mr-1" />
+                          Hide Products
+                        </>
+                      ) : (
+                        <>
+                          <ChevronDown className="h-4 w-4 mr-1" />
+                          View 12 Products
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                  <p className="text-foreground font-medium mt-1">12 Products added</p>
+                  
+                  {showProducts && request.products && (
+                    <div className="mt-4 border rounded-lg overflow-hidden">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Menu Code</TableHead>
+                            <TableHead>Menu Category Code</TableHead>
+                            <TableHead>Description</TableHead>
+                            <TableHead>Size Code</TableHead>
+                            <TableHead>Size Description</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {request.products.map((product, index) => (
+                            <TableRow key={index}>
+                              <TableCell className="font-medium">{product.menuCode}</TableCell>
+                              <TableCell>{product.menuCategoryCode}</TableCell>
+                              <TableCell>{product.description}</TableCell>
+                              <TableCell>{product.sizeCode}</TableCell>
+                              <TableCell>{product.sizeDescription}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
+            
+            {request.requestId !== 'REQ_142' && (
+              <>
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">Selected Version</label>
+                  <p className="text-foreground font-medium mt-1 text-primary">{request.targetVersion}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">Target Stores</label>
+                  <p className="text-foreground font-medium mt-1">{request.affectedStores} stores</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">Remarks</label>
+                  <p className="text-foreground font-medium mt-1">{request.remarks || "No remarks provided"}</p>
+                </div>
+              </>
+            )}
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t">
               <div>
                 <label className="text-sm font-medium text-muted-foreground">Requested By</label>
-                <p className="text-foreground font-medium mt-1">{request.requestedBy}</p>
+                <p className="text-foreground font-medium mt-1">{request.requestedBy} on {format(new Date(request.requestCreatedDate), 'MMM dd, yyyy, h:mma')}</p>
               </div>
               <div>
                 <label className="text-sm font-medium text-muted-foreground">Created On</label>
                 <p className="text-foreground font-medium mt-1">
-                  {format(new Date(request.requestCreatedDate), 'MMM dd, yyyy HH:mm')}
+                  {format(new Date(request.requestCreatedDate), 'MMM dd, yyyy, h:mma')}
                 </p>
               </div>
             </div>

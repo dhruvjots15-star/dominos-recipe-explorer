@@ -9,6 +9,13 @@ export interface DashboardRequest {
   targetVersion?: string;
   affectedStores?: number;
   remarks?: string;
+  products?: Array<{
+    menuCode: string;
+    menuCategoryCode: string;
+    description: string;
+    sizeCode: string;
+    sizeDescription: string;
+  }>;
 }
 
 export const mockDashboardRequestsData: DashboardRequest[] = [
@@ -19,9 +26,23 @@ export const mockDashboardRequestsData: DashboardRequest[] = [
     requestedBy: "Kshitij",
     requestCreatedDate: "2025-03-17T16:15:00Z",
     currentStatus: "RECIPE SUBMITTED BY CHEF, PENDING APPROVAL ON CATEGORY & SC PLANNING",
-    targetVersion: "v1.0",
-    affectedStores: 150,
-    remarks: "New premium pizza line"
+    targetVersion: "v5 All India, v6 Maharashtra Only, v7 Moz + Cheddar for CHD, v8 BBP Doughball change",
+    affectedStores: 12,
+    remarks: "New premium pizza line",
+    products: [
+      { menuCode: "PIZ0901", menuCategoryCode: "MCT0001", description: "OA_Sourdough Corn Pizza", sizeCode: "SD01", sizeDescription: "Reg Sourdough" },
+      { menuCode: "PIZ0901", menuCategoryCode: "MCT0001", description: "OA_Sourdough Corn Pizza", sizeCode: "SD02", sizeDescription: "Med Sourdough" },
+      { menuCode: "PIZ0901", menuCategoryCode: "MCT0001", description: "OA_Sourdough Corn Pizza", sizeCode: "SD03", sizeDescription: "Lar Sourdough" },
+      { menuCode: "PIZ0902", menuCategoryCode: "MCT0001", description: "IR_Sourdough Corn Pizza", sizeCode: "SD01", sizeDescription: "Reg Sourdough" },
+      { menuCode: "PIZ0902", menuCategoryCode: "MCT0001", description: "IR_Sourdough Corn Pizza", sizeCode: "SD02", sizeDescription: "Med Sourdough" },
+      { menuCode: "PIZ0902", menuCategoryCode: "MCT0001", description: "IR_Sourdough Corn Pizza", sizeCode: "SD03", sizeDescription: "Lar Sourdough" },
+      { menuCode: "PIZ0903", menuCategoryCode: "MCT0001", description: "DI_Sourdough Corn Pizza", sizeCode: "SD01", sizeDescription: "Reg Sourdough" },
+      { menuCode: "PIZ0903", menuCategoryCode: "MCT0001", description: "DI_Sourdough Corn Pizza", sizeCode: "SD02", sizeDescription: "Med Sourdough" },
+      { menuCode: "PIZ0903", menuCategoryCode: "MCT0001", description: "DI_Sourdough Corn Pizza", sizeCode: "SD03", sizeDescription: "Lar Sourdough" },
+      { menuCode: "PIZ0904", menuCategoryCode: "MCT0001", description: "DI_Sourdough Corn Pizza", sizeCode: "SD01", sizeDescription: "Reg Sourdough" },
+      { menuCode: "PIZ0904", menuCategoryCode: "MCT0001", description: "DI_Sourdough Corn Pizza", sizeCode: "SD02", sizeDescription: "Med Sourdough" },
+      { menuCode: "PIZ0904", menuCategoryCode: "MCT0001", description: "DI_Sourdough Corn Pizza", sizeCode: "SD03", sizeDescription: "Lar Sourdough" }
+    ]
   },
   {
     requestId: "REQ_136",
