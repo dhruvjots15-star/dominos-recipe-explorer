@@ -126,6 +126,48 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
       ];
     }
 
+    // Special handling for REQ_087
+    if (requestData.requestId === 'REQ_087') {
+      return [
+        {
+          title: "Step 1: Request Submission by Category Team",
+          description: "Submitted by Varun on Mar 13, 2025 21:45",
+          status: 'completed' as const,
+          icon: CheckCircle
+        },
+        {
+          title: "Step 2: Request Approval by Category Team",
+          description: "Approved by Kshitij on Mar 14, 2025 21:45",
+          status: 'completed' as const,
+          icon: CheckCircle
+        },
+        {
+          title: "Step 3: Extra Topping Master Updation by Chef Team",
+          description: "Awaiting Updation by Chef Team",
+          status: 'pending' as const,
+          icon: Clock
+        },
+        {
+          title: "Step 4: Extra Topping Master Update Approval by Chef Team",
+          description: "",
+          status: 'upcoming' as const,
+          icon: Settings
+        },
+        {
+          title: "Step 5: Request Execution & Verification by MDM (POS) Team",
+          description: "",
+          status: 'upcoming' as const,
+          icon: Settings
+        },
+        {
+          title: "Step 6: LIVE",
+          description: "",
+          status: 'upcoming' as const,
+          icon: Globe
+        }
+      ];
+    }
+
     // Special handling for REQ_125
     if (requestData.requestId === 'REQ_125') {
       return [
@@ -782,6 +824,9 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
     if (request.requestId === 'REQ_142') {
       return status === "RECIPE SUBMITTED BY CHEF, PENDING APPROVAL ON CATEGORY & SC PLANNING";
     }
+    if (request.requestId === 'REQ_087') {
+      return status === "REQUEST APPROVED, EXTRA TOPPING UPDATION PENDING ON CHEF";
+    }
     if (request.requestId === 'REQ_125' || request.requestId === 'REQ_021') {
       return status === "REQUEST CREATED, APPROVAL PENDING ON CATEGORY";
     }
@@ -815,6 +860,9 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
     }
     if (request.requestId === 'REQ_142') {
       return status === "RECIPE SUBMITTED BY CHEF, PENDING APPROVAL ON CATEGORY & SC PLANNING";
+    }
+    if (request.requestId === 'REQ_087') {
+      return status === "REQUEST APPROVED, EXTRA TOPPING UPDATION PENDING ON CHEF";
     }
     if (request.requestId === 'REQ_125' || request.requestId === 'REQ_021') {
       return status === "REQUEST CREATED, APPROVAL PENDING ON CATEGORY";
@@ -1000,7 +1048,9 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
                     size="lg"
                   >
                     <CheckCircle className="h-5 w-5 mr-2" />
-                    {request.requestId === 'REQ_144' ? 'UPDATE RECIPE' : 'Approve'}
+                    {request.requestId === 'REQ_144' ? 'UPDATE RECIPE' : 
+                     request.requestId === 'REQ_087' ? 'UPDATE EXTRA TOPPING MASTER' : 
+                     'Approve'}
                   </Button>
                 )}
                 {canExecute(request.currentStatus) && (
@@ -1196,7 +1246,7 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
               </>
             )}
             
-            {request.requestId === 'REQ_088' && (
+            {(request.requestId === 'REQ_088' || request.requestId === 'REQ_087') && (
               <>
                 <div>
                   <div className="flex items-center justify-between">
@@ -1265,7 +1315,7 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
               </>
             )}
             
-            {request.requestId !== 'REQ_142' && request.requestId !== 'REQ_144' && request.requestId !== 'REQ_125' && request.requestId !== 'REQ_088' && request.requestId !== 'REQ_021' && (
+            {request.requestId !== 'REQ_142' && request.requestId !== 'REQ_144' && request.requestId !== 'REQ_125' && request.requestId !== 'REQ_088' && request.requestId !== 'REQ_087' && request.requestId !== 'REQ_021' && (
               <>
                 <div>
                   <label className="text-sm font-medium text-muted-foreground">Selected Version</label>
@@ -1287,7 +1337,7 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
                 <label className="text-sm font-medium text-muted-foreground">Requested By</label>
                 <p className="text-foreground font-medium mt-1">
                   {request.requestId === 'REQ_144' ? 'Kshitij' :
-                   request.requestId === 'REQ_125' || request.requestId === 'REQ_088' || request.requestId === 'REQ_021' ? 'Varun' 
+                   request.requestId === 'REQ_125' || request.requestId === 'REQ_088' || request.requestId === 'REQ_087' || request.requestId === 'REQ_021' ? 'Varun' 
                    : `${request.requestedBy} on ${format(new Date(request.requestCreatedDate), 'MMM dd, yyyy, h:mma')}`}
                 </p>
               </div>
@@ -1296,7 +1346,7 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
                 <p className="text-foreground font-medium mt-1">
                   {request.requestId === 'REQ_144' ? 'Mar 17, 2025, 4:15pm' :
                    request.requestId === 'REQ_125' ? 'Mar 15, 2025, 9:45PM' : 
-                   request.requestId === 'REQ_088' ? 'Mar 13, 2025 21:45' :
+                   request.requestId === 'REQ_088' || request.requestId === 'REQ_087' ? 'Mar 13, 2025 21:45' :
                    request.requestId === 'REQ_021' ? 'Mar 10, 2025, 9:45PM' :
                    format(new Date(request.requestCreatedDate), 'MMM dd, yyyy, h:mma')}
                 </p>

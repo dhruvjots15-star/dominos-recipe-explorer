@@ -148,7 +148,12 @@ export const mockDashboardRequestsData: DashboardRequest[] = [
     pendingOnTeam: "Chef Team",
     targetVersion: "v1.0",
     affectedStores: 180,
-    remarks: "Extra large size introduction"
+    remarks: "Extra large size introduction",
+    sizeCodes: [
+      { code: "BB125", description: "Lar BBP" },
+      { code: "BB175", description: "Xlar BBP" },
+      { code: "BB175", description: "XXL BBP" }
+    ]
   },
   {
     requestId: "REQ_075",
