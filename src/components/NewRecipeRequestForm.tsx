@@ -11,6 +11,7 @@ import { Plus, Trash2, Edit } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { CreateNewVersionForm } from "./CreateNewVersionForm";
 import { MenuItemRow } from "./MenuItemRow";
+import { generateNextRequestId } from "@/utils/requestIdUtils";
 
 interface NewRecipeRequestFormProps {
   open: boolean;
@@ -107,8 +108,8 @@ export const NewRecipeRequestForm = ({ open, onOpenChange }: NewRecipeRequestFor
       return;
     }
 
-    // Generate request ID
-    const requestId = `REQ_${Math.floor(Math.random() * 900) + 100}`;
+    // Generate next request ID
+    const requestId = generateNextRequestId();
     
     // Navigate to request landing page with success toast
     navigate(`/recipe-request/${requestId}?source=dashboard&showToast=true`);

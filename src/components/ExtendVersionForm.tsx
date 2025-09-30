@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { X, AlertCircle, ChevronRight } from "lucide-react";
+import { generateNextRequestId } from "@/utils/requestIdUtils";
 
 interface ExtendVersionFormProps {
   isOpen: boolean;
@@ -39,15 +40,15 @@ export const ExtendVersionForm = ({ isOpen, onClose, selectedVersion, onRequestS
   };
 
   const handleConfirm = () => {
-    const requestId = `REQ_${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
+    const requestId = generateNextRequestId();
     
     // Close form and reset state first
     onClose();
     setShowConfirmation(false);
     setFormData({ requestDesc: "", targetStores: [], remarks: "" });
     
-    // Then trigger the request landing page with toast
-    onRequestSubmitted(requestId);
+    // Navigate to request landing page with success toast
+    window.location.href = `/recipe-request/${requestId}?source=recipe-bank&showToast=true`;
   };
 
   const mockStoreMapping = {

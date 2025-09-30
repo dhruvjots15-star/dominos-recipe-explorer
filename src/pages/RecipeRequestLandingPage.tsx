@@ -17,9 +17,11 @@ const RecipeRequestLandingPage = () => {
   useEffect(() => {
     // Only show toast once when explicitly requested (on creation)
     if (requestId && showToast && !hasShownToast) {
-      toast({
+      const toastId = toast({
         title: "Request Submitted",
-        description: `Request submitted: ${requestId}`,
+        description: `Request created: ${requestId}`,
+        className: "bg-success text-success-foreground border-success",
+        duration: 3000, // 3 seconds
       });
       setHasShownToast(true);
     }

@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Edit2, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { sizeCodesData } from "@/data/sizeCodesData";
+import { generateNextRequestId } from "@/utils/requestIdUtils";
 
 interface SizeCodeForm {
   requestDesc: string;
@@ -168,16 +169,11 @@ export const CreateSizeCode = ({ onBack }: CreateSizeCodeProps) => {
       return;
     }
 
-    // Generate request ID
-    const requestId = `REQ_${Math.floor(Math.random() * 900) + 100}`;
+    // Generate next request ID  
+    const requestId = generateNextRequestId();
     
-    toast({
-      title: "Request Submitted",
-      description: `Request submitted: ${requestId}`,
-    });
-
-    // Navigate back to master page
-    onBack();
+    // Navigate to request landing page with success toast
+    window.location.href = `/recipe-request/${requestId}?source=size-codes&showToast=true`;
   };
 
   return (

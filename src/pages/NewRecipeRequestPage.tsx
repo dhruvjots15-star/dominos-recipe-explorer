@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { CreateNewVersionForm } from "@/components/CreateNewVersionForm";
 import { MenuItemRow } from "@/components/MenuItemRow";
 import { ArrowLeft } from "lucide-react";
+import { generateNextRequestId } from "@/utils/requestIdUtils";
 
 interface MenuItem {
   id: string;
@@ -91,7 +92,10 @@ const NewRecipeRequestPage = () => {
       return;
     }
 
-    const requestId = `REQ_${Math.floor(Math.random() * 900) + 100}`;
+    // Generate next request ID
+    const requestId = generateNextRequestId();
+    
+    // Navigate to request landing page with success toast
     navigate(`/recipe-request/${requestId}?source=dashboard&showToast=true`);
   };
 
