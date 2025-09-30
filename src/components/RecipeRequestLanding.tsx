@@ -948,6 +948,92 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
             <CardTitle className="text-2xl">Request Workflow</CardTitle>
           </CardHeader>
           <CardContent className="pt-8 pb-8">
+            {/* Action Buttons */}
+            {(canApprove(request.currentStatus) || canExecute(request.currentStatus) || canMarkLive(request.currentStatus) || canReject(request.currentStatus)) && (
+              <div className="mb-8 p-6 bg-primary/5 rounded-xl border-2 border-primary/20">
+                <h3 className="text-lg font-semibold mb-4">Available Actions</h3>
+                <div className="flex gap-4 flex-wrap">
+                  {canApprove(request.currentStatus) && (
+                    <Button 
+                      onClick={handleApprove}
+                      className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg"
+                      size="lg"
+                    >
+                      <CheckCircle className="h-5 w-5 mr-2" />
+                      {request.requestId === 'REQ_144' ? 'UPDATE RECIPE' : 
+                       request.requestId === 'REQ_087' ? 'UPDATE EXTRA TOPPING MASTER' : 
+                       'Approve'}
+                    </Button>
+                  )}
+                  {canExecute(request.currentStatus) && (
+                    <Button 
+                      onClick={handleExecute}
+                      className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg"
+                      size="lg"
+                    >
+                      <CheckCircle className="h-5 w-5 mr-2" />
+                      {request.requestType === "NEW SIZE CODE" ? "Update Extra Topping Master" : "Execute"}
+                    </Button>
+                  )}
+                  {canMarkLive(request.currentStatus) && (
+                    <Button 
+                      onClick={handleMarkLive}
+                      className="bg-green-600 hover:bg-green-700 text-white shadow-lg"
+                      size="lg"
+                    >
+                      <CheckCircle className="h-5 w-5 mr-2" />
+                      Mark LIVE
+                    </Button>
+                  )}
+                  {canReject(request.currentStatus) && (
+                    <Button 
+                      variant="destructive"
+                      onClick={() => setShowRejectForm(!showRejectForm)}
+                      size="lg"
+                      className="shadow-lg"
+                    >
+                      <XCircle className="h-5 w-5 mr-2" />
+                      Reject
+                    </Button>
+                  )}
+                </div>
+                
+                {showRejectForm && (
+                  <div className="space-y-4 border-t pt-4 mt-4">
+                    <div className="space-y-2">
+                      <label className="text-sm font-semibold">Rejection Reason <span className="text-destructive">*</span></label>
+                      <Textarea
+                        placeholder="Please provide a reason for rejection (required)..."
+                        value={rejectReason}
+                        onChange={(e) => setRejectReason(e.target.value)}
+                        className="min-h-[100px]"
+                        required
+                      />
+                    </div>
+                    <div className="flex gap-2">
+                      <Button 
+                        variant="destructive"
+                        onClick={handleReject}
+                        size="lg"
+                      >
+                        Confirm Rejection
+                      </Button>
+                      <Button 
+                        variant="outline"
+                        onClick={() => {
+                          setShowRejectForm(false);
+                          setRejectReason("");
+                        }}
+                        size="lg"
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
             <div className="space-y-2">
               {steps.map((step, index) => {
                 const IconComponent = step.icon;
@@ -1060,95 +1146,6 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
           </CardContent>
         </Card>
 
-        {/* Action Buttons */}
-        {(canApprove(request.currentStatus) || canExecute(request.currentStatus) || canMarkLive(request.currentStatus) || canReject(request.currentStatus)) && (
-          <Card className="border-2 border-primary/20">
-            <CardHeader className="bg-primary/5">
-              <CardTitle>Available Actions</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4 pt-6">
-              <div className="flex gap-4 flex-wrap">
-                {canApprove(request.currentStatus) && (
-                  <Button 
-                    onClick={handleApprove}
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg"
-                    size="lg"
-                  >
-                    <CheckCircle className="h-5 w-5 mr-2" />
-                    {request.requestId === 'REQ_144' ? 'UPDATE RECIPE' : 
-                     request.requestId === 'REQ_087' ? 'UPDATE EXTRA TOPPING MASTER' : 
-                     'Approve'}
-                  </Button>
-                )}
-                {canExecute(request.currentStatus) && (
-                  <Button 
-                    onClick={handleExecute}
-                    className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg"
-                    size="lg"
-                  >
-                    <CheckCircle className="h-5 w-5 mr-2" />
-                    {request.requestType === "NEW SIZE CODE" ? "Update Extra Topping Master" : "Execute"}
-                  </Button>
-                )}
-                {canMarkLive(request.currentStatus) && (
-                  <Button 
-                    onClick={handleMarkLive}
-                    className="bg-green-600 hover:bg-green-700 text-white shadow-lg"
-                    size="lg"
-                  >
-                    <CheckCircle className="h-5 w-5 mr-2" />
-                    Mark LIVE
-                  </Button>
-                )}
-                {canReject(request.currentStatus) && (
-                  <Button 
-                    variant="destructive"
-                    onClick={() => setShowRejectForm(!showRejectForm)}
-                    size="lg"
-                    className="shadow-lg"
-                  >
-                    <XCircle className="h-5 w-5 mr-2" />
-                    Reject
-                  </Button>
-                )}
-              </div>
-              
-              {showRejectForm && (
-                <div className="space-y-4 border-t pt-4 mt-4">
-                  <div className="space-y-2">
-                    <label className="text-sm font-semibold">Rejection Reason <span className="text-destructive">*</span></label>
-                    <Textarea
-                      placeholder="Please provide a reason for rejection (required)..."
-                      value={rejectReason}
-                      onChange={(e) => setRejectReason(e.target.value)}
-                      className="min-h-[100px]"
-                      required
-                    />
-                  </div>
-                  <div className="flex gap-2">
-                    <Button 
-                      variant="destructive"
-                      onClick={handleReject}
-                      size="lg"
-                    >
-                      Confirm Rejection
-                    </Button>
-                    <Button 
-                      variant="outline"
-                      onClick={() => {
-                        setShowRejectForm(false);
-                        setRejectReason("");
-                      }}
-                      size="lg"
-                    >
-                      Cancel
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        )}
 
         {/* Request Details */}
         <Card>
