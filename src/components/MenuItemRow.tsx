@@ -216,14 +216,14 @@ export const MenuItemRow = ({ item, index, onUpdate, onDelete }: MenuItemRowProp
   }
 
   return (
-    <div className="border rounded-lg p-4 space-y-4">
+    <div className="border rounded-lg p-6 space-y-4">
       {/* All fields in one row */}
-      <div className="grid grid-cols-7 gap-3 items-end">
+      <div className="grid grid-cols-7 gap-6 items-end">
         {/* Category Code */}
-        <div className="space-y-2">
+        <div className="space-y-2 min-w-[180px]">
           <Label className="text-sm">Category *</Label>
           <Select value={item.categoryCode} onValueChange={(value) => onUpdate({ categoryCode: value })}>
-            <SelectTrigger className="h-9">
+            <SelectTrigger className="h-10 w-full">
               <SelectValue placeholder="Category" />
             </SelectTrigger>
             <SelectContent>
@@ -237,10 +237,10 @@ export const MenuItemRow = ({ item, index, onUpdate, onDelete }: MenuItemRowProp
         </div>
 
         {/* Veg/Non Veg */}
-        <div className="space-y-2">
+        <div className="space-y-2 min-w-[120px]">
           <Label className="text-sm">Type *</Label>
           <Select value={item.vegNonVeg} onValueChange={(value) => onUpdate({ vegNonVeg: value })}>
-            <SelectTrigger className="h-9">
+            <SelectTrigger className="h-10 w-full">
               <SelectValue placeholder="Type" />
             </SelectTrigger>
             <SelectContent>
@@ -254,14 +254,14 @@ export const MenuItemRow = ({ item, index, onUpdate, onDelete }: MenuItemRowProp
         </div>
 
         {/* Menu Code */}
-        <div className="space-y-2">
+        <div className="space-y-2 min-w-[140px]">
           <Label className="text-sm">Menu Code *</Label>
-          <div className="flex gap-1">
+          <div className="flex gap-2">
             <Input
               value={item.menuCode}
               placeholder="Auto-generated"
               readOnly
-              className="font-mono h-9 text-xs"
+              className="font-mono h-10 text-sm"
             />
             <Button
               type="button"
@@ -269,29 +269,29 @@ export const MenuItemRow = ({ item, index, onUpdate, onDelete }: MenuItemRowProp
               size="sm"
               onClick={generateMenuCode}
               disabled={!item.categoryCode || !item.vegNonVeg}
-              className="h-9 w-9 p-0"
+              className="h-10 w-10 p-0"
             >
-              <Wand2 className="h-3 w-3" />
+              <Wand2 className="h-4 w-4" />
             </Button>
           </div>
         </div>
 
         {/* Menu Item Name */}
-        <div className="space-y-2">
+        <div className="space-y-2 min-w-[200px]">
           <Label className="text-sm">Item Name *</Label>
           <Input
             value={item.menuItemName}
             onChange={(e) => onUpdate({ menuItemName: e.target.value })}
             placeholder="e.g., Sourdough Corn Pizza"
-            className="h-9"
+            className="h-10"
           />
         </div>
 
         {/* Size Codes */}
-        <div className="space-y-2">
+        <div className="space-y-2 min-w-[160px]">
           <Label className="text-sm">Size Code *</Label>
           <Select>
-            <SelectTrigger className="h-9">
+            <SelectTrigger className="h-10 w-full">
               <SelectValue placeholder={
                 item.sizeCodes.length > 0 
                   ? `${item.sizeCodes.length} selected` 
@@ -320,10 +320,10 @@ export const MenuItemRow = ({ item, index, onUpdate, onDelete }: MenuItemRowProp
         </div>
 
         {/* Channels */}
-        <div className="space-y-2">
+        <div className="space-y-2 min-w-[160px]">
           <Label className="text-sm">Channels *</Label>
           <Select>
-            <SelectTrigger className="h-9">
+            <SelectTrigger className="h-10 w-full">
               <SelectValue placeholder={
                 item.channels.length > 0 
                   ? `${item.channels.length} selected` 
@@ -357,11 +357,11 @@ export const MenuItemRow = ({ item, index, onUpdate, onDelete }: MenuItemRowProp
         </div>
 
         {/* Submit Button */}
-        <div>
+        <div className="min-w-[100px]">
           <Button
             onClick={handleSubmitRow}
             disabled={!isFormValid}
-            className="h-9"
+            className="h-10 w-full"
           >
             Submit
           </Button>
