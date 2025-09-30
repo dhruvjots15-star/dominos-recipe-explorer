@@ -67,7 +67,7 @@ const UpdateRecipePage = () => {
   };
 
   const handleEdit = (product: Product, index: number) => {
-    // Rows 4, 7, and 10 (indices 3, 6, 9) should show dropdown via the table rendering
+    // Rows with dropdowns should show dropdown via the table rendering
     // This function is only called when "Continue to Enter a Fresh Recipe" is selected
     navigate(`/recipe-request/${requestId}/update-recipe/editor`, {
       state: { 
@@ -79,14 +79,30 @@ const UpdateRecipePage = () => {
     });
   };
 
-  const handleReplicateRecipe = (index: number) => {
+  const handleReplicateRecipe = (index: number, replicateFrom: string) => {
     // Mark the row as green (recipe submitted)
     updateProductStatus(index);
     toast({
       title: "Recipe Replicated",
-      description: "Recipe from SD01-PIZ0901 has been replicated successfully",
+      description: `Recipe from ${replicateFrom} has been replicated successfully`,
       duration: 2000,
     });
+  };
+
+  const getReplicateText = (index: number): string => {
+    // Rows 4, 7, 10 (indices 3, 6, 9) → Reg Sourdough
+    if ([3, 6, 9].includes(index)) {
+      return "Reg Sourdough - OA_Sourdough Corn Pizza";
+    }
+    // Rows 5, 8, 11 (indices 4, 7, 10) → Med Sourdough
+    if ([4, 7, 10].includes(index)) {
+      return "Med Sourdough - OA_Sourdough Corn Pizza";
+    }
+    // Rows 6, 9, 12 (indices 5, 8, 11) → Lar Sourdough
+    if ([5, 8, 11].includes(index)) {
+      return "Lar Sourdough - OA_Sourdough Corn Pizza";
+    }
+    return "";
   };
 
   const handleTabChange = (tab: string) => {
@@ -188,8 +204,8 @@ const UpdateRecipePage = () => {
                     <TableCell>{product.sizeCode}</TableCell>
                     <TableCell>{product.sizeDescription}</TableCell>
                     <TableCell>
-                      {/* Show dropdown for rows 4, 7, and 10 (indices 3, 6, 9) */}
-                      {[3, 6, 9].includes(index) ? (
+                      {/* Show dropdown for rows 4-6, 7-9, and 10-12 (indices 3-5, 6-8, 9-11) */}
+                      {[3, 4, 5, 6, 7, 8, 9, 10, 11].includes(index) ? (
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button
@@ -201,10 +217,10 @@ const UpdateRecipePage = () => {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end" className="w-80 bg-popover z-50">
                             <DropdownMenuItem
-                              onClick={() => handleReplicateRecipe(index)}
+                              onClick={() => handleReplicateRecipe(index, getReplicateText(index))}
                               className="cursor-pointer"
                             >
-                              Replicate Recipe of Reg Sourdough - OA_Sourdough Corn Pizza
+                              Replicate Recipe of {getReplicateText(index)}
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() => handleEdit(product, index)}
