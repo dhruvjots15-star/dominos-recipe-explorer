@@ -9,6 +9,7 @@ import { Clock, Users, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 import { format } from "date-fns";
 import { mockDashboardRequestsData, DashboardRequest } from "@/data/dashboardRequestsData";
 import { getRequestTypeVariant } from "@/utils/requestTypeUtils";
+import { useTeamView } from "@/contexts/TeamViewContext";
 
 interface PendingRequestsWidgetProps {
   className?: string;
@@ -19,13 +20,16 @@ type SortDirection = 'asc' | 'desc';
 
 export const PendingRequestsWidget = ({ className }: PendingRequestsWidgetProps) => {
   const navigate = useNavigate();
+  const { currentTeam } = useTeamView();
   const [showAll, setShowAll] = useState(false);
   const [sortField, setSortField] = useState<SortField>('requestCreatedDate');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
 
-  // Filter for pending requests (not LIVE or REJECTED)
+  // Filter for pending requests (not LIVE or REJECTED) and by current team
   const pendingRequests = mockDashboardRequestsData.filter(request => 
-    request.currentStatus !== 'LIVE' && request.currentStatus !== 'REJECTED'
+    request.currentStatus !== 'LIVE' && 
+    request.currentStatus !== 'REJECTED' &&
+    request.pendingOnTeam === currentTeam
   );
 
   // Apply sorting

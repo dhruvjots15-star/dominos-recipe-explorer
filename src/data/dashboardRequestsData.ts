@@ -5,6 +5,7 @@ export interface DashboardRequest {
   requestedBy: string;
   requestCreatedDate: string;
   currentStatus: string;
+  pendingOnTeam?: 'Category Team' | 'Chef Team' | 'MDM (POS) Team';
   goLiveDate?: string;
   targetVersion?: string;
   affectedStores?: number;
@@ -25,12 +26,25 @@ export interface DashboardRequest {
 
 export const mockDashboardRequestsData: DashboardRequest[] = [
   {
+    requestId: "REQ_144",
+    requestDesc: "New Sourdough Pizza Recipes creation",
+    requestType: "NEW RECIPE",
+    requestedBy: "Kshitij",
+    requestCreatedDate: "2025-03-17T16:15:00Z",
+    currentStatus: "REQUEST CREATED, RECIPE SUBMISSION PENDING ON CHEF",
+    pendingOnTeam: "Chef Team",
+    targetVersion: "v1.0",
+    affectedStores: 0,
+    remarks: "New premium pizza line"
+  },
+  {
     requestId: "REQ_142",
     requestDesc: "New Sourdough Pizza Recipes creation",
     requestType: "NEW RECIPE",
     requestedBy: "Kshitij",
     requestCreatedDate: "2025-03-17T16:15:00Z",
     currentStatus: "RECIPE SUBMITTED BY CHEF, PENDING APPROVAL ON CATEGORY & SC PLANNING",
+    pendingOnTeam: "Category Team",
     targetVersion: "v5 All India, v6 Maharashtra Only, v7 Moz + Cheddar for CHD, v8 BBP Doughball change",
     affectedStores: 12,
     remarks: "New premium pizza line",
@@ -56,6 +70,7 @@ export const mockDashboardRequestsData: DashboardRequest[] = [
     requestedBy: "Kshitij",
     requestCreatedDate: "2025-03-16T16:15:00Z",
     currentStatus: "RECIPE SUBMITTED BY CHEF, PENDING APPROVAL ON CATEGORY",
+    pendingOnTeam: "Category Team",
     targetVersion: "v7",
     affectedStores: 200,
     remarks: "Recipe updates for existing line"
@@ -67,6 +82,7 @@ export const mockDashboardRequestsData: DashboardRequest[] = [
     requestedBy: "Varun",
     requestCreatedDate: "2025-03-15T16:15:00Z",
     currentStatus: "REQUEST CREATED, APPROVAL PENDING ON CATEGORY",
+    pendingOnTeam: "Category Team",
     targetVersion: "v5 All India",
     affectedStores: 100,
     remarks: "Store expansion",
@@ -100,6 +116,7 @@ export const mockDashboardRequestsData: DashboardRequest[] = [
     requestedBy: "Varun",
     requestCreatedDate: "2025-03-13T19:15:00Z",
     currentStatus: "REQUEST CREATED, APPROVAL PENDING ON CATEGORY",
+    pendingOnTeam: "Category Team",
     targetVersion: "v1.0",
     affectedStores: 250,
     remarks: "New menu category"
@@ -111,6 +128,7 @@ export const mockDashboardRequestsData: DashboardRequest[] = [
     requestedBy: "Varun",
     requestCreatedDate: "2025-03-13T21:45:00Z",
     currentStatus: "REQUEST CREATED, APPROVAL PENDING ON CATEGORY",
+    pendingOnTeam: "Category Team",
     targetVersion: "v1.0",
     affectedStores: 180,
     remarks: "Extra large size introduction",
@@ -121,12 +139,37 @@ export const mockDashboardRequestsData: DashboardRequest[] = [
     ]
   },
   {
+    requestId: "REQ_087",
+    requestDesc: "3 New Size Codes for Big Big Pizza",
+    requestType: "NEW SIZE CODE",
+    requestedBy: "Varun",
+    requestCreatedDate: "2025-03-13T16:15:00Z",
+    currentStatus: "REQUEST APPROVED, EXTRA TOPPING UPDATION PENDING ON CHEF",
+    pendingOnTeam: "Chef Team",
+    targetVersion: "v1.0",
+    affectedStores: 180,
+    remarks: "Extra large size introduction"
+  },
+  {
     requestId: "REQ_075",
     requestDesc: "Modify Recipes in v8 to include new boxes material",
     requestType: "RECIPE MODIFICATION",
     requestedBy: "Varun",
     requestCreatedDate: "2025-03-12T16:15:00Z",
     currentStatus: "RECIPE SUBMITTED BY CHEF, PENDING APPROVAL ON CATEGORY & QUALITY",
+    pendingOnTeam: "Category Team",
+    targetVersion: "v8",
+    affectedStores: 220,
+    remarks: "Packaging update"
+  },
+  {
+    requestId: "REQ_074",
+    requestDesc: "Modify Recipes in v8 to include new boxes material",
+    requestType: "RECIPE MODIFICATION",
+    requestedBy: "Varun",
+    requestCreatedDate: "2025-03-12T16:15:00Z",
+    currentStatus: "REQUEST CREATED, RECIPE SUBMISSION PENDING ON CHEF",
+    pendingOnTeam: "Chef Team",
     targetVersion: "v8",
     affectedStores: 220,
     remarks: "Packaging update"
@@ -138,9 +181,22 @@ export const mockDashboardRequestsData: DashboardRequest[] = [
     requestedBy: "Varun",
     requestCreatedDate: "2025-03-10T16:15:00Z",
     currentStatus: "REQUEST CREATED, APPROVAL PENDING ON CATEGORY",
+    pendingOnTeam: "Category Team",
     targetVersion: "v9",
     affectedStores: 50,
     remarks: "Regional rollback"
+  },
+  {
+    requestId: "RE_012",
+    requestDesc: "Add new size codes for Chicken Burst pizzaa",
+    requestType: "NEW SIZE CODE",
+    requestedBy: "Varun",
+    requestCreatedDate: "2025-03-09T16:15:00Z",
+    currentStatus: "EXTRA TOPPING UPDATE SUBMITTED, APPROVAL PENDING ON CHEF",
+    pendingOnTeam: "Chef Team",
+    targetVersion: "v1.0",
+    affectedStores: 150,
+    remarks: "New size codes for Chicken Burst"
   }
 ];
 
