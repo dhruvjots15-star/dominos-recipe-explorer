@@ -21,6 +21,7 @@ interface MenuItem {
 interface MenuItemRowProps {
   item: MenuItem;
   index: number;
+  lastGeneratedMenuCode?: string;
   onUpdate: (updates: Partial<MenuItem>) => void;
   onDelete: () => void;
 }
@@ -56,7 +57,7 @@ const channels = [
   { value: "AG", label: "AG - Aggregator" },
 ];
 
-export const MenuItemRow = ({ item, index, onUpdate, onDelete }: MenuItemRowProps) => {
+export const MenuItemRow = ({ item, index, lastGeneratedMenuCode, onUpdate, onDelete }: MenuItemRowProps) => {
   const [expandedRows, setExpandedRows] = useState<MenuItem[]>([]);
 
   const generateMenuCode = () => {
@@ -77,8 +78,17 @@ export const MenuItemRow = ({ item, index, onUpdate, onDelete }: MenuItemRowProp
       prefix = "CMB0";
     }
     
-    const randomNum = Math.floor(Math.random() * 900) + 100; // 3 digit number (100-999)
-    const newMenuCode = `${prefix}${randomNum}`;
+    let newMenuCode;
+    if (lastGeneratedMenuCode && lastGeneratedMenuCode.startsWith(prefix)) {
+      // Generate next sequential code from last generated
+      const lastNumber = parseInt(lastGeneratedMenuCode.slice(3));
+      newMenuCode = `${prefix}${String(lastNumber + 1).padStart(3, '0')}`;
+    } else {
+      // Generate random code if no previous code or different prefix
+      const randomNum = Math.floor(Math.random() * 900) + 100;
+      newMenuCode = `${prefix}${randomNum}`;
+    }
+    
     onUpdate({ menuCode: newMenuCode });
   };
 
@@ -102,54 +112,41 @@ export const MenuItemRow = ({ item, index, onUpdate, onDelete }: MenuItemRowProp
       return;
     }
 
-    const totalCombinations = item.sizeCodes.length * item.channels.length;
+    const newRows: MenuItem[] = [];
+    const baseNumber = parseInt(item.menuCode.slice(3));
     
-    if (totalCombinations === 1) {
-      // Update original row to show only one size code and one channel
-      onUpdate({ 
-        isLocked: true,
-        sizeCodes: [item.sizeCodes[0]],
-        channels: [item.channels[0]]
-      });
-    } else {
-      // Generate rows for each size-channel combination
-      const newRows: MenuItem[] = [];
-      let channelCounter = 1;
+    // Generate rows for each channel-size combination
+    item.channels.forEach((channel, channelIndex) => {
+      // Generate new menu code for each channel (starting from base code for first channel)
+      const menuCodeNumber = baseNumber + channelIndex;
+      const newMenuCode = `${item.menuCode.slice(0, 3)}${String(menuCodeNumber).padStart(3, '0')}`;
       
-      item.channels.forEach((channel, channelIndex) => {
-        item.sizeCodes.forEach((sizeCode, sizeIndex) => {
-          if (channelIndex === 0 && sizeIndex === 0) {
-            // Update the original row for first combination
-            onUpdate({ 
-              isLocked: true,
-              sizeCodes: [sizeCode],
-              channels: [channel]
-            });
-            return;
-          }
-          
-          // Generate new menu code only when channel changes
-          const baseNumber = parseInt(item.menuCode.slice(3, 6));
-          let newMenuCode = item.menuCode;
-          if (channelIndex > 0) {
-            newMenuCode = `${item.menuCode.slice(0, 3)}${String(baseNumber + channelIndex).padStart(3, '0')}`;
-          }
-          
-          newRows.push({
-            id: `${item.id}_${sizeCode}_${channel}`,
-            categoryCode: item.categoryCode,
-            vegNonVeg: item.vegNonVeg,
-            menuCode: newMenuCode,
-            menuItemName: item.menuItemName,
+      item.sizeCodes.forEach((sizeCode, sizeIndex) => {
+        if (channelIndex === 0 && sizeIndex === 0) {
+          // Update the original row for first combination
+          onUpdate({ 
+            isLocked: true,
             sizeCodes: [sizeCode],
             channels: [channel],
-            isLocked: true
+            menuCode: newMenuCode
           });
+          return;
+        }
+        
+        newRows.push({
+          id: `${item.id}_${channelIndex}_${sizeIndex}`,
+          categoryCode: item.categoryCode,
+          vegNonVeg: item.vegNonVeg,
+          menuCode: newMenuCode,
+          menuItemName: item.menuItemName,
+          sizeCodes: [sizeCode],
+          channels: [channel],
+          isLocked: true
         });
       });
-      
-      setExpandedRows(newRows);
-    }
+    });
+    
+    setExpandedRows(newRows);
   };
 
   const isFormValid = item.categoryCode && item.vegNonVeg && item.menuCode && 
@@ -160,36 +157,19 @@ export const MenuItemRow = ({ item, index, onUpdate, onDelete }: MenuItemRowProp
       <div className="space-y-2">
         <div className="border rounded-lg p-4 bg-muted/50">
           <div className="grid grid-cols-7 gap-4 items-center">
+            <div className="text-sm">{item.categoryCode}</div>
+            <div className="text-sm">{item.vegNonVeg}</div>
+            <div className="text-sm font-mono">{item.menuCode}</div>
+            <div className="text-sm">{item.menuItemName}</div>
             <div>
-              <Label className="text-xs text-muted-foreground">Category</Label>
-              <p className="text-sm">{item.categoryCode}</p>
-            </div>
-            <div>
-              <Label className="text-xs text-muted-foreground">Type</Label>
-              <p className="text-sm">{item.vegNonVeg}</p>
-            </div>
-            <div>
-              <Label className="text-xs text-muted-foreground">Menu Code</Label>
-              <p className="text-sm font-mono">{item.menuCode}</p>
-            </div>
-            <div>
-              <Label className="text-xs text-muted-foreground">Item Name</Label>
-              <p className="text-sm">{item.menuItemName}</p>
-            </div>
-            <div>
-              <Label className="text-xs text-muted-foreground">Size Code</Label>
               <Badge variant="outline" className="text-xs">{item.sizeCodes[0]}</Badge>
             </div>
             <div>
-              <Label className="text-xs text-muted-foreground">Channel</Label>
               <Badge variant="secondary" className="text-xs">
                 {channels.find(ch => ch.value === item.channels[0])?.label || item.channels[0]}
               </Badge>
             </div>
             <div className="flex gap-2">
-              <Button size="icon" variant="ghost">
-                <Edit className="h-4 w-4" />
-              </Button>
               <Button size="icon" variant="ghost" onClick={onDelete}>
                 <Trash2 className="h-4 w-4" />
               </Button>
@@ -199,20 +179,12 @@ export const MenuItemRow = ({ item, index, onUpdate, onDelete }: MenuItemRowProp
         
         {/* Render expanded rows */}
         {expandedRows.map((expandedItem) => (
-          <div key={expandedItem.id} className="border rounded-lg p-4 bg-muted/30 ml-4">
+          <div key={expandedItem.id} className="border rounded-lg p-4 bg-muted/30">
             <div className="grid grid-cols-7 gap-4 items-center">
-              <div>
-                <p className="text-sm">{expandedItem.categoryCode}</p>
-              </div>
-              <div>
-                <p className="text-sm">{expandedItem.vegNonVeg}</p>
-              </div>
-              <div>
-                <p className="text-sm font-mono">{expandedItem.menuCode}</p>
-              </div>
-              <div>
-                <p className="text-sm">{expandedItem.menuItemName}</p>
-              </div>
+              <div className="text-sm">{expandedItem.categoryCode}</div>
+              <div className="text-sm">{expandedItem.vegNonVeg}</div>
+              <div className="text-sm font-mono">{expandedItem.menuCode}</div>
+              <div className="text-sm">{expandedItem.menuItemName}</div>
               <div>
                 <Badge variant="outline" className="text-xs">{expandedItem.sizeCodes[0]}</Badge>
               </div>
@@ -222,10 +194,9 @@ export const MenuItemRow = ({ item, index, onUpdate, onDelete }: MenuItemRowProp
                 </Badge>
               </div>
               <div className="flex gap-2">
-                <Button size="icon" variant="ghost">
-                  <Edit className="h-4 w-4" />
-                </Button>
-                <Button size="icon" variant="ghost">
+                <Button size="icon" variant="ghost" onClick={() => {
+                  setExpandedRows(rows => rows.filter(r => r.id !== expandedItem.id));
+                }}>
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </div>
@@ -370,17 +341,6 @@ export const MenuItemRow = ({ item, index, onUpdate, onDelete }: MenuItemRowProp
               </div>
             </SelectContent>
           </Select>
-          {item.sizeCodes.length > 1 || item.channels.length > 1 ? (
-            <div className="mt-1 p-2 bg-blue-50 rounded-md border border-blue-200">
-              <p className="text-xs text-blue-700 font-medium flex items-center gap-1">
-                <span className="text-blue-500">ⓘ</span>
-                Multiple selections will auto-generate additional menu codes
-              </p>
-              <p className="text-xs text-blue-600 mt-1">
-                {item.sizeCodes.length} size{item.sizeCodes.length > 1 ? 's' : ''} × {item.channels.length} channel{item.channels.length > 1 ? 's' : ''} = {item.sizeCodes.length * item.channels.length} rows
-              </p>
-            </div>
-          ) : null}
         </div>
 
         {/* Submit Button */}
@@ -394,6 +354,19 @@ export const MenuItemRow = ({ item, index, onUpdate, onDelete }: MenuItemRowProp
           </Button>
         </div>
       </div>
+
+      {/* Multiple selections info - appears below the form */}
+      {item.channels.length > 1 && (
+        <div className="mt-2 p-3 bg-blue-50 rounded-md border border-blue-200">
+          <p className="text-xs text-blue-700 font-medium flex items-center gap-1">
+            <span className="text-blue-500">ⓘ</span>
+            Multiple Channel selections will auto-generate additional menu codes
+          </p>
+          <p className="text-xs text-blue-600 mt-1">
+            {item.sizeCodes.length} size{item.sizeCodes.length > 1 ? 's' : ''} × {item.channels.length} channel{item.channels.length > 1 ? 's' : ''} = {item.sizeCodes.length * item.channels.length} rows
+          </p>
+        </div>
+      )}
     </div>
   );
 };

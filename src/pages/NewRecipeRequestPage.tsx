@@ -5,9 +5,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { CreateNewVersionForm } from "@/components/CreateNewVersionForm";
 import { MenuItemRow } from "@/components/MenuItemRow";
+import { ArrowLeft } from "lucide-react";
 
 interface MenuItem {
   id: string;
@@ -28,6 +30,8 @@ const NewRecipeRequestPage = () => {
   const [showCreateVersion, setShowCreateVersion] = useState(false);
   const [newVersionMessage, setNewVersionMessage] = useState("");
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [lastGeneratedMenuCode, setLastGeneratedMenuCode] = useState("");
+  const [lastUsedCategory, setLastUsedCategory] = useState("");
 
   // Mock recipe bank versions
   const recipeBankVersions = [
@@ -48,7 +52,7 @@ const NewRecipeRequestPage = () => {
   const addNewMenuItem = () => {
     const newItem: MenuItem = {
       id: `item_${Date.now()}`,
-      categoryCode: "",
+      categoryCode: lastUsedCategory,
       vegNonVeg: "",
       menuCode: "",
       menuItemName: "",
@@ -61,6 +65,12 @@ const NewRecipeRequestPage = () => {
 
   const updateMenuItem = (id: string, updates: Partial<MenuItem>) => {
     setMenuItems(items => items.map(item => (item.id === id ? { ...item, ...updates } : item)));
+    if (updates.categoryCode) {
+      setLastUsedCategory(updates.categoryCode);
+    }
+    if (updates.menuCode) {
+      setLastGeneratedMenuCode(updates.menuCode);
+    }
   };
 
   const deleteMenuItem = (id: string) => {
@@ -85,6 +95,24 @@ const NewRecipeRequestPage = () => {
     navigate(`/recipe-request/${requestId}?source=dashboard&showToast=true`);
   };
 
+  const hasFormData = () => {
+    return requestDesc.trim() !== "" || selectedVersions.length > 0 || menuItems.length > 0;
+  };
+
+  const handleBackToDashboard = () => {
+    if (hasFormData()) {
+      return; // Let the alert dialog handle this
+    }
+    navigate("/dashboard");
+  };
+
+  const getNextMenuCode = () => {
+    if (!lastGeneratedMenuCode) return "";
+    const prefix = lastGeneratedMenuCode.slice(0, 3);
+    const number = parseInt(lastGeneratedMenuCode.slice(3));
+    return `${prefix}${String(number + 1).padStart(3, '0')}`;
+  };
+
   // SEO title
   if (typeof document !== "undefined") {
     document.title = "New Recipe Creation Request | Recipe System";
@@ -94,7 +122,31 @@ const NewRecipeRequestPage = () => {
     <main className="w-full">
       <header className="border-b">
         <div className="mx-auto w-full max-w-none px-6 py-6">
-          <h1 className="text-2xl font-bold text-primary">New Recipe Creation Request Form</h1>
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-bold text-primary">New Recipe Creation Request Form</h1>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="outline" className="flex items-center gap-2">
+                  <ArrowLeft className="h-4 w-4" />
+                  Back to Dashboard
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Unsaved Changes</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Your form is not submitted yet. It will be discarded if you continue to Dashboard.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Stay on Form</AlertDialogCancel>
+                  <AlertDialogAction onClick={() => navigate("/dashboard")}>
+                    Continue to Dashboard
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
         </div>
       </header>
 
@@ -157,10 +209,25 @@ const NewRecipeRequestPage = () => {
           <section className="space-y-4">
             <div className="flex justify-between items-center">
               <Label className="text-lg font-semibold">Menu Item Details</Label>
-              <Button onClick={addNewMenuItem} className="gap-2" disabled={menuItems.some((it) => !it.isLocked)}>
-                + Add New Item Details
-              </Button>
+              {menuItems.filter(item => !item.isLocked).length === 0 && (
+                <Button onClick={addNewMenuItem} className="gap-2">
+                  + Add New Item Details
+                </Button>
+              )}
             </div>
+
+            {/* Headers for locked items */}
+            {menuItems.some(item => item.isLocked) && (
+              <div className="grid grid-cols-7 gap-4 p-4 border rounded-lg bg-muted font-semibold text-sm">
+                <div>Category</div>
+                <div>Type</div>
+                <div>Menu Code</div>
+                <div>Item Name</div>
+                <div>Size Code</div>
+                <div>Channel</div>
+                <div>Actions</div>
+              </div>
+            )}
 
             <div className="space-y-4">
               {menuItems.map((item, index) => (
@@ -168,11 +235,21 @@ const NewRecipeRequestPage = () => {
                   key={item.id}
                   item={item}
                   index={index}
+                  lastGeneratedMenuCode={lastGeneratedMenuCode}
                   onUpdate={(updates) => updateMenuItem(item.id, updates)}
                   onDelete={() => deleteMenuItem(item.id)}
                 />
               ))}
             </div>
+
+            {/* Add button at bottom if there are locked items */}
+            {menuItems.some(item => item.isLocked) && (
+              <div className="flex justify-center pt-4">
+                <Button onClick={addNewMenuItem} className="gap-2">
+                  + Add New Item Details
+                </Button>
+              </div>
+            )}
           </section>
 
           {/* Submit Button */}
