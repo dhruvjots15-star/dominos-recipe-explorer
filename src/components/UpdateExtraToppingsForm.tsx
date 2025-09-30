@@ -133,7 +133,7 @@ export const UpdateExtraToppingsForm = ({ onBack }: UpdateExtraToppingsFormProps
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
-      <div className="container mx-auto p-6 space-y-8">
+      <div className="w-full px-4 md:px-6 py-6 space-y-8 max-w-[100vw] overflow-hidden">
         {/* Header */}
         <div className="flex items-center gap-4">
           <Button 
@@ -191,7 +191,7 @@ export const UpdateExtraToppingsForm = ({ onBack }: UpdateExtraToppingsFormProps
 
         {/* Toppings Table */}
         {selectedSizeCode && (
-          <Card>
+          <Card className="w-full">
             <CardHeader>
               <div className="flex justify-between items-center">
                 <CardTitle>Extra Toppings for {selectedSizeCode}</CardTitle>
@@ -201,26 +201,26 @@ export const UpdateExtraToppingsForm = ({ onBack }: UpdateExtraToppingsFormProps
                 </Button>
               </div>
             </CardHeader>
-            <CardContent>
-              <div className="rounded-lg border overflow-auto">
-                <Table>
+            <CardContent className="p-0">
+              <div className="w-full overflow-x-auto">
+                <Table className="w-full">
                   <TableHeader>
                     <TableRow className="bg-muted/50">
-                      <TableHead className="font-semibold w-24">Size Code</TableHead>
-                      <TableHead className="font-semibold min-w-[250px]">Description</TableHead>
-                      <TableHead className="font-semibold min-w-[200px]">Inventory Code</TableHead>
-                      <TableHead className="font-semibold w-32 text-center">Number Of Toppings</TableHead>
-                      <TableHead className="font-semibold w-32 text-center">Light Amount</TableHead>
-                      <TableHead className="font-semibold w-32 text-center">Single Amount</TableHead>
-                      <TableHead className="font-semibold w-32 text-center">Extra Amount</TableHead>
-                      <TableHead className="font-semibold w-32 text-center">Double Amount</TableHead>
-                      <TableHead className="font-semibold w-32 text-center">Triple Amount</TableHead>
+                      <TableHead className="font-semibold w-20 min-w-[80px]">Size Code</TableHead>
+                      <TableHead className="font-semibold w-44 min-w-[180px]">Description</TableHead>
+                      <TableHead className="font-semibold w-36 min-w-[140px]">Inventory Code</TableHead>
+                      <TableHead className="font-semibold w-24 min-w-[100px] text-center text-xs">Num Toppings</TableHead>
+                      <TableHead className="font-semibold w-24 min-w-[100px] text-center text-xs">Light</TableHead>
+                      <TableHead className="font-semibold w-24 min-w-[100px] text-center text-xs">Single</TableHead>
+                      <TableHead className="font-semibold w-24 min-w-[100px] text-center text-xs">Extra</TableHead>
+                      <TableHead className="font-semibold w-24 min-w-[100px] text-center text-xs">Double</TableHead>
+                      <TableHead className="font-semibold w-24 min-w-[100px] text-center text-xs">Triple</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {toppingRows.map((row, index) => (
                       <TableRow key={index} className={row.isNew ? "bg-primary/5" : ""}>
-                        <TableCell className="font-medium">{row.sizeCode}</TableCell>
+                        <TableCell className="font-medium text-sm">{row.sizeCode}</TableCell>
                         
                         {/* Description - Searchable Dropdown */}
                         <TableCell>
@@ -230,12 +230,12 @@ export const UpdateExtraToppingsForm = ({ onBack }: UpdateExtraToppingsFormProps
                                 <Button
                                   variant="outline"
                                   role="combobox"
-                                  className="w-full justify-between"
+                                  className="w-full justify-between h-8 text-xs px-2"
                                 >
-                                  {row.description || "Select inventory..."}
+                                  <span className="truncate">{row.description || "Select..."}</span>
                                 </Button>
                               </PopoverTrigger>
-                              <PopoverContent className="w-[300px] p-0" align="start">
+                              <PopoverContent className="w-[280px] p-0" align="start">
                                 <Command>
                                   <CommandInput placeholder="Search inventory..." />
                                   <CommandEmpty>No inventory found.</CommandEmpty>
@@ -260,7 +260,7 @@ export const UpdateExtraToppingsForm = ({ onBack }: UpdateExtraToppingsFormProps
                               </PopoverContent>
                             </Popover>
                           ) : (
-                            <span>{row.description}</span>
+                            <span className="text-xs truncate block">{row.description}</span>
                           )}
                         </TableCell>
 
@@ -272,12 +272,12 @@ export const UpdateExtraToppingsForm = ({ onBack }: UpdateExtraToppingsFormProps
                                 <Button
                                   variant="outline"
                                   role="combobox"
-                                  className="w-full justify-between"
+                                  className="w-full justify-between h-8 text-xs px-2"
                                 >
-                                  {row.inventoryCode || "Select code..."}
+                                  <span className="truncate">{row.inventoryCode || "Select..."}</span>
                                 </Button>
                               </PopoverTrigger>
-                              <PopoverContent className="w-[250px] p-0" align="start">
+                              <PopoverContent className="w-[200px] p-0" align="start">
                                 <Command>
                                   <CommandInput placeholder="Search code..." />
                                   <CommandEmpty>No code found.</CommandEmpty>
@@ -302,38 +302,38 @@ export const UpdateExtraToppingsForm = ({ onBack }: UpdateExtraToppingsFormProps
                               </PopoverContent>
                             </Popover>
                           ) : (
-                            <span>{row.inventoryCode}</span>
+                            <span className="text-xs">{row.inventoryCode}</span>
                           )}
                         </TableCell>
 
                         {/* Editable Number Fields */}
                         {(['numberOfToppings', 'lightAmount', 'singleAmount', 'extraAmount', 'doubleAmount', 'tripleAmount'] as const).map((field) => (
                           <TableCell key={field}>
-                            <div className="flex items-center gap-1 justify-center">
+                            <div className="flex items-center gap-0.5 justify-center">
                               <Button
                                 variant="outline"
                                 size="sm"
-                                className="h-7 w-7 p-0"
+                                className="h-6 w-6 p-0"
                                 onClick={() => updateValue(index, field, -1)}
                                 disabled={!row.inventoryCode}
                               >
-                                <Minus className="h-3 w-3" />
+                                <Minus className="h-2.5 w-2.5" />
                               </Button>
                               <Input
                                 type="number"
                                 value={row[field]}
                                 onChange={(e) => handleDirectInput(index, field, e.target.value)}
-                                className="h-7 w-16 text-center"
+                                className="h-6 w-12 text-center text-xs p-0"
                                 disabled={!row.inventoryCode}
                               />
                               <Button
                                 variant="outline"
                                 size="sm"
-                                className="h-7 w-7 p-0"
+                                className="h-6 w-6 p-0"
                                 onClick={() => updateValue(index, field, 1)}
                                 disabled={!row.inventoryCode}
                               >
-                                <Plus className="h-3 w-3" />
+                                <Plus className="h-2.5 w-2.5" />
                               </Button>
                             </div>
                           </TableCell>
