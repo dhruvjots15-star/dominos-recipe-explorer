@@ -4,7 +4,7 @@ export interface DashboardRequest {
   requestType: 'NEW RECIPE' | 'RECIPE MODIFICATION' | 'VERSION EXTEND' | 'VERSION ROLLBACK' | 'NEW SIZE CODE';
   requestedBy: string;
   requestCreatedDate: string;
-  currentStatus: 'REQUEST CREATED,PENDING ON CHEF' | 'APPROVAL PENDING ON CATEGORY' | 'APPROVAL PENDING ON SC' | 'APPROVAL PENDING ON QUALITY' | 'APPROVAL PENDING ON FINANCE' | 'APPROVED BY ALL, PENDING ON MDM' | 'ACKNOWLEDGED BY MDM, CHANGES PENDING' | 'DONE BY MDM, AWAITING ROLLOUT' | 'LIVE' | 'REJECTED' | 'REQUEST CREATED, APPROVAL PENDING' | 'REQUEST APPROVED, PENDING ON CHEF' | 'EXTRA TOPPING MASTER UPDATE REQUEST SUBMITTED BY CHEF' | 'EXTRA TOPPING MASTER UPDATED';
+  currentStatus: string;
   goLiveDate?: string;
   targetVersion?: string;
   affectedStores?: number;
@@ -12,173 +12,417 @@ export interface DashboardRequest {
 }
 
 export const mockDashboardRequestsData: DashboardRequest[] = [
+  // NEW RECIPE & RECIPE MODIFICATION requests - all statuses
   {
-    requestId: "REQ_001",
-    requestDesc: "New Mediterranean Quinoa Bowl recipe with tahini dressing and seasonal vegetables for health-conscious customers",
+    requestId: "REQ_NR_001",
+    requestDesc: "New Mediterranean Quinoa Bowl with tahini dressing",
     requestType: "NEW RECIPE",
-    requestedBy: "Maria Santos",
-    requestCreatedDate: "2024-02-10T09:15:00Z",
-    currentStatus: "LIVE",
-    goLiveDate: "2024-02-20T12:00:00Z",
-    targetVersion: "v1.0",
-    affectedStores: 250,
-    remarks: "Successful launch of new healthy menu option"
-  },
-  {
-    requestId: "REQ_002",
-    requestDesc: "Modification to Classic Burger recipe - reduce sodium content by 15% while maintaining taste profile",
-    requestType: "RECIPE MODIFICATION",
-    requestedBy: "James Wilson",
-    requestCreatedDate: "2024-02-12T14:30:00Z",
-    currentStatus: "APPROVAL PENDING ON QUALITY",
-    targetVersion: "v3.2",
-    affectedStores: 180,
-    remarks: "Health initiative to reduce sodium across menu items"
-  },
-  {
-    requestId: "REQ_003",
-    requestDesc: "New Vegan Chocolate Avocado Mousse dessert with coconut whipped cream and berry compote",
-    requestType: "NEW RECIPE",
-    requestedBy: "Sarah Kim",
-    requestCreatedDate: "2024-02-14T11:45:00Z",
-    currentStatus: "DONE BY MDM, AWAITING ROLLOUT",
-    targetVersion: "v1.0",
-    affectedStores: 120,
-    remarks: "Plant-based dessert option for vegan customers"
-  },
-  {
-    requestId: "REQ_004",
-    requestDesc: "Modification to Caesar Salad dressing - switch to organic ingredients and cage-free eggs",
-    requestType: "RECIPE MODIFICATION",
-    requestedBy: "Alex Rodriguez",
-    requestCreatedDate: "2024-02-16T16:20:00Z",
-    currentStatus: "ACKNOWLEDGED BY MDM, CHANGES PENDING",
-    targetVersion: "v2.8",
-    affectedStores: 200,
-    remarks: "Sustainability initiative for organic ingredient sourcing"
-  },
-  {
-    requestId: "REQ_005",
-    requestDesc: "New Korean BBQ Fusion Bowl with kimchi, bulgogi-style protein, and gochujang aioli",
-    requestType: "NEW RECIPE",
-    requestedBy: "Linda Chen",
-    requestCreatedDate: "2024-02-18T08:10:00Z",
-    currentStatus: "APPROVAL PENDING ON FINANCE",
+    requestedBy: "Varun",
+    requestCreatedDate: "2024-03-15T20:00:00Z",
+    currentStatus: "REQUEST CREATED, PENDING ON CHEF",
     targetVersion: "v1.0",
     affectedStores: 150,
-    remarks: "Expansion into Asian fusion cuisine market"
+    remarks: "Healthy menu option"
   },
   {
-    requestId: "REQ_006",
-    requestDesc: "Modification to Margherita Pizza - upgrade to San Marzano tomatoes and buffalo mozzarella",
-    requestType: "RECIPE MODIFICATION",
-    requestedBy: "Tony Ricci",
-    requestCreatedDate: "2024-02-20T13:55:00Z",
-    currentStatus: "APPROVED BY ALL, PENDING ON MDM",
-    targetVersion: "v4.1",
-    affectedStores: 300,
-    remarks: "Premium ingredient upgrade for signature pizza"
-  },
-  {
-    requestId: "REQ_007",
-    requestDesc: "New Breakfast Power Bowl with quinoa, poached egg, avocado, and turmeric tahini dressing",
+    requestId: "REQ_NR_002",
+    requestDesc: "New Vegan Chocolate Mousse dessert",
     requestType: "NEW RECIPE",
-    requestedBy: "Emma Thompson",
-    requestCreatedDate: "2024-02-22T10:30:00Z",
-    currentStatus: "REQUEST CREATED,PENDING ON CHEF",
+    requestedBy: "Varun",
+    requestCreatedDate: "2024-03-15T20:00:00Z",
+    currentStatus: "RECIPES SUBMITTED BY CHEF, APPROVALS PENDING ON CATEGORY & SC PLANNING & QUALITY",
+    targetVersion: "v1.0",
+    affectedStores: 120,
+    remarks: "Plant-based dessert option"
+  },
+  {
+    requestId: "REQ_NR_003",
+    requestDesc: "New Korean BBQ Fusion Bowl",
+    requestType: "NEW RECIPE",
+    requestedBy: "Varun",
+    requestCreatedDate: "2024-03-15T20:00:00Z",
+    currentStatus: "RECIPES SUBMITTED BY CHEF, APPROVALS PENDING ON CATEGORY & SC PLANNING",
+    targetVersion: "v1.0",
+    affectedStores: 140,
+    remarks: "Asian fusion cuisine"
+  },
+  {
+    requestId: "REQ_NR_004",
+    requestDesc: "New Breakfast Power Bowl",
+    requestType: "NEW RECIPE",
+    requestedBy: "Varun",
+    requestCreatedDate: "2024-03-15T20:00:00Z",
+    currentStatus: "RECIPES SUBMITTED BY CHEF, APPROVALS PENDING ON SC PLANNING & QUALITY",
     targetVersion: "v1.0",
     affectedStores: 175,
-    remarks: "Healthy breakfast option for morning customers"
+    remarks: "Healthy breakfast option"
   },
   {
-    requestId: "REQ_008",
-    requestDesc: "Modification to Fish & Chips batter - gluten-free alternative using rice flour and cornstarch blend",
-    requestType: "RECIPE MODIFICATION",
-    requestedBy: "David Park",
-    requestCreatedDate: "2024-02-24T15:40:00Z",
-    currentStatus: "APPROVAL PENDING ON CATEGORY",
-    targetVersion: "v2.5",
-    affectedStores: 90,
-    remarks: "Gluten-free option for customers with dietary restrictions"
-  },
-  {
-    requestId: "REQ_009",
-    requestDesc: "New Seasonal Pumpkin Spice Latte with house-made syrup and organic pumpkin puree",
+    requestId: "REQ_NR_005",
+    requestDesc: "New Artisanal Sourdough Sandwich",
     requestType: "NEW RECIPE",
-    requestedBy: "Rachel Green",
-    requestCreatedDate: "2024-02-26T09:25:00Z",
-    currentStatus: "REJECTED",
-    targetVersion: "v1.0",
-    affectedStores: 0,
-    remarks: "Seasonal timing conflict with existing beverage promotions"
-  },
-  {
-    requestId: "REQ_010",
-    requestDesc: "Modification to Chicken Tikka Masala - adjust spice level and add coconut milk for creamier texture",
-    requestType: "RECIPE MODIFICATION",
-    requestedBy: "Priya Sharma",
-    requestCreatedDate: "2024-02-28T12:15:00Z",
-    currentStatus: "APPROVAL PENDING ON SC",
-    targetVersion: "v3.7",
-    affectedStores: 220,
-    remarks: "Customer feedback driven recipe improvement"
-  },
-  {
-    requestId: "REQ_011",
-    requestDesc: "New Artisanal Sourdough Sandwich with locally sourced meats, aged cheeses, and house-made pickles",
-    requestType: "NEW RECIPE",
-    requestedBy: "Michael Brown",
-    requestCreatedDate: "2024-03-01T14:50:00Z",
-    currentStatus: "LIVE",
-    goLiveDate: "2024-03-08T11:30:00Z",
+    requestedBy: "Varun",
+    requestCreatedDate: "2024-03-15T20:00:00Z",
+    currentStatus: "RECIPES SUBMITTED BY CHEF, APPROVALS PENDING ON CATEGORY & QUALITY",
     targetVersion: "v1.0",
     affectedStores: 160,
-    remarks: "Premium sandwich option using local suppliers"
+    remarks: "Premium sandwich option"
   },
   {
-    requestId: "REQ_012",
-    requestDesc: "Modification to Classic Mac & Cheese - add truffle oil and breadcrumb topping for premium version",
-    requestType: "RECIPE MODIFICATION",
-    requestedBy: "Jessica Lee",
-    requestCreatedDate: "2024-03-03T11:20:00Z",
-    currentStatus: "APPROVAL PENDING ON QUALITY",
-    targetVersion: "v2.3",
+    requestId: "REQ_NR_006",
+    requestDesc: "New Seasonal Pumpkin Spice Latte",
+    requestType: "NEW RECIPE",
+    requestedBy: "Varun",
+    requestCreatedDate: "2024-03-15T20:00:00Z",
+    currentStatus: "RECIPES SUBMITTED BY CHEF, APPROVAL PENDING ON CATEGORY",
+    targetVersion: "v1.0",
+    affectedStores: 200,
+    remarks: "Seasonal beverage"
+  },
+  {
+    requestId: "REQ_NR_007",
+    requestDesc: "New Truffle Mac & Cheese",
+    requestType: "NEW RECIPE",
+    requestedBy: "Varun",
+    requestCreatedDate: "2024-03-15T20:00:00Z",
+    currentStatus: "RECIPES SUBMITTED BY CHEF, APPROVAL PENDING ON SC PLANNING",
+    targetVersion: "v1.0",
     affectedStores: 140,
-    remarks: "Upscale comfort food option for dinner service"
+    remarks: "Premium comfort food"
+  },
+  {
+    requestId: "REQ_NR_008",
+    requestDesc: "New Thai Green Curry Bowl",
+    requestType: "NEW RECIPE",
+    requestedBy: "Varun",
+    requestCreatedDate: "2024-03-15T20:00:00Z",
+    currentStatus: "RECIPES SUBMITTED BY CHEF, APPROVAL PENDING ON QUALITY",
+    targetVersion: "v1.0",
+    affectedStores: 130,
+    remarks: "Asian cuisine expansion"
+  },
+  {
+    requestId: "REQ_NR_009",
+    requestDesc: "New Gluten-Free Pizza Crust",
+    requestType: "NEW RECIPE",
+    requestedBy: "Varun",
+    requestCreatedDate: "2024-03-15T20:00:00Z",
+    currentStatus: "REJECTED BY CATEGORY",
+    targetVersion: "v1.0",
+    affectedStores: 0,
+    remarks: "Quality concerns with gluten-free ingredients"
+  },
+  {
+    requestId: "REQ_NR_010",
+    requestDesc: "New Keto-Friendly Bowl",
+    requestType: "NEW RECIPE",
+    requestedBy: "Varun",
+    requestCreatedDate: "2024-03-15T20:00:00Z",
+    currentStatus: "REJECTED BY SC PLANNING",
+    targetVersion: "v1.0",
+    affectedStores: 0,
+    remarks: "Supply chain constraints"
+  },
+  {
+    requestId: "REQ_NR_011",
+    requestDesc: "New Organic Smoothie Bowl",
+    requestType: "NEW RECIPE",
+    requestedBy: "Varun",
+    requestCreatedDate: "2024-03-15T20:00:00Z",
+    currentStatus: "REJECTED BY QUALITY",
+    targetVersion: "v1.0",
+    affectedStores: 0,
+    remarks: "Failed quality standards"
+  },
+  {
+    requestId: "REQ_NR_012",
+    requestDesc: "New Gourmet Burger Collection",
+    requestType: "NEW RECIPE",
+    requestedBy: "Varun",
+    requestCreatedDate: "2024-03-15T20:00:00Z",
+    currentStatus: "REQUEST APPROVED, PENDING FINAL APPROVAL FROM FINANCE",
+    targetVersion: "v1.0",
+    affectedStores: 250,
+    remarks: "Premium burger lineup"
+  },
+  {
+    requestId: "REQ_NR_013",
+    requestDesc: "New Farm Fresh Salad Bowl",
+    requestType: "NEW RECIPE",
+    requestedBy: "Varun",
+    requestCreatedDate: "2024-03-15T20:00:00Z",
+    currentStatus: "ALL APPROVALS DONE, PENDING EXECUTION BY MDM(POS)",
+    targetVersion: "v1.0",
+    affectedStores: 180,
+    remarks: "Fresh ingredients focus"
+  },
+  {
+    requestId: "REQ_NR_014",
+    requestDesc: "New Fusion Tacos Menu",
+    requestType: "NEW RECIPE",
+    requestedBy: "Varun",
+    requestCreatedDate: "2024-03-15T20:00:00Z",
+    currentStatus: "REJECTED BY FINANCE",
+    targetVersion: "v1.0",
+    affectedStores: 0,
+    remarks: "Cost concerns"
+  },
+  {
+    requestId: "REQ_NR_015",
+    requestDesc: "New Plant-Based Burger",
+    requestType: "NEW RECIPE",
+    requestedBy: "Varun",
+    requestCreatedDate: "2024-03-15T20:00:00Z",
+    currentStatus: "REQUEST EXECUTED BY MDM(POS), PENDING GO LIVE",
+    targetVersion: "v1.0",
+    affectedStores: 200,
+    remarks: "Vegan option"
+  },
+  {
+    requestId: "REQ_NR_016",
+    requestDesc: "New Signature Pasta Collection",
+    requestType: "NEW RECIPE",
+    requestedBy: "Varun",
+    requestCreatedDate: "2024-03-15T20:00:00Z",
+    currentStatus: "REJECTED BY MDM(POS)",
+    targetVersion: "v1.0",
+    affectedStores: 0,
+    remarks: "POS system limitations"
+  },
+  {
+    requestId: "REQ_NR_017",
+    requestDesc: "New Craft Coffee Selection",
+    requestType: "NEW RECIPE",
+    requestedBy: "Varun",
+    requestCreatedDate: "2024-03-10T20:00:00Z",
+    currentStatus: "REQUEST LIVE, NEW RECIPES LIVE",
+    goLiveDate: "2024-03-18T12:00:00Z",
+    targetVersion: "v1.0",
+    affectedStores: 300,
+    remarks: "Successfully launched"
+  },
+  // RECIPE MODIFICATION requests
+  {
+    requestId: "REQ_RM_001",
+    requestDesc: "Modify Classic Burger - reduce sodium content",
+    requestType: "RECIPE MODIFICATION",
+    requestedBy: "Varun",
+    requestCreatedDate: "2024-03-15T20:00:00Z",
+    currentStatus: "REQUEST CREATED, PENDING ON CHEF",
+    targetVersion: "v3.2",
+    affectedStores: 180,
+    remarks: "Health initiative"
+  },
+  {
+    requestId: "REQ_RM_002",
+    requestDesc: "Modify Caesar Salad - switch to organic ingredients",
+    requestType: "RECIPE MODIFICATION",
+    requestedBy: "Varun",
+    requestCreatedDate: "2024-03-15T20:00:00Z",
+    currentStatus: "RECIPES SUBMITTED BY CHEF, APPROVALS PENDING ON CATEGORY & SC PLANNING & QUALITY",
+    targetVersion: "v2.8",
+    affectedStores: 200,
+    remarks: "Sustainability initiative"
+  },
+  {
+    requestId: "REQ_RM_003",
+    requestDesc: "Modify Margherita Pizza - upgrade to premium ingredients",
+    requestType: "RECIPE MODIFICATION",
+    requestedBy: "Varun",
+    requestCreatedDate: "2024-03-15T20:00:00Z",
+    currentStatus: "RECIPES SUBMITTED BY CHEF, APPROVALS PENDING ON CATEGORY & SC PLANNING",
+    targetVersion: "v4.1",
+    affectedStores: 300,
+    remarks: "Premium upgrade"
+  },
+  {
+    requestId: "REQ_RM_004",
+    requestDesc: "Modify Fish & Chips - gluten-free batter",
+    requestType: "RECIPE MODIFICATION",
+    requestedBy: "Varun",
+    requestCreatedDate: "2024-03-15T20:00:00Z",
+    currentStatus: "RECIPES SUBMITTED BY CHEF, APPROVALS PENDING ON SC PLANNING & QUALITY",
+    targetVersion: "v2.5",
+    affectedStores: 90,
+    remarks: "Dietary accommodation"
+  },
+  {
+    requestId: "REQ_RM_005",
+    requestDesc: "Modify Chicken Tikka - adjust spice level",
+    requestType: "RECIPE MODIFICATION",
+    requestedBy: "Varun",
+    requestCreatedDate: "2024-03-15T20:00:00Z",
+    currentStatus: "RECIPES SUBMITTED BY CHEF, APPROVALS PENDING ON CATEGORY & QUALITY",
+    targetVersion: "v3.7",
+    affectedStores: 220,
+    remarks: "Customer feedback driven"
+  },
+  {
+    requestId: "REQ_RM_006",
+    requestDesc: "Modify Pasta Carbonara - add truffle oil",
+    requestType: "RECIPE MODIFICATION",
+    requestedBy: "Varun",
+    requestCreatedDate: "2024-03-15T20:00:00Z",
+    currentStatus: "RECIPES SUBMITTED BY CHEF, APPROVAL PENDING ON CATEGORY",
+    targetVersion: "v2.1",
+    affectedStores: 150,
+    remarks: "Premium enhancement"
+  },
+  {
+    requestId: "REQ_RM_007",
+    requestDesc: "Modify Thai Curry - increase coconut milk",
+    requestType: "RECIPE MODIFICATION",
+    requestedBy: "Varun",
+    requestCreatedDate: "2024-03-15T20:00:00Z",
+    currentStatus: "RECIPES SUBMITTED BY CHEF, APPROVAL PENDING ON SC PLANNING",
+    targetVersion: "v1.8",
+    affectedStores: 110,
+    remarks: "Creamier texture"
+  },
+  {
+    requestId: "REQ_RM_008",
+    requestDesc: "Modify Chocolate Cake - reduce sugar",
+    requestType: "RECIPE MODIFICATION",
+    requestedBy: "Varun",
+    requestCreatedDate: "2024-03-15T20:00:00Z",
+    currentStatus: "RECIPES SUBMITTED BY CHEF, APPROVAL PENDING ON QUALITY",
+    targetVersion: "v3.0",
+    affectedStores: 170,
+    remarks: "Health conscious option"
+  },
+  {
+    requestId: "REQ_RM_009",
+    requestDesc: "Modify Greek Salad - add feta cheese variant",
+    requestType: "RECIPE MODIFICATION",
+    requestedBy: "Varun",
+    requestCreatedDate: "2024-03-15T20:00:00Z",
+    currentStatus: "REJECTED BY CATEGORY",
+    targetVersion: "v2.3",
+    affectedStores: 0,
+    remarks: "Ingredient concerns"
+  },
+  {
+    requestId: "REQ_RM_010",
+    requestDesc: "Modify BBQ Ribs - new sauce formula",
+    requestType: "RECIPE MODIFICATION",
+    requestedBy: "Varun",
+    requestCreatedDate: "2024-03-15T20:00:00Z",
+    currentStatus: "REJECTED BY SC PLANNING",
+    targetVersion: "v1.5",
+    affectedStores: 0,
+    remarks: "Supply issues"
+  },
+  {
+    requestId: "REQ_RM_011",
+    requestDesc: "Modify Ice Cream - natural flavoring",
+    requestType: "RECIPE MODIFICATION",
+    requestedBy: "Varun",
+    requestCreatedDate: "2024-03-15T20:00:00Z",
+    currentStatus: "REJECTED BY QUALITY",
+    targetVersion: "v2.0",
+    affectedStores: 0,
+    remarks: "Quality standards not met"
+  },
+  {
+    requestId: "REQ_RM_012",
+    requestDesc: "Modify Tandoori Chicken - marinade adjustment",
+    requestType: "RECIPE MODIFICATION",
+    requestedBy: "Varun",
+    requestCreatedDate: "2024-03-15T20:00:00Z",
+    currentStatus: "REQUEST APPROVED, PENDING FINAL APPROVAL FROM FINANCE",
+    targetVersion: "v4.0",
+    affectedStores: 280,
+    remarks: "Flavor enhancement"
+  },
+  {
+    requestId: "REQ_RM_013",
+    requestDesc: "Modify Veggie Wrap - add hummus spread",
+    requestType: "RECIPE MODIFICATION",
+    requestedBy: "Varun",
+    requestCreatedDate: "2024-03-15T20:00:00Z",
+    currentStatus: "ALL APPROVALS DONE, PENDING EXECUTION BY MDM(POS)",
+    targetVersion: "v1.2",
+    affectedStores: 160,
+    remarks: "Flavor improvement"
+  },
+  {
+    requestId: "REQ_RM_014",
+    requestDesc: "Modify Breakfast Burrito - add salsa verde",
+    requestType: "RECIPE MODIFICATION",
+    requestedBy: "Varun",
+    requestCreatedDate: "2024-03-15T20:00:00Z",
+    currentStatus: "REJECTED BY FINANCE",
+    targetVersion: "v2.7",
+    affectedStores: 0,
+    remarks: "Cost increase too high"
+  },
+  {
+    requestId: "REQ_RM_015",
+    requestDesc: "Modify Smoothie Bowl - organic fruits",
+    requestType: "RECIPE MODIFICATION",
+    requestedBy: "Varun",
+    requestCreatedDate: "2024-03-15T20:00:00Z",
+    currentStatus: "REQUEST EXECUTED BY MDM(POS), PENDING GO LIVE",
+    targetVersion: "v1.4",
+    affectedStores: 140,
+    remarks: "Organic upgrade"
+  },
+  {
+    requestId: "REQ_RM_016",
+    requestDesc: "Modify Fried Rice - add cashews",
+    requestType: "RECIPE MODIFICATION",
+    requestedBy: "Varun",
+    requestCreatedDate: "2024-03-15T20:00:00Z",
+    currentStatus: "REJECTED BY MDM(POS)",
+    targetVersion: "v3.1",
+    affectedStores: 0,
+    remarks: "Allergen concerns in POS"
+  },
+  {
+    requestId: "REQ_RM_017",
+    requestDesc: "Modify Espresso Blend - premium beans",
+    requestType: "RECIPE MODIFICATION",
+    requestedBy: "Varun",
+    requestCreatedDate: "2024-03-10T20:00:00Z",
+    currentStatus: "REQUEST LIVE, RECIPES MODIFIED",
+    goLiveDate: "2024-03-18T12:00:00Z",
+    targetVersion: "v2.9",
+    affectedStores: 320,
+    remarks: "Successfully upgraded"
   },
   // VERSION EXTEND and VERSION ROLLBACK requests from Recipe Bank
   {
     requestId: "REQ_013",
-    requestDesc: "Extend current version v3.2 of Peppy Paneer recipe to include seasonal vegetable variations",
+    requestDesc: "Extend current version v3.2 of Peppy Paneer recipe",
     requestType: "VERSION EXTEND",
     requestedBy: "Maria Santos",
     requestCreatedDate: "2024-03-05T09:30:00Z",
     currentStatus: "APPROVAL PENDING ON SC",
     targetVersion: "v3.3",
     affectedStores: 200,
-    remarks: "Seasonal menu expansion for spring vegetables"
+    remarks: "Seasonal menu expansion"
   },
   {
     requestId: "REQ_014",
-    requestDesc: "Rollback Farmhouse recipe from v2.8 to v2.6 due to customer complaints about new ingredient",
+    requestDesc: "Rollback Farmhouse recipe from v2.8 to v2.6",
     requestType: "VERSION ROLLBACK",
     requestedBy: "James Wilson",
     requestCreatedDate: "2024-03-06T14:15:00Z",
     currentStatus: "APPROVED BY ALL, PENDING ON MDM",
     targetVersion: "v2.6",
     affectedStores: 180,
-    remarks: "Quality issue with new organic tomato supplier"
+    remarks: "Quality issue with supplier"
   },
   {
     requestId: "REQ_015",
-    requestDesc: "Extend Margherita Pizza v4.1 to include gluten-free dough option",
+    requestDesc: "Extend Margherita Pizza v4.1",
     requestType: "VERSION EXTEND",
     requestedBy: "Sarah Kim",
     requestCreatedDate: "2024-03-07T10:45:00Z",
     currentStatus: "ACKNOWLEDGED BY MDM, CHANGES PENDING",
     targetVersion: "v4.2",
     affectedStores: 250,
-    remarks: "Dietary accommodation for gluten-intolerant customers"
+    remarks: "Dietary accommodation"
   },
   // NEW SIZE CODE requests from Size Codes Master
   {
@@ -190,7 +434,7 @@ export const mockDashboardRequestsData: DashboardRequest[] = [
     currentStatus: "REQUEST CREATED, APPROVAL PENDING",
     targetVersion: "v1.0",
     affectedStores: 150,
-    remarks: "New premium crust option for artisanal pizza line"
+    remarks: "Premium crust option"
   },
   {
     requestId: "REQ_123",
@@ -201,7 +445,7 @@ export const mockDashboardRequestsData: DashboardRequest[] = [
     currentStatus: "REQUEST APPROVED, PENDING ON CHEF",
     targetVersion: "v1.0",
     affectedStores: 120,
-    remarks: "Chicken filled crust variant for non-veg customers"
+    remarks: "Chicken filled crust variant"
   },
   {
     requestId: "REQ_129",
@@ -212,7 +456,7 @@ export const mockDashboardRequestsData: DashboardRequest[] = [
     currentStatus: "EXTRA TOPPING MASTER UPDATE REQUEST SUBMITTED BY CHEF",
     targetVersion: "v1.0",
     affectedStores: 100,
-    remarks: "Special edition size for limited time offers"
+    remarks: "Special edition size"
   },
   {
     requestId: "REQ_076",
@@ -223,7 +467,7 @@ export const mockDashboardRequestsData: DashboardRequest[] = [
     currentStatus: "REQUEST APPROVED, PENDING ON CHEF",
     targetVersion: "v1.0",
     affectedStores: 300,
-    remarks: "Updated specification for regular hand tossed crust"
+    remarks: "Updated specification"
   }
 ];
 

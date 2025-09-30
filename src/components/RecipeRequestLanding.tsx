@@ -38,6 +38,108 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
   const request = (recipeBankRequest || dashboardRequest || placeholderRequest) as any;
 
   const getWorkflowSteps = (requestData: any) => {
+    // Handle NEW RECIPE and RECIPE MODIFICATION requests with 6-step workflow
+    if (requestData.requestType === 'NEW RECIPE' || requestData.requestType === 'RECIPE MODIFICATION') {
+      const status = requestData.currentStatus;
+      const isNewRecipe = requestData.requestType === 'NEW RECIPE';
+      
+      return [
+        {
+          title: "Request Submitted by Category Team",
+          description: "Submitted by Varun on Mar 15, 2024 20:00",
+          status: 'completed' as const,
+          icon: CheckCircle
+        },
+        {
+          title: "Recipe Submission by Chef Team",
+          description: 
+            status.includes('RECIPES SUBMITTED BY CHEF') ? "Submitted by Shamsher on Mar 15, 2024 23:00" :
+            status === 'REJECTED BY CHEF' ? "Rejected by Shamsher on Mar 15, 2024 23:00" : "",
+          status: 
+            status === 'REQUEST CREATED, PENDING ON CHEF' ? 'pending' as const :
+            status.includes('RECIPES SUBMITTED BY CHEF') ? 'completed' as const :
+            status === 'REJECTED BY CHEF' ? 'rejected' as const : 'upcoming' as const,
+          icon: 
+            status === 'REQUEST CREATED, PENDING ON CHEF' ? Clock :
+            status.includes('RECIPES SUBMITTED BY CHEF') ? CheckCircle :
+            status === 'REJECTED BY CHEF' ? XCircle : Settings
+        },
+        {
+          title: "Request Approvals by Category, SC Planning, Quality Teams",
+          description: (() => {
+            const approvals = [];
+            if (status.includes('APPROVED') && !status.includes('PENDING ON CATEGORY')) {
+              approvals.push("Approved by Kshitij on Mar 16, 2024 13:30");
+            }
+            if (status.includes('APPROVED') && !status.includes('PENDING ON SC PLANNING')) {
+              approvals.push("Approved by Satyam on Mar 16, 2024 14:30");
+            }
+            if (status.includes('APPROVED') && !status.includes('PENDING ON QUALITY')) {
+              approvals.push("Approved by Rajesh on Mar 17, 2024 09:30");
+            }
+            if (status === 'REJECTED BY CATEGORY') {
+              return "Rejected by Kshitij on Mar 16, 2024 13:30";
+            }
+            if (status === 'REJECTED BY SC PLANNING') {
+              return "Rejected by Satyam on Mar 16, 2024 14:30";
+            }
+            if (status === 'REJECTED BY QUALITY') {
+              return "Rejected by Rajesh on Mar 17, 2024 09:30";
+            }
+            return approvals.join(", ");
+          })(),
+          status: 
+            status.includes('REJECTED BY CATEGORY') || status.includes('REJECTED BY SC PLANNING') || status.includes('REJECTED BY QUALITY') ? 'rejected' as const :
+            status.includes('APPROVALS PENDING') || status.includes('APPROVAL PENDING') ? 'pending' as const :
+            status.includes('REQUEST APPROVED') || status.includes('ALL APPROVALS DONE') ? 'completed' as const :
+            status.includes('RECIPES SUBMITTED BY CHEF') ? 'upcoming' as const : 'upcoming' as const,
+          icon: 
+            status.includes('REJECTED BY CATEGORY') || status.includes('REJECTED BY SC PLANNING') || status.includes('REJECTED BY QUALITY') ? XCircle :
+            status.includes('APPROVALS PENDING') || status.includes('APPROVAL PENDING') ? Clock :
+            status.includes('REQUEST APPROVED') || status.includes('ALL APPROVALS DONE') ? CheckCircle : Settings
+        },
+        {
+          title: "Request Approval by Business Finance Team",
+          description: 
+            status.includes('ALL APPROVALS DONE') || status.includes('REQUEST EXECUTED') || status === 'REQUEST LIVE, NEW RECIPES LIVE' || status === 'REQUEST LIVE, RECIPES MODIFIED' ? "Approved by Vijender on Mar 17, 2024 13:30" :
+            status === 'REJECTED BY FINANCE' ? "Rejected by Vijender on Mar 17, 2024 13:30" : "",
+          status: 
+            status === 'REJECTED BY FINANCE' ? 'rejected' as const :
+            status === 'REQUEST APPROVED, PENDING FINAL APPROVAL FROM FINANCE' ? 'pending' as const :
+            status.includes('ALL APPROVALS DONE') || status.includes('REQUEST EXECUTED') || status === 'REQUEST LIVE, NEW RECIPES LIVE' || status === 'REQUEST LIVE, RECIPES MODIFIED' ? 'completed' as const : 'upcoming' as const,
+          icon: 
+            status === 'REJECTED BY FINANCE' ? XCircle :
+            status === 'REQUEST APPROVED, PENDING FINAL APPROVAL FROM FINANCE' ? Clock :
+            status.includes('ALL APPROVALS DONE') || status.includes('REQUEST EXECUTED') || status === 'REQUEST LIVE, NEW RECIPES LIVE' || status === 'REQUEST LIVE, RECIPES MODIFIED' ? CheckCircle : Settings
+        },
+        {
+          title: "Request Execution by MDM (POS) Team",
+          description: 
+            status.includes('REQUEST EXECUTED') || status === 'REQUEST LIVE, NEW RECIPES LIVE' || status === 'REQUEST LIVE, RECIPES MODIFIED' ? "Executed by Awadesh on Mar 18, 2024 13:30" :
+            status === 'REJECTED BY MDM(POS)' ? "Rejected by Awadesh on Mar 18, 2024 13:30" : "",
+          status: 
+            status === 'REJECTED BY MDM(POS)' ? 'rejected' as const :
+            status === 'ALL APPROVALS DONE, PENDING EXECUTION BY MDM(POS)' ? 'pending' as const :
+            status.includes('REQUEST EXECUTED') || status === 'REQUEST LIVE, NEW RECIPES LIVE' || status === 'REQUEST LIVE, RECIPES MODIFIED' ? 'completed' as const : 'upcoming' as const,
+          icon: 
+            status === 'REJECTED BY MDM(POS)' ? XCircle :
+            status === 'ALL APPROVALS DONE, PENDING EXECUTION BY MDM(POS)' ? Clock :
+            status.includes('REQUEST EXECUTED') || status === 'REQUEST LIVE, NEW RECIPES LIVE' || status === 'REQUEST LIVE, RECIPES MODIFIED' ? CheckCircle : Settings
+        },
+        {
+          title: "Request Go Live by MDM (POS) Team",
+          description: 
+            status === 'REQUEST LIVE, NEW RECIPES LIVE' || status === 'REQUEST LIVE, RECIPES MODIFIED' ? "Go LIVE by Awadesh on Mar 17, 2024 13:30" : "",
+          status: 
+            status === 'REQUEST EXECUTED BY MDM(POS), PENDING GO LIVE' ? 'pending' as const :
+            status === 'REQUEST LIVE, NEW RECIPES LIVE' || status === 'REQUEST LIVE, RECIPES MODIFIED' ? 'completed' as const : 'upcoming' as const,
+          icon: 
+            status === 'REQUEST EXECUTED BY MDM(POS), PENDING GO LIVE' ? Clock :
+            status === 'REQUEST LIVE, NEW RECIPES LIVE' || status === 'REQUEST LIVE, RECIPES MODIFIED' ? Globe : Settings
+        }
+      ];
+    }
+    
     // Handle NEW SIZE CODE requests with specific 3-step workflow
     if (requestData.requestType === "NEW SIZE CODE") {
       const steps = [
