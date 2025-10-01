@@ -999,7 +999,7 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
 
         <div>
           <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-            Request Details - {request.requestId}
+            Request Details - {request.requestId || request.id || requestId}
           </h1>
           <div className="mt-4">
             <Badge 
