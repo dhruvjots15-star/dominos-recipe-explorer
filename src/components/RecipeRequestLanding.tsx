@@ -946,6 +946,9 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
   };
 
   const canReject = (status: string) => {
+    if (request.requestId === 'REQ_151' || (request.id && request.id === 'REQ_151')) {
+      return status === "REQUEST CREATED, APPROVAL PENDING ON SC PLANNING";
+    }
     if (request.requestId === 'REQ_144') {
       return status === "REQUEST CREATED, RECIPE SUBMISSION PENDING ON CHEF";
     }
