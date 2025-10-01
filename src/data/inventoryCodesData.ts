@@ -118,7 +118,7 @@ export const inventoryRequests: InventoryRequest[] = [
     requestDesc: "Modify Blue box to Green box in Inventory master",
     requestType: "UPDATE INVENTORY",
     requestedBy: "Satyam",
-    requestCreatedDate: "2025-03-16T16:15:00",
+    requestCreatedDate: "2025-03-17T16:15:00",
     currentStatus: "REQUEST APPROVED, INVENTORY CODE MASTER UPDATED"
   },
 ];
