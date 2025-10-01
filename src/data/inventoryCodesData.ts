@@ -17,6 +17,14 @@ export interface InventoryRequest {
   requestedBy: string;
   requestCreatedDate: string;
   currentStatus: string;
+  goLiveDate?: string;
+  inventoryItems?: Array<{
+    inventoryCode: string;
+    inventoryDescription: string;
+    newPortionUnit: string;
+    orderUnit: string;
+    countUnit: string;
+  }>;
 }
 
 export const inventoryCodesData: InventoryCodeItem[] = [
@@ -74,6 +82,45 @@ export const inventoryCodesData: InventoryCodeItem[] = [
 ];
 
 export const inventoryRequests: InventoryRequest[] = [
+  {
+    id: "REQ_151",
+    requestDesc: "3 New Sourdough dough balls for Soudough pizzas",
+    requestType: "NEW INVENTORY",
+    requestedBy: "Satyam",
+    requestCreatedDate: "2025-03-17T16:15:00",
+    currentStatus: "REQUEST CREATED, APPROVAL PENDING ON SC PLANNING",
+    inventoryItems: [
+      {
+        inventoryCode: "80000197",
+        inventoryDescription: "PIE_Sourdough Dough Reg (165gm)",
+        newPortionUnit: "NOS",
+        orderUnit: "TRAY",
+        countUnit: "NOS"
+      },
+      {
+        inventoryCode: "80000198",
+        inventoryDescription: "PIE_Sourdough Dough Med (275gm)",
+        newPortionUnit: "NOS",
+        orderUnit: "TRAY",
+        countUnit: "NOS"
+      },
+      {
+        inventoryCode: "80000199",
+        inventoryDescription: "PIE_SourdoughDough Lar (1495gm)",
+        newPortionUnit: "NOS",
+        orderUnit: "TRAY",
+        countUnit: "NOS"
+      }
+    ]
+  },
+  {
+    id: "REQ_141",
+    requestDesc: "Modify Blue box to Green box in Inventory master",
+    requestType: "UPDATE INVENTORY",
+    requestedBy: "Satyam",
+    requestCreatedDate: "2025-03-16T16:15:00",
+    currentStatus: "REQUEST CREATED, APPROVAL PENDING ON SC PLANNING"
+  },
   {
     id: "REQ_078",
     requestDesc: "Update portion units for seasoning items to align with new packaging standards",

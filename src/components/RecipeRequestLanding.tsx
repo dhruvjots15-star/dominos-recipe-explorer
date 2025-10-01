@@ -26,6 +26,7 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
   const [showProducts, setShowProducts] = useState(false);
   const [showStores, setShowStores] = useState(false);
   const [showSizeCodes, setShowSizeCodes] = useState(false);
+  const [showInventoryItems, setShowInventoryItems] = useState(false);
 
   // Get the actual request data or create a placeholder for newly created requests
   const baseRequestType = source === 'size-codes' ? 'NEW SIZE CODE' : 
@@ -48,6 +49,24 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
   const request = (recipeBankRequest || dashboardRequest || inventoryRequest || placeholderRequest) as any;
 
   const getWorkflowSteps = (requestData: any) => {
+    // Special handling for REQ_151
+    if (requestData.requestId === 'REQ_151' || (requestData.id && requestData.id === 'REQ_151')) {
+      return [
+        {
+          title: "Step 1: Request Submission by SC Planning Team",
+          description: "Submitted by Satyam on Mar 17, 2025, 4:15pm",
+          status: 'completed' as const,
+          icon: CheckCircle
+        },
+        {
+          title: "Step 2: Request Approval by SC Planning Team",
+          description: "Awaiting Approval by SC Planning Team",
+          status: 'pending' as const,
+          icon: Clock
+        }
+      ];
+    }
+
     // Special handling for REQ_147
     if (requestData.requestId === 'REQ_147') {
       return [
@@ -878,6 +897,9 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
   };
 
   const canApprove = (status: string) => {
+    if (request.requestId === 'REQ_151' || (request.id && request.id === 'REQ_151')) {
+      return status === "REQUEST CREATED, APPROVAL PENDING ON SC PLANNING";
+    }
     if (request.requestId === 'REQ_144') {
       return status === "REQUEST CREATED, RECIPE SUBMISSION PENDING ON CHEF";
     }
@@ -1321,6 +1343,62 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
               </>
             )}
             
+            {(request.requestId === 'REQ_151' || (request.id && request.id === 'REQ_151')) && (
+              <>
+                <div>
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium text-muted-foreground">Inventory Items</label>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowInventoryItems(!showInventoryItems)}
+                      className="text-primary hover:text-primary/80"
+                    >
+                      {showInventoryItems ? (
+                        <>
+                          <ChevronUp className="h-4 w-4 mr-1" />
+                          Hide Inventory Items
+                        </>
+                      ) : (
+                        <>
+                          <ChevronDown className="h-4 w-4 mr-1" />
+                          View 3 Inventory Items
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                  <p className="text-foreground font-medium mt-1">3 New Inventory items added for creation</p>
+                  
+                  {showInventoryItems && request.inventoryItems && (
+                    <div className="mt-4 border rounded-lg overflow-hidden">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Inventory Code</TableHead>
+                            <TableHead>Inventory Description</TableHead>
+                            <TableHead>New Portion Unit</TableHead>
+                            <TableHead>Order Unit</TableHead>
+                            <TableHead>Count Unit</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {request.inventoryItems.map((item, index) => (
+                            <TableRow key={index}>
+                              <TableCell className="font-medium">{item.inventoryCode}</TableCell>
+                              <TableCell>{item.inventoryDescription}</TableCell>
+                              <TableCell>{item.newPortionUnit}</TableCell>
+                              <TableCell>{item.orderUnit}</TableCell>
+                              <TableCell>{item.countUnit}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
+
             {(request.requestId === 'REQ_088' || request.requestId === 'REQ_087') && (
               <>
                 <div>
@@ -1390,7 +1468,7 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
               </>
             )}
             
-            {request.requestId !== 'REQ_142' && request.requestId !== 'REQ_144' && request.requestId !== 'REQ_125' && request.requestId !== 'REQ_088' && request.requestId !== 'REQ_087' && request.requestId !== 'REQ_021' && (
+            {request.requestId !== 'REQ_142' && request.requestId !== 'REQ_144' && request.requestId !== 'REQ_125' && request.requestId !== 'REQ_088' && request.requestId !== 'REQ_087' && request.requestId !== 'REQ_021' && request.requestId !== 'REQ_151' && request.id !== 'REQ_151' && (
               <>
                 <div>
                   <label className="text-sm font-medium text-muted-foreground">Selected Version</label>

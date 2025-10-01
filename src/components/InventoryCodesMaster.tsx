@@ -306,6 +306,7 @@ export const InventoryCodesMaster = () => {
                         </Button>
                       </TableHead>
                       <TableHead className="font-semibold w-64">Current Status</TableHead>
+                      <TableHead className="font-semibold w-40">Go Live Date</TableHead>
                       <TableHead className="font-semibold w-12">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -346,6 +347,9 @@ export const InventoryCodesMaster = () => {
                           <Badge variant={getStatusVariant(request.currentStatus)}>
                             {request.currentStatus}
                           </Badge>
+                        </TableCell>
+                        <TableCell className="text-sm text-muted-foreground w-40">
+                          {request.goLiveDate ? formatDate(request.goLiveDate) : '-'}
                         </TableCell>
                         <TableCell className="w-12">
                           <Button 
