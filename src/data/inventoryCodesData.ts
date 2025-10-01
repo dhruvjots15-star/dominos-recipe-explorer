@@ -75,7 +75,7 @@ export const inventoryCodesData: InventoryCodeItem[] = [
 
 export const inventoryRequests: InventoryRequest[] = [
   {
-    id: "REQ-INV-001",
+    id: "REQ_078",
     requestDesc: "Update portion units for seasoning items to align with new packaging standards",
     requestType: "INVENTORY UPDATE",
     requestedBy: "Satyam",
@@ -83,7 +83,7 @@ export const inventoryRequests: InventoryRequest[] = [
     currentStatus: "REQUEST CREATED, APPROVAL PENDING"
   },
   {
-    id: "REQ-INV-002",
+    id: "REQ_079",
     requestDesc: "Add new inventory codes for organic vegetable toppings line",
     requestType: "NEW INVENTORY",
     requestedBy: "Priya",
@@ -91,7 +91,7 @@ export const inventoryRequests: InventoryRequest[] = [
     currentStatus: "REQUEST APPROVED, PENDING ON SC PLANNING"
   },
   {
-    id: "REQ-INV-003",
+    id: "REQ_080",
     requestDesc: "Modify count order values for all dough items based on new tray sizes",
     requestType: "INVENTORY UPDATE",
     requestedBy: "Rahul",
@@ -99,3 +99,7 @@ export const inventoryRequests: InventoryRequest[] = [
     currentStatus: "INVENTORY MASTER UPDATED"
   },
 ];
+
+export const getInventoryRequestById = (requestId: string): InventoryRequest | undefined => {
+  return inventoryRequests.find(request => request.id === requestId);
+};

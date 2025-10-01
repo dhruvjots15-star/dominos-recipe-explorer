@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { getDashboardRequestById, DashboardRequest } from "@/data/dashboardRequestsData";
 import { getRequestById as getRecipeBankRequestById, RecipeRequest as RBRequest } from "@/data/requestsData";
+import { getInventoryRequestById } from "@/data/inventoryCodesData";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 interface RecipeRequestLandingProps {
@@ -27,7 +28,9 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
   const [showSizeCodes, setShowSizeCodes] = useState(false);
 
   // Get the actual request data or create a placeholder for newly created requests
-  const baseRequestType = source === 'size-codes' ? 'NEW SIZE CODE' : source === 'dashboard' ? 'NEW RECIPE' : 'VERSION EXTEND';
+  const baseRequestType = source === 'size-codes' ? 'NEW SIZE CODE' : 
+                          source === 'inventory-codes' ? 'INVENTORY UPDATE' : 
+                          source === 'dashboard' ? 'NEW RECIPE' : 'VERSION EXTEND';
   const placeholderRequest: DashboardRequest = {
     requestId,
     requestDesc: 'Request created. Details will be available shortly.',
@@ -41,7 +44,8 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
   };
   const recipeBankRequest = getRecipeBankRequestById(requestId);
   const dashboardRequest = getDashboardRequestById(requestId);
-  const request = (recipeBankRequest || dashboardRequest || placeholderRequest) as any;
+  const inventoryRequest = getInventoryRequestById(requestId);
+  const request = (recipeBankRequest || dashboardRequest || inventoryRequest || placeholderRequest) as any;
 
   const getWorkflowSteps = (requestData: any) => {
     // Special handling for REQ_147
@@ -964,7 +968,10 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
             className="text-primary hover:bg-muted/50 hover:text-primary transition-colors duration-200"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            {source === 'dashboard' ? 'Back to Dashboard' : source === 'size-codes' ? 'Back to Size Codes Master' : 'Back to Recipe Bank'}
+            {source === 'dashboard' ? 'Back to Dashboard' : 
+             source === 'size-codes' ? 'Back to Size Codes Master' : 
+             source === 'inventory-codes' ? 'Back to Inventory Codes Master' : 
+             'Back to Recipe Bank'}
           </Button>
         </div>
 

@@ -34,6 +34,8 @@ const RecipeRequestLandingPage = () => {
       navigate("/recipe-bank");
     } else if (tab === "size-codes") {
       navigate("/size-codes");
+    } else if (tab === "inventory-codes") {
+      navigate("/inventory-codes");
     }
   };
 
@@ -42,6 +44,8 @@ const RecipeRequestLandingPage = () => {
       navigate("/dashboard");
     } else if (source === 'size-codes') {
       navigate("/size-codes");
+    } else if (source === 'inventory-codes') {
+      navigate("/inventory-codes");
     } else {
       navigate("/recipe-bank");
     }
@@ -50,7 +54,15 @@ const RecipeRequestLandingPage = () => {
   if (!requestId) {
     return (
       <div className="min-h-screen">
-        <TopNavigation activeTab={source === 'dashboard' ? 'dashboard' : source === 'size-codes' ? 'size-codes' : 'recipe-bank'} onTabChange={handleTabChange} />
+        <TopNavigation 
+          activeTab={
+            source === 'dashboard' ? 'dashboard' : 
+            source === 'size-codes' ? 'size-codes' : 
+            source === 'inventory-codes' ? 'inventory-codes' : 
+            'recipe-bank'
+          } 
+          onTabChange={handleTabChange} 
+        />
         <div className="bg-background p-6">
           <div className="text-center">
             <h1 className="text-2xl font-bold text-destructive mb-4">Request Not Found</h1>
@@ -59,7 +71,10 @@ const RecipeRequestLandingPage = () => {
               onClick={handleBack}
               className="text-primary hover:underline transition-colors duration-200"
             >
-              {source === 'dashboard' ? 'Back to Dashboard' : source === 'size-codes' ? 'Back to Size Codes Master' : 'Back to Recipe Bank'}
+              {source === 'dashboard' ? 'Back to Dashboard' : 
+               source === 'size-codes' ? 'Back to Size Codes Master' : 
+               source === 'inventory-codes' ? 'Back to Inventory Codes Master' : 
+               'Back to Recipe Bank'}
             </button>
           </div>
         </div>
@@ -69,7 +84,15 @@ const RecipeRequestLandingPage = () => {
 
   return (
     <div className="min-h-screen">
-      <TopNavigation activeTab={source === 'dashboard' ? 'dashboard' : source === 'size-codes' ? 'size-codes' : 'recipe-bank'} onTabChange={handleTabChange} />
+      <TopNavigation 
+        activeTab={
+          source === 'dashboard' ? 'dashboard' : 
+          source === 'size-codes' ? 'size-codes' : 
+          source === 'inventory-codes' ? 'inventory-codes' : 
+          'recipe-bank'
+        } 
+        onTabChange={handleTabChange} 
+      />
       <RecipeRequestLanding 
         requestId={requestId} 
         onBack={handleBack}
