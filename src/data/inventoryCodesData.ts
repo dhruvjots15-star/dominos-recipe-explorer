@@ -119,31 +119,7 @@ export const inventoryRequests: InventoryRequest[] = [
     requestType: "UPDATE INVENTORY",
     requestedBy: "Satyam",
     requestCreatedDate: "2025-03-16T16:15:00",
-    currentStatus: "REQUEST CREATED, APPROVAL PENDING ON SC PLANNING"
-  },
-  {
-    id: "REQ_078",
-    requestDesc: "Update portion units for seasoning items to align with new packaging standards",
-    requestType: "INVENTORY UPDATE",
-    requestedBy: "Satyam",
-    requestCreatedDate: "2024-03-10T14:30:00",
-    currentStatus: "REQUEST CREATED, APPROVAL PENDING"
-  },
-  {
-    id: "REQ_079",
-    requestDesc: "Add new inventory codes for organic vegetable toppings line",
-    requestType: "NEW INVENTORY",
-    requestedBy: "Priya",
-    requestCreatedDate: "2024-03-08T10:15:00",
-    currentStatus: "REQUEST APPROVED, PENDING ON SC PLANNING"
-  },
-  {
-    id: "REQ_080",
-    requestDesc: "Modify count order values for all dough items based on new tray sizes",
-    requestType: "INVENTORY UPDATE",
-    requestedBy: "Rahul",
-    requestCreatedDate: "2024-03-05T16:45:00",
-    currentStatus: "INVENTORY MASTER UPDATED"
+    currentStatus: "REQUEST APPROVED, INVENTORY CODE MASTER UPDATED"
   },
 ];
 

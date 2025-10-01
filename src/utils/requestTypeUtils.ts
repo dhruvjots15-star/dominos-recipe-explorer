@@ -16,7 +16,7 @@ export const getRequestTypeVariant = (requestType: string) => {
 };
 
 export const getStatusVariant = (status: string) => {
-  if (status === 'LIVE') {
+  if (status === 'LIVE' || status === 'REQUEST APPROVED, INVENTORY CODE MASTER UPDATED') {
     return 'statusLive';
   } else if (status === 'REJECTED') {
     return 'statusRejected';
