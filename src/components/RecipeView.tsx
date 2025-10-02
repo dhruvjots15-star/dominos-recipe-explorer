@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
 import { ArrowLeft } from "lucide-react";
 import { mockRecipeData } from "@/data/recipeData";
 
@@ -112,14 +113,34 @@ export const RecipeView = ({ menuCode, sizeCode, onBack }: RecipeViewProps) => {
               <TableBody>
                 {recipe.ingredients.map((ingredient, index) => (
                   <TableRow key={index} className="hover:bg-muted/25">
-                    <TableCell className="font-mono text-xs">{recipe.menuCode}</TableCell>
-                    <TableCell className="text-xs">{recipe.category}</TableCell>
+                    <TableCell>
+                      <Badge variant="secondary" className="font-mono text-xs">
+                        {recipe.menuCode}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className="text-xs">
+                        {recipe.category}
+                      </Badge>
+                    </TableCell>
                     <TableCell className="text-sm">{recipe.description}</TableCell>
-                    <TableCell className="font-mono text-xs">{recipe.sizeCode}</TableCell>
+                    <TableCell>
+                      <Badge variant="secondary" className="font-mono text-xs">
+                        {recipe.sizeCode}
+                      </Badge>
+                    </TableCell>
                     <TableCell className="text-sm">{recipe.sizeDescription}</TableCell>
                     <TableCell className="text-sm">{ingredient.inventoryDescription}</TableCell>
-                    <TableCell className="font-mono text-xs">{ingredient.inventoryCode}</TableCell>
-                    <TableCell className="text-xs">{ingredient.portionUnit}</TableCell>
+                    <TableCell>
+                      <Badge variant="secondary" className="font-mono text-xs">
+                        {ingredient.inventoryCode}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className="text-xs">
+                        {ingredient.portionUnit}
+                      </Badge>
+                    </TableCell>
                     <TableCell className="text-xs">{ingredient.amount}</TableCell>
                     <TableCell className="text-xs">{ingredient.extraTopping}</TableCell>
                     <TableCell className="text-xs text-center">{ingredient.applyCarryOut}</TableCell>
