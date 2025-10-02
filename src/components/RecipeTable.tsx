@@ -75,13 +75,19 @@ export const RecipeTable = ({ data, onViewRecipe }: RecipeTableProps) => {
                 paginatedRecipes.map((recipe, index) => (
                   <TableRow key={`${recipe.menuCode}-${recipe.sizeCode}-${index}`} className="hover:bg-muted/25">
                     <TableCell>
-                      <span className="font-mono text-xs">{recipe.menuCode}</span>
+                      <Badge variant="secondary" className="font-mono text-xs">
+                        {recipe.menuCode}
+                      </Badge>
                     </TableCell>
                     <TableCell>
-                      <span className="text-xs">{recipe.category}</span>
+                      <Badge variant="outline" className="text-xs">
+                        {recipe.category}
+                      </Badge>
                     </TableCell>
                     <TableCell>
-                      <span className="text-xs">{recipe.channel}</span>
+                      <Badge variant="outline" className="text-xs">
+                        {recipe.channel}
+                      </Badge>
                     </TableCell>
                     <TableCell>
                       <div className="text-sm" title={recipe.description}>
@@ -89,7 +95,9 @@ export const RecipeTable = ({ data, onViewRecipe }: RecipeTableProps) => {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <span className="font-mono text-xs">{recipe.sizeCode}</span>
+                      <Badge variant="secondary" className="font-mono text-xs">
+                        {recipe.sizeCode}
+                      </Badge>
                     </TableCell>
                     <TableCell>
                       <span className="text-sm">{recipe.sizeDescription}</span>

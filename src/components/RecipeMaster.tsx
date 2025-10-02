@@ -222,7 +222,7 @@ export const RecipeMaster = () => {
   };
 
   const getSearchResultsStats = () => {
-    const uniqueProducts = new Set(searchResults.map(item => item.description)).size;
+    const uniqueProducts = new Set(searchResults.map(item => item.menuCode)).size;
     return {
       totalProducts: uniqueProducts,
       totalRecipes: searchResults.length
@@ -230,7 +230,7 @@ export const RecipeMaster = () => {
   };
 
   const getFilteredResultsStats = () => {
-    const uniqueProducts = new Set(filteredResults.map(item => item.description)).size;
+    const uniqueProducts = new Set(filteredResults.map(item => item.menuCode)).size;
     return {
       totalProducts: uniqueProducts,
       totalRecipes: filteredResults.length

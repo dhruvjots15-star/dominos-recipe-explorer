@@ -79,11 +79,10 @@ export const RecipeView = ({ menuCode, sizeCode, onBack }: RecipeViewProps) => {
         </Button>
       </div>
 
-      {/* Title */}
-      <div>
-        <h1 className="text-3xl font-bold text-primary">Recipe Details for {recipe.description}</h1>
-        <p className="text-muted-foreground mt-1">
-          Menu Code: {recipe.menuCode}, Size: {recipe.sizeCode} {recipe.sizeDescription}
+      <div className="bg-gradient-to-r from-slate-50/50 to-gray-50/50 dark:from-slate-950/30 dark:to-gray-950/30 rounded-xl p-6 border border-slate-200/50 dark:border-slate-800/50">
+        <h1 className="text-3xl font-bold text-primary mb-2">Recipe Details for {recipe.description}</h1>
+        <p className="text-lg text-muted-foreground">
+          <span className="font-semibold">Menu Code:</span> {recipe.menuCode}, <span className="font-semibold">Size:</span> {recipe.sizeCode} {recipe.sizeDescription}
         </p>
       </div>
 
