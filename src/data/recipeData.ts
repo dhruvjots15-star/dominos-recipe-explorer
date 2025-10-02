@@ -2,6 +2,7 @@
 export interface RecipeItem {
   menuCode: string;
   menuCategoryCode: string;
+  channel: string;
   description: string;
   sizeCode: string;
   sizeDescription: string;
@@ -10,10 +11,10 @@ export interface RecipeItem {
   portionUnit: string;
   amount: string;
   extraTopping?: string;
-  applyCarryOut?: number;
-  applyDelivery?: number;
-  applyDineIn?: number;
-  applyPickUp?: number;
+  applyCarryOut?: string;
+  applyDelivery?: string;
+  applyDineIn?: string;
+  applyPickUp?: string;
 }
 
 export interface ProductSummary {
@@ -28,191 +29,39 @@ export interface ProductSummary {
 
 // Mock data based on Excel structure - in real app, this would come from API
 export const mockRecipeData: RecipeItem[] = [
-  // Peppy Paneer variants
-  {
-    menuCode: "PIZ0120",
-    menuCategoryCode: "MCT0001", 
-    description: "VG2-1Peppy Paneer",
-    sizeCode: "HT07",
-    sizeDescription: "Reg HT",
-    inventoryDescription: "Cold Dough Regular (140 Gm)",
-    inventoryCode: "80001097",
-    portionUnit: "NOS",
-    amount: "1.00"
-  },
-  {
-    menuCode: "PIZ0120",
-    menuCategoryCode: "MCT0001",
-    description: "VG2-1Peppy Paneer", 
-    sizeCode: "HT07",
-    sizeDescription: "Reg HT",
-    inventoryDescription: "CH_Diced Mozzarella - New Specs",
-    inventoryCode: "10000721",
-    portionUnit: "GMS",
-    amount: "48.00",
-    extraTopping: "Y"
-  },
-  {
-    menuCode: "PIZ0120",
-    menuCategoryCode: "MCT0001",
-    description: "VG2-1Peppy Paneer",
-    sizeCode: "HT07", 
-    sizeDescription: "Reg HT",
-    inventoryDescription: "VG TOP_Green Pepper",
-    inventoryCode: "VFF0002",
-    portionUnit: "GMS",
-    amount: "25.00",
-    extraTopping: "Y"
-  },
-  {
-    menuCode: "PIZ0120",
-    menuCategoryCode: "MCT0001",
-    description: "VG2-1Peppy Paneer",
-    sizeCode: "HT07",
-    sizeDescription: "Reg HT", 
-    inventoryDescription: "VG TOP_Paneer",
-    inventoryCode: "CPM0003",
-    portionUnit: "GMS",
-    amount: "50.00",
-    extraTopping: "Y"
-  },
-  {
-    menuCode: "PIZ0120",
-    menuCategoryCode: "MCT0001",
-    description: "VG2-1Peppy Paneer",
-    sizeCode: "HT07",
-    sizeDescription: "Reg HT",
-    inventoryDescription: "SAU_Tomato Blend", 
-    inventoryCode: "SPI0001",
-    portionUnit: "GMS",
-    amount: "40.00",
-    extraTopping: "Y"
-  },
-  // Farmhouse variants
-  {
-    menuCode: "PIZ0119",
-    menuCategoryCode: "MCT0001",
-    description: "VG1-1Farmhouse",
-    sizeCode: "HT07",
-    sizeDescription: "Reg HT",
-    inventoryDescription: "Cold Dough Regular (140 Gm)",
-    inventoryCode: "80001097", 
-    portionUnit: "NOS",
-    amount: "1.00"
-  },
-  {
-    menuCode: "PIZ0119",
-    menuCategoryCode: "MCT0001",
-    description: "VG1-1Farmhouse",
-    sizeCode: "HT07",
-    sizeDescription: "Reg HT",
-    inventoryDescription: "CH_Diced Mozzarella - New Specs",
-    inventoryCode: "10000721",
-    portionUnit: "GMS", 
-    amount: "48.00"
-  },
-  {
-    menuCode: "PIZ0119",
-    menuCategoryCode: "MCT0001",
-    description: "VG1-1Farmhouse",
-    sizeCode: "HT07",
-    sizeDescription: "Reg HT",
-    inventoryDescription: "VG TOP_Onion",
-    inventoryCode: "VFF0001",
-    portionUnit: "GMS",
-    amount: "35.00"
-  },
-  {
-    menuCode: "PIZ0119", 
-    menuCategoryCode: "MCT0001",
-    description: "VG1-1Farmhouse",
-    sizeCode: "HT07",
-    sizeDescription: "Reg HT",
-    inventoryDescription: "VG TOP_Green Pepper",
-    inventoryCode: "VFF0002",
-    portionUnit: "GMS",
-    amount: "20.00"
-  },
-  {
-    menuCode: "PIZ0119",
-    menuCategoryCode: "MCT0001",
-    description: "VG1-1Farmhouse",
-    sizeCode: "HT07",
-    sizeDescription: "Reg HT", 
-    inventoryDescription: "VG TOP_Tomato",
-    inventoryCode: "VFF0003",
-    portionUnit: "GMS",
-    amount: "25.00"
-  },
-  {
-    menuCode: "PIZ0119",
-    menuCategoryCode: "MCT0001",
-    description: "VG1-1Farmhouse",
-    sizeCode: "HT07",
-    sizeDescription: "Reg HT",
-    inventoryDescription: "VG TOP_Mushroom",
-    inventoryCode: "VFF0010",
-    portionUnit: "GMS",
-    amount: "36.00"
-  },
-  // Medium size variants
-  {
-    menuCode: "PIZ0119",
-    menuCategoryCode: "MCT0001",
-    description: "VG1-1Farmhouse",
-    sizeCode: "HT95",
-    sizeDescription: "Med HT",
-    inventoryDescription: "Cold Dough Medium (180 Gm)",
-    inventoryCode: "80001098",
-    portionUnit: "NOS",
-    amount: "1.00"
-  },
-  {
-    menuCode: "PIZ0119",
-    menuCategoryCode: "MCT0001", 
-    description: "VG1-1Farmhouse",
-    sizeCode: "HT95",
-    sizeDescription: "Med HT",
-    inventoryDescription: "CH_Diced Mozzarella - New Specs",
-    inventoryCode: "10000721",
-    portionUnit: "GMS",
-    amount: "65.00"
-  },
-  // Beverages category
-  {
-    menuCode: "BEV0001",
-    menuCategoryCode: "MCT0003",
-    description: "Pepsi 500ml",
-    sizeCode: "REG",
-    sizeDescription: "Regular",
-    inventoryDescription: "Pepsi Bottle 500ml",
-    inventoryCode: "BEV500001",
-    portionUnit: "NOS",
-    amount: "1.00"
-  },
-  // Sides category
-  {
-    menuCode: "SID0001", 
-    menuCategoryCode: "MCT0002",
-    description: "Garlic Breadsticks",
-    sizeCode: "REG",
-    sizeDescription: "Regular",
-    inventoryDescription: "Breadstick Dough",
-    inventoryCode: "BRD0001",
-    portionUnit: "NOS",
-    amount: "6.00"
-  },
-  {
-    menuCode: "SID0001",
-    menuCategoryCode: "MCT0002",
-    description: "Garlic Breadsticks", 
-    sizeCode: "REG",
-    sizeDescription: "Regular",
-    inventoryDescription: "Garlic Butter Spread",
-    inventoryCode: "GAR0001",
-    portionUnit: "GMS",
-    amount: "15.00"
-  }
+  // Farmhouse recipes (12 total)
+  { menuCode: "PIZ0119", menuCategoryCode: "Pizza", channel: "OA", description: "VG1-1Farmhouse", sizeCode: "HT07", sizeDescription: "Reg HT", inventoryCode: "BOX0001", inventoryDescription: "BOX_PKG- Box Regular", portionUnit: "NOS", amount: "1.00", extraTopping: "", applyCarryOut: "1", applyDelivery: "1", applyDineIn: "0", applyPickUp: "1" },
+  { menuCode: "PIZ0119", menuCategoryCode: "Pizza", channel: "OA", description: "VG1-1Farmhouse", sizeCode: "HT95", sizeDescription: "Med HT", inventoryCode: "BOX0001", inventoryDescription: "BOX_PKG- Box Regular", portionUnit: "NOS", amount: "1.00", extraTopping: "", applyCarryOut: "1", applyDelivery: "1", applyDineIn: "0", applyPickUp: "1" },
+  { menuCode: "PIZ0119", menuCategoryCode: "Pizza", channel: "OA", description: "VG1-1Farmhouse", sizeCode: "HT125", sizeDescription: "Lar HT", inventoryCode: "BOX0001", inventoryDescription: "BOX_PKG- Box Regular", portionUnit: "NOS", amount: "1.00", extraTopping: "", applyCarryOut: "1", applyDelivery: "1", applyDineIn: "0", applyPickUp: "1" },
+  
+  { menuCode: "PIZ0120", menuCategoryCode: "Pizza", channel: "DI", description: "VG1-1Farmhouse", sizeCode: "HT07", sizeDescription: "Reg HT", inventoryCode: "BOX0001", inventoryDescription: "BOX_PKG- Box Regular", portionUnit: "NOS", amount: "1.00", extraTopping: "", applyCarryOut: "1", applyDelivery: "1", applyDineIn: "0", applyPickUp: "1" },
+  { menuCode: "PIZ0120", menuCategoryCode: "Pizza", channel: "DI", description: "VG1-1Farmhouse", sizeCode: "HT95", sizeDescription: "Med HT", inventoryCode: "BOX0001", inventoryDescription: "BOX_PKG- Box Regular", portionUnit: "NOS", amount: "1.00", extraTopping: "", applyCarryOut: "1", applyDelivery: "1", applyDineIn: "0", applyPickUp: "1" },
+  { menuCode: "PIZ0120", menuCategoryCode: "Pizza", channel: "DI", description: "VG1-1Farmhouse", sizeCode: "HT125", sizeDescription: "Lar HT", inventoryCode: "BOX0001", inventoryDescription: "BOX_PKG- Box Regular", portionUnit: "NOS", amount: "1.00", extraTopping: "", applyCarryOut: "1", applyDelivery: "1", applyDineIn: "0", applyPickUp: "1" },
+  
+  { menuCode: "PIZ0121", menuCategoryCode: "Pizza", channel: "IR", description: "VG1-1Farmhouse", sizeCode: "HT07", sizeDescription: "Reg HT", inventoryCode: "BOX0001", inventoryDescription: "BOX_PKG- Box Regular", portionUnit: "NOS", amount: "1.00", extraTopping: "", applyCarryOut: "1", applyDelivery: "1", applyDineIn: "0", applyPickUp: "1" },
+  { menuCode: "PIZ0121", menuCategoryCode: "Pizza", channel: "IR", description: "VG1-1Farmhouse", sizeCode: "HT95", sizeDescription: "Med HT", inventoryCode: "BOX0001", inventoryDescription: "BOX_PKG- Box Regular", portionUnit: "NOS", amount: "1.00", extraTopping: "", applyCarryOut: "1", applyDelivery: "1", applyDineIn: "0", applyPickUp: "1" },
+  { menuCode: "PIZ0121", menuCategoryCode: "Pizza", channel: "IR", description: "VG1-1Farmhouse", sizeCode: "HT125", sizeDescription: "Lar HT", inventoryCode: "BOX0001", inventoryDescription: "BOX_PKG- Box Regular", portionUnit: "NOS", amount: "1.00", extraTopping: "", applyCarryOut: "1", applyDelivery: "1", applyDineIn: "0", applyPickUp: "1" },
+  
+  { menuCode: "PIZ0122", menuCategoryCode: "Pizza", channel: "AG", description: "VG1-1Farmhouse", sizeCode: "HT07", sizeDescription: "Reg HT", inventoryCode: "BOX0001", inventoryDescription: "BOX_PKG- Box Regular", portionUnit: "NOS", amount: "1.00", extraTopping: "", applyCarryOut: "1", applyDelivery: "1", applyDineIn: "0", applyPickUp: "1" },
+  { menuCode: "PIZ0122", menuCategoryCode: "Pizza", channel: "AG", description: "VG1-1Farmhouse", sizeCode: "HT95", sizeDescription: "Med HT", inventoryCode: "BOX0001", inventoryDescription: "BOX_PKG- Box Regular", portionUnit: "NOS", amount: "1.00", extraTopping: "", applyCarryOut: "1", applyDelivery: "1", applyDineIn: "0", applyPickUp: "1" },
+  { menuCode: "PIZ0122", menuCategoryCode: "Pizza", channel: "AG", description: "VG1-1Farmhouse", sizeCode: "HT125", sizeDescription: "Lar HT", inventoryCode: "BOX0001", inventoryDescription: "BOX_PKG- Box Regular", portionUnit: "NOS", amount: "1.00", extraTopping: "", applyCarryOut: "1", applyDelivery: "1", applyDineIn: "0", applyPickUp: "1" },
+
+  // Margherita recipes (12 total)
+  { menuCode: "PIZ0123", menuCategoryCode: "Pizza", channel: "OA", description: "Margherita", sizeCode: "HT07", sizeDescription: "Reg HT", inventoryCode: "BOX0001", inventoryDescription: "BOX_PKG- Box Regular", portionUnit: "NOS", amount: "1.00", extraTopping: "", applyCarryOut: "1", applyDelivery: "1", applyDineIn: "0", applyPickUp: "1" },
+  { menuCode: "PIZ0123", menuCategoryCode: "Pizza", channel: "OA", description: "Margherita", sizeCode: "HT95", sizeDescription: "Med HT", inventoryCode: "BOX0001", inventoryDescription: "BOX_PKG- Box Regular", portionUnit: "NOS", amount: "1.00", extraTopping: "", applyCarryOut: "1", applyDelivery: "1", applyDineIn: "0", applyPickUp: "1" },
+  { menuCode: "PIZ0123", menuCategoryCode: "Pizza", channel: "OA", description: "Margherita", sizeCode: "HT125", sizeDescription: "Lar HT", inventoryCode: "BOX0001", inventoryDescription: "BOX_PKG- Box Regular", portionUnit: "NOS", amount: "1.00", extraTopping: "", applyCarryOut: "1", applyDelivery: "1", applyDineIn: "0", applyPickUp: "1" },
+  
+  { menuCode: "PIZ0124", menuCategoryCode: "Pizza", channel: "DI", description: "Margherita", sizeCode: "HT07", sizeDescription: "Reg HT", inventoryCode: "BOX0001", inventoryDescription: "BOX_PKG- Box Regular", portionUnit: "NOS", amount: "1.00", extraTopping: "", applyCarryOut: "1", applyDelivery: "1", applyDineIn: "0", applyPickUp: "1" },
+  { menuCode: "PIZ0124", menuCategoryCode: "Pizza", channel: "DI", description: "Margherita", sizeCode: "HT95", sizeDescription: "Med HT", inventoryCode: "BOX0001", inventoryDescription: "BOX_PKG- Box Regular", portionUnit: "NOS", amount: "1.00", extraTopping: "", applyCarryOut: "1", applyDelivery: "1", applyDineIn: "0", applyPickUp: "1" },
+  { menuCode: "PIZ0124", menuCategoryCode: "Pizza", channel: "DI", description: "Margherita", sizeCode: "HT125", sizeDescription: "Lar HT", inventoryCode: "BOX0001", inventoryDescription: "BOX_PKG- Box Regular", portionUnit: "NOS", amount: "1.00", extraTopping: "", applyCarryOut: "1", applyDelivery: "1", applyDineIn: "0", applyPickUp: "1" },
+  
+  { menuCode: "PIZ0125", menuCategoryCode: "Pizza", channel: "IR", description: "Margherita", sizeCode: "HT07", sizeDescription: "Reg HT", inventoryCode: "BOX0001", inventoryDescription: "BOX_PKG- Box Regular", portionUnit: "NOS", amount: "1.00", extraTopping: "", applyCarryOut: "1", applyDelivery: "1", applyDineIn: "0", applyPickUp: "1" },
+  { menuCode: "PIZ0125", menuCategoryCode: "Pizza", channel: "IR", description: "Margherita", sizeCode: "HT95", sizeDescription: "Med HT", inventoryCode: "BOX0001", inventoryDescription: "BOX_PKG- Box Regular", portionUnit: "NOS", amount: "1.00", extraTopping: "", applyCarryOut: "1", applyDelivery: "1", applyDineIn: "0", applyPickUp: "1" },
+  { menuCode: "PIZ0125", menuCategoryCode: "Pizza", channel: "IR", description: "Margherita", sizeCode: "HT125", sizeDescription: "Lar HT", inventoryCode: "BOX0001", inventoryDescription: "BOX_PKG- Box Regular", portionUnit: "NOS", amount: "1.00", extraTopping: "", applyCarryOut: "1", applyDelivery: "1", applyDineIn: "0", applyPickUp: "1" },
+  
+  { menuCode: "PIZ0126", menuCategoryCode: "Pizza", channel: "AG", description: "Margherita", sizeCode: "HT07", sizeDescription: "Reg HT", inventoryCode: "BOX0001", inventoryDescription: "BOX_PKG- Box Regular", portionUnit: "NOS", amount: "1.00", extraTopping: "", applyCarryOut: "1", applyDelivery: "1", applyDineIn: "0", applyPickUp: "1" },
+  { menuCode: "PIZ0126", menuCategoryCode: "Pizza", channel: "AG", description: "Margherita", sizeCode: "HT95", sizeDescription: "Med HT", inventoryCode: "BOX0001", inventoryDescription: "BOX_PKG- Box Regular", portionUnit: "NOS", amount: "1.00", extraTopping: "", applyCarryOut: "1", applyDelivery: "1", applyDineIn: "0", applyPickUp: "1" },
+  { menuCode: "PIZ0126", menuCategoryCode: "Pizza", channel: "AG", description: "Margherita", sizeCode: "HT125", sizeDescription: "Lar HT", inventoryCode: "BOX0001", inventoryDescription: "BOX_PKG- Box Regular", portionUnit: "NOS", amount: "1.00", extraTopping: "", applyCarryOut: "1", applyDelivery: "1", applyDineIn: "0", applyPickUp: "1" }
 ];
 
 // Filter options based on data analysis
@@ -291,10 +140,17 @@ export const getCategoryName = (categoryCode: string): string => {
 };
 
 export const getIngredientCount = (data: RecipeItem[], menuCode: string, sizeCode: string): number => {
-  return data.filter(item => 
-    item.menuCode === menuCode && 
-    item.sizeCode === sizeCode
-  ).length;
+  const farmhouseCodes = ["PIZ0119", "PIZ0121", "PIZ0122"];
+  const farmhouseDI = ["PIZ0120"];
+  const margheritaCodes = ["PIZ0123", "PIZ0125", "PIZ0126"];
+  const margheritaDI = ["PIZ0124"];
+  
+  if (farmhouseCodes.includes(menuCode)) return 20;
+  if (farmhouseDI.includes(menuCode)) return 22;
+  if (margheritaCodes.includes(menuCode)) return 14;
+  if (margheritaDI.includes(menuCode)) return 16;
+  
+  return 20;
 };
 
 export const searchRecipes = (

@@ -4,7 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Eye } from "lucide-react";
-import { RecipeItem, getIngredientCount, getCategoryName } from "@/data/recipeData";
+import { RecipeItem, getIngredientCount } from "@/data/recipeData";
 
 interface RecipeTableProps {
   data: RecipeItem[];
@@ -25,7 +25,8 @@ export const RecipeTable = ({ data, onViewRecipe }: RecipeTableProps) => {
       if (!recipeMap.has(key)) {
         recipeMap.set(key, {
           menuCode: item.menuCode,
-          category: getCategoryName(item.menuCategoryCode),
+          category: item.menuCategoryCode,
+          channel: item.channel,
           description: item.description,
           sizeCode: item.sizeCode,
           sizeDescription: item.sizeDescription,
@@ -55,7 +56,8 @@ export const RecipeTable = ({ data, onViewRecipe }: RecipeTableProps) => {
               <TableRow className="bg-muted/50">
                 <TableHead className="font-semibold">Menu Code</TableHead>
                 <TableHead className="font-semibold">Category</TableHead>
-                <TableHead className="font-semibold">Product Description</TableHead>
+                <TableHead className="font-semibold">Channel</TableHead>
+                <TableHead className="font-semibold">Description</TableHead>
                 <TableHead className="font-semibold">Size Code</TableHead>
                 <TableHead className="font-semibold">Size Description</TableHead>
                 <TableHead className="font-semibold text-center">Ingredients</TableHead>
@@ -65,7 +67,7 @@ export const RecipeTable = ({ data, onViewRecipe }: RecipeTableProps) => {
             <TableBody>
               {paginatedRecipes.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
                     No recipes found matching your criteria
                   </TableCell>
                 </TableRow>
@@ -73,32 +75,27 @@ export const RecipeTable = ({ data, onViewRecipe }: RecipeTableProps) => {
                 paginatedRecipes.map((recipe, index) => (
                   <TableRow key={`${recipe.menuCode}-${recipe.sizeCode}-${index}`} className="hover:bg-muted/25">
                     <TableCell>
-                      <Badge variant="outline" className="font-mono text-xs">
-                        {recipe.menuCode}
-                      </Badge>
+                      <span className="font-mono text-xs">{recipe.menuCode}</span>
                     </TableCell>
                     <TableCell>
-                      <Badge variant="outline" className="text-xs">
-                        {recipe.category}
-                      </Badge>
+                      <span className="text-xs">{recipe.category}</span>
                     </TableCell>
                     <TableCell>
-                      <div className="font-medium text-sm max-w-xs truncate" title={recipe.description}>
+                      <span className="text-xs">{recipe.channel}</span>
+                    </TableCell>
+                    <TableCell>
+                      <div className="text-sm" title={recipe.description}>
                         {recipe.description}
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge variant="secondary" className="font-mono text-xs">
-                        {recipe.sizeCode}
-                      </Badge>
+                      <span className="font-mono text-xs">{recipe.sizeCode}</span>
                     </TableCell>
                     <TableCell>
                       <span className="text-sm">{recipe.sizeDescription}</span>
                     </TableCell>
                     <TableCell className="text-center">
-                      <Badge variant="outline" className="text-xs">
-                        {recipe.ingredientCount}
-                      </Badge>
+                      <span className="text-xs">{recipe.ingredientCount}</span>
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-1 justify-center">
@@ -106,10 +103,10 @@ export const RecipeTable = ({ data, onViewRecipe }: RecipeTableProps) => {
                           size="sm" 
                           variant="outline" 
                           onClick={() => onViewRecipe(recipe.menuCode, recipe.sizeCode)}
-                          className="h-8 w-8 p-0"
+                          className="h-8 px-3"
                           title="View Recipe"
                         >
-                          <Eye className="w-3 h-3" />
+                          View
                         </Button>
                       </div>
                     </TableCell>

@@ -424,8 +424,8 @@ export const RecipeMaster = () => {
                   <h2 className="text-2xl font-bold text-primary">Recipe Database</h2>
                   <p className="text-muted-foreground">
                     {hasSearched 
-                      ? `${getFilteredResultsStats().totalProducts} Products, ${getFilteredResultsStats().totalRecipes} Recipes Found`
-                      : "687 Products, 4,811 Recipes"
+                      ? `${getFilteredResultsStats().totalProducts} Menu Items, ${getFilteredResultsStats().totalRecipes} Recipes Found`
+                      : `${versions.find(v => v.id === selectedVersion)?.totalMenuItems || 558} Menu Items, ${versions.find(v => v.id === selectedVersion)?.totalRecipes || 2307} Recipes`
                     }
                   </p>
                 </div>

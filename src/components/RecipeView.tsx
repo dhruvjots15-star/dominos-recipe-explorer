@@ -1,8 +1,8 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ArrowLeft, Clock, Users, ChefHat } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
+import { mockRecipeData } from "@/data/recipeData";
 
 interface RecipeViewProps {
   menuCode: string;
@@ -10,48 +10,64 @@ interface RecipeViewProps {
   onBack: () => void;
 }
 
-export const RecipeView = ({ menuCode, sizeCode, onBack }: RecipeViewProps) => {
-  // Mock recipe data
-  const recipe = {
-    menuCode,
-    sizeCode,
-    productName: "Chicken Caesar Salad",
-    sizeDescription: "Regular",
-    category: "SALADS",
-    prepTime: "15 mins",
-    servingSize: "1 portion",
-    allergens: ["Gluten", "Dairy", "Eggs"],
-    nutritionalInfo: {
-      calories: "485 kcal",
-      protein: "32g",
-      carbs: "18g",
-      fat: "32g"
-    },
+// Complete ingredient details for a recipe
+const getRecipeDetails = (menuCode: string, sizeCode: string) => {
+  const recipeItem = mockRecipeData.find(
+    item => item.menuCode === menuCode && item.sizeCode === sizeCode
+  );
+
+  if (!recipeItem) return null;
+
+  // Mock full recipe data with all ingredients
+  return {
+    menuCode: recipeItem.menuCode,
+    category: recipeItem.menuCategoryCode,
+    description: recipeItem.description,
+    sizeCode: recipeItem.sizeCode,
+    sizeDescription: recipeItem.sizeDescription,
     ingredients: [
-      { name: "Chicken Breast (Grilled)", quantity: "120g", cost: "$3.50" },
-      { name: "Romaine Lettuce", quantity: "80g", cost: "$0.75" },
-      { name: "Caesar Dressing", quantity: "30ml", cost: "$0.45" },
-      { name: "Parmesan Cheese (Grated)", quantity: "15g", cost: "$0.80" },
-      { name: "Croutons", quantity: "20g", cost: "$0.30" },
-      { name: "Cherry Tomatoes", quantity: "40g", cost: "$0.40" },
-      { name: "Bacon Bits", quantity: "10g", cost: "$0.60" }
-    ],
-    instructions: [
-      "Grill chicken breast until fully cooked (internal temp 165°F)",
-      "Wash and chop romaine lettuce into bite-sized pieces",
-      "Halve cherry tomatoes",
-      "Arrange lettuce in serving bowl",
-      "Slice grilled chicken and place on top of lettuce",
-      "Add cherry tomatoes and croutons",
-      "Drizzle with Caesar dressing",
-      "Top with grated Parmesan cheese and bacon bits",
-      "Serve immediately"
+      { inventoryDescription: "BOX_PKG- Box Regular", inventoryCode: "BOX0001", portionUnit: "NOS", amount: "1.00", extraTopping: "", applyCarryOut: "1", applyDelivery: "1", applyDineIn: "0", applyPickUp: "1" },
+      { inventoryDescription: "BOX_Lidless Regular - IHOP", inventoryCode: "20001596", portionUnit: "NOS", amount: "1.00", extraTopping: "", applyCarryOut: "0", applyDelivery: "0", applyDineIn: "1", applyPickUp: "0" },
+      { inventoryDescription: "PKG_Regular Corrugated Sheet", inventoryCode: "POT0052", portionUnit: "NOS", amount: "1.00", extraTopping: "", applyCarryOut: "1", applyDelivery: "1", applyDineIn: "0", applyPickUp: "1" },
+      { inventoryDescription: "PIE_New Hand-Tossed Dough Reg (165gm)", inventoryCode: "80000161", portionUnit: "NOS", amount: "1.00", extraTopping: "", applyCarryOut: "1", applyDelivery: "1", applyDineIn: "1", applyPickUp: "1" },
+      { inventoryDescription: "PRS_Round Sticker", inventoryCode: "PRS0014", portionUnit: "NOS", amount: "1.00", extraTopping: "", applyCarryOut: "1", applyDelivery: "1", applyDineIn: "1", applyPickUp: "1" },
+      { inventoryDescription: "PKG_Napkins", inventoryCode: "POT0006", portionUnit: "NOS", amount: "2.00", extraTopping: "", applyCarryOut: "1", applyDelivery: "1", applyDineIn: "1", applyPickUp: "1" },
+      { inventoryDescription: "PRS_Safe And Hygienic Veg - per Roll", inventoryCode: "20001031", portionUnit: "NOS", amount: "1.00", extraTopping: "", applyCarryOut: "1", applyDelivery: "1", applyDineIn: "1", applyPickUp: "1" },
+      { inventoryDescription: "SES_Pepper & Herb Seasoning (70gm)", inventoryCode: "10000640", portionUnit: "GMS", amount: "0.80", extraTopping: "", applyCarryOut: "1", applyDelivery: "1", applyDineIn: "1", applyPickUp: "1" },
+      { inventoryDescription: "OTH_ Oil", inventoryCode: "DOI0001", portionUnit: "GMS", amount: "4.20", extraTopping: "", applyCarryOut: "1", applyDelivery: "1", applyDineIn: "1", applyPickUp: "1" },
+      { inventoryDescription: "SES_Oregano Seasoning", inventoryCode: "SES0007", portionUnit: "NOS", amount: "2.00", extraTopping: "", applyCarryOut: "1", applyDelivery: "1", applyDineIn: "1", applyPickUp: "1" },
+      { inventoryDescription: "SES_Chilli Flakes", inventoryCode: "SES0005", portionUnit: "NOS", amount: "1.00", extraTopping: "", applyCarryOut: "1", applyDelivery: "1", applyDineIn: "1", applyPickUp: "1" },
+      { inventoryDescription: "OTH_ Corn Meal", inventoryCode: "VCN0001", portionUnit: "GMS", amount: "7.00", extraTopping: "", applyCarryOut: "1", applyDelivery: "1", applyDineIn: "1", applyPickUp: "1" },
+      { inventoryDescription: "CH_Diced Mozzarella - New Specs", inventoryCode: "10000721", portionUnit: "GMS", amount: "48.00", extraTopping: "Y", applyCarryOut: "", applyDelivery: "", applyDineIn: "", applyPickUp: "" },
+      { inventoryDescription: "SAU_Tomato Blend", inventoryCode: "SPI0001", portionUnit: "GMS", amount: "40.00", extraTopping: "Y", applyCarryOut: "", applyDelivery: "", applyDineIn: "", applyPickUp: "" },
+      { inventoryDescription: "VG TOP_Onion", inventoryCode: "VFF0001", portionUnit: "GMS", amount: "35.00", extraTopping: "Y", applyCarryOut: "", applyDelivery: "", applyDineIn: "", applyPickUp: "" },
+      { inventoryDescription: "VG TOP_Green Pepper", inventoryCode: "VFF0002", portionUnit: "GMS", amount: "20.00", extraTopping: "Y", applyCarryOut: "", applyDelivery: "", applyDineIn: "", applyPickUp: "" },
+      { inventoryDescription: "VG TOP_Tomato", inventoryCode: "VFF0003", portionUnit: "GMS", amount: "25.00", extraTopping: "Y", applyCarryOut: "", applyDelivery: "", applyDineIn: "", applyPickUp: "" },
+      { inventoryDescription: "VG TOP_Mushroom", inventoryCode: "VFF0010", portionUnit: "GMS", amount: "36.00", extraTopping: "Y", applyCarryOut: "", applyDelivery: "", applyDineIn: "", applyPickUp: "" },
+      { inventoryDescription: "OTH_ K-Cuisine", inventoryCode: "CMP0016", portionUnit: "GMS", amount: "1.40", extraTopping: "", applyCarryOut: "1", applyDelivery: "1", applyDineIn: "1", applyPickUp: "1" },
+      { inventoryDescription: "SES_Bake Sprinkle", inventoryCode: "SES0010", portionUnit: "GMS", amount: "0.56", extraTopping: "", applyCarryOut: "1", applyDelivery: "1", applyDineIn: "1", applyPickUp: "1" }
     ]
   };
+};
 
-  const totalCost = recipe.ingredients.reduce((sum, ingredient) => 
-    sum + parseFloat(ingredient.cost.replace('$', '')), 0
-  );
+export const RecipeView = ({ menuCode, sizeCode, onBack }: RecipeViewProps) => {
+  const recipe = getRecipeDetails(menuCode, sizeCode);
+
+  if (!recipe) {
+    return (
+      <div className="space-y-6">
+        <Button variant="outline" onClick={onBack} className="gap-2">
+          <ArrowLeft className="w-4 h-4" />
+          Back to Recipe Database
+        </Button>
+        <Card>
+          <CardContent className="p-8 text-center text-muted-foreground">
+            Recipe not found
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -61,154 +77,63 @@ export const RecipeView = ({ menuCode, sizeCode, onBack }: RecipeViewProps) => {
           <ArrowLeft className="w-4 h-4" />
           Back to Recipe Database
         </Button>
-        <div>
-          <h1 className="text-2xl font-bold text-primary">{recipe.productName}</h1>
-          <p className="text-muted-foreground">Recipe Details for {menuCode} - {sizeCode}</p>
-        </div>
       </div>
 
-      {/* Recipe Overview */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
-          {/* Basic Info */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <ChefHat className="w-5 h-5" />
-                Recipe Information
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">Menu Code</p>
-                  <Badge variant="outline" className="font-mono">{recipe.menuCode}</Badge>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Size Code</p>
-                  <Badge variant="secondary" className="font-mono">{recipe.sizeCode}</Badge>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Category</p>
-                  <Badge variant="outline">{recipe.category}</Badge>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Size Description</p>
-                  <span className="text-sm font-medium">{recipe.sizeDescription}</span>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4 mt-4">
-                <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-sm">{recipe.prepTime}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-sm">{recipe.servingSize}</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Ingredients */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Ingredients ({recipe.ingredients.length})</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="rounded-md border">
-                <Table>
-                  <TableHeader>
-                    <TableRow className="bg-muted/50">
-                      <TableHead className="font-semibold">Ingredient</TableHead>
-                      <TableHead className="font-semibold">Quantity</TableHead>
-                      <TableHead className="font-semibold text-right">Cost</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {recipe.ingredients.map((ingredient, index) => (
-                      <TableRow key={index}>
-                        <TableCell className="font-medium">{ingredient.name}</TableCell>
-                        <TableCell>{ingredient.quantity}</TableCell>
-                        <TableCell className="text-right font-mono">{ingredient.cost}</TableCell>
-                      </TableRow>
-                    ))}
-                    <TableRow className="bg-muted/25">
-                      <TableCell className="font-bold">Total Cost</TableCell>
-                      <TableCell></TableCell>
-                      <TableCell className="text-right font-bold font-mono">${totalCost.toFixed(2)}</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Instructions */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Preparation Instructions</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ol className="space-y-3">
-                {recipe.instructions.map((instruction, index) => (
-                  <li key={index} className="flex gap-3">
-                    <div className="flex-shrink-0 w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-medium">
-                      {index + 1}
-                    </div>
-                    <p className="text-sm">{instruction}</p>
-                  </li>
-                ))}
-              </ol>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Sidebar */}
-        <div className="space-y-6">
-          {/* Nutritional Info */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Nutritional Information</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex justify-between">
-                <span className="text-sm text-muted-foreground">Calories</span>
-                <span className="font-medium">{recipe.nutritionalInfo.calories}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-muted-foreground">Protein</span>
-                <span className="font-medium">{recipe.nutritionalInfo.protein}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-muted-foreground">Carbohydrates</span>
-                <span className="font-medium">{recipe.nutritionalInfo.carbs}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-muted-foreground">Fat</span>
-                <span className="font-medium">{recipe.nutritionalInfo.fat}</span>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Allergens */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Allergens</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-wrap gap-2">
-                {recipe.allergens.map((allergen) => (
-                  <Badge key={allergen} variant="destructive" className="text-xs">
-                    {allergen}
-                  </Badge>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+      {/* Title */}
+      <div>
+        <h1 className="text-3xl font-bold text-primary">Recipe Details for {recipe.description}</h1>
+        <p className="text-muted-foreground mt-1">
+          Menu Code: {recipe.menuCode}, Size: {recipe.sizeCode} {recipe.sizeDescription}
+        </p>
       </div>
+
+      {/* Recipe Table */}
+      <Card>
+        <CardContent className="p-0">
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-muted/50">
+                  <TableHead className="font-semibold">Menu Code</TableHead>
+                  <TableHead className="font-semibold">Category</TableHead>
+                  <TableHead className="font-semibold">Description</TableHead>
+                  <TableHead className="font-semibold">Size Code</TableHead>
+                  <TableHead className="font-semibold">Size Description</TableHead>
+                  <TableHead className="font-semibold">Inventory Description</TableHead>
+                  <TableHead className="font-semibold">Inventory Code</TableHead>
+                  <TableHead className="font-semibold">Portion Unit</TableHead>
+                  <TableHead className="font-semibold">Amount</TableHead>
+                  <TableHead className="font-semibold">Extra Topping</TableHead>
+                  <TableHead className="font-semibold">Apply_CarryOut</TableHead>
+                  <TableHead className="font-semibold">Apply_Delivery</TableHead>
+                  <TableHead className="font-semibold">Apply_DineIn</TableHead>
+                  <TableHead className="font-semibold">Apply_PickUp</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {recipe.ingredients.map((ingredient, index) => (
+                  <TableRow key={index} className="hover:bg-muted/25">
+                    <TableCell className="font-mono text-xs">{recipe.menuCode}</TableCell>
+                    <TableCell className="text-xs">{recipe.category}</TableCell>
+                    <TableCell className="text-sm">{recipe.description}</TableCell>
+                    <TableCell className="font-mono text-xs">{recipe.sizeCode}</TableCell>
+                    <TableCell className="text-sm">{recipe.sizeDescription}</TableCell>
+                    <TableCell className="text-sm">{ingredient.inventoryDescription}</TableCell>
+                    <TableCell className="font-mono text-xs">{ingredient.inventoryCode}</TableCell>
+                    <TableCell className="text-xs">{ingredient.portionUnit}</TableCell>
+                    <TableCell className="text-xs">{ingredient.amount}</TableCell>
+                    <TableCell className="text-xs">{ingredient.extraTopping}</TableCell>
+                    <TableCell className="text-xs text-center">{ingredient.applyCarryOut}</TableCell>
+                    <TableCell className="text-xs text-center">{ingredient.applyDelivery}</TableCell>
+                    <TableCell className="text-xs text-center">{ingredient.applyDineIn}</TableCell>
+                    <TableCell className="text-xs text-center">{ingredient.applyPickUp}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
