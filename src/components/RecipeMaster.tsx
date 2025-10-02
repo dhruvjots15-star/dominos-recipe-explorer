@@ -12,6 +12,75 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { VersionSelector } from "./VersionSelector";
+
+// Version data (imported from VersionSelector to keep in sync)
+const versions = [
+  {
+    id: "v5",
+    name: "v5",
+    description: "All India Master",
+    stores: 1560,
+    status: "active",
+    lastUpdated: "by Kshitij, 25th Mar 2025",
+    regionalCoverage: "Default for All India stores",
+    keyDifferences: "Default master",
+    totalMenuItems: 558,
+    totalRecipes: 2307,
+    uniqueIngredients: 206
+  },
+  {
+    id: "v6",
+    name: "v6", 
+    description: "PM Changeover",
+    stores: 432,
+    status: "active",
+    lastUpdated: "by Varun, 20th Apr 2025",
+    regionalCoverage: "Delhi NCR + Selection of Beta stores",
+    keyDifferences: "Reduced MOZ from 40g->30g in all Pizza Mania recipes (cost reduction experiment)",
+    totalMenuItems: 543,
+    totalRecipes: 2286,
+    uniqueIngredients: 206
+  },
+  {
+    id: "v7",
+    name: "v7",
+    description: "Maharshtra Only",
+    stores: 330,
+    status: "active",
+    lastUpdated: "by Varun, 27th Apr 2025",
+    regionalCoverage: "All Mahashtra stores",
+    keyDifferences: "All Pizza items having Pizza Dairy blend instead of Seasoned cheese blend",
+    totalMenuItems: 563,
+    totalRecipes: 2433,
+    uniqueIngredients: 210
+  },
+  {
+    id: "v8",
+    name: "v8",
+    description: "Mozz + Cheddar for CHD",
+    stores: 155,
+    status: "active",
+    lastUpdated: "by Varun, 4th Aug 2025",
+    regionalCoverage: "All Stores mapped to CHD SCC",
+    keyDifferences: "Reduced MOZ to MOZ+CHEDDAR blend (cost reduction experiment)",
+    totalMenuItems: 558,
+    totalRecipes: 2307,
+    uniqueIngredients: 211
+  },
+  {
+    id: "v9",
+    name: "v9",
+    description: "BBP Doughball change only",
+    stores: 125,
+    status: "active",
+    lastUpdated: "by Varun, 14th Aug 2025",
+    regionalCoverage: "125 Beta stores across India",
+    keyDifferences: "Experiment for BBP, changing Dough from 3 MED balls to 1 LAR ball",
+    totalMenuItems: 543,
+    totalRecipes: 2307,
+    uniqueIngredients: 207
+  }
+];
 import { FilterPanel, ActiveFilters } from "./FilterPanel";
 import { AdvancedSearch } from "./AdvancedSearch";
 import { RecipeView } from "./RecipeView";
@@ -28,7 +97,7 @@ export const RecipeMaster = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { currentTeam } = useTeamView();
-  const [selectedVersion, setSelectedVersion] = useState("v1.0");
+  const [selectedVersion, setSelectedVersion] = useState("v5");
   const [showLegacyFilters, setShowLegacyFilters] = useState(false);
   const [activeFilters, setActiveFilters] = useState<ActiveFilters>({});
   const [databaseFilters, setDatabaseFilters] = useState<DatabaseFiltersType>({});
@@ -241,8 +310,10 @@ export const RecipeMaster = () => {
                         <Package className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-blue-600 dark:text-blue-400 uppercase tracking-wide">Total Products</p>
-                        <div className="text-3xl font-bold text-blue-900 dark:text-blue-100">687</div>
+                        <p className="text-sm font-medium text-blue-600 dark:text-blue-400 uppercase tracking-wide">Total Menu Items</p>
+                        <div className="text-3xl font-bold text-blue-900 dark:text-blue-100">
+                          {versions.find(v => v.id === selectedVersion)?.totalMenuItems || 558}
+                        </div>
                       </div>
                     </div>
                     <p className="text-sm text-blue-700 dark:text-blue-300">Active across all channels</p>
@@ -262,7 +333,9 @@ export const RecipeMaster = () => {
                       </div>
                       <div>
                         <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400 uppercase tracking-wide">Total Recipes</p>
-                        <div className="text-3xl font-bold text-emerald-900 dark:text-emerald-100">4,811</div>
+                        <div className="text-3xl font-bold text-emerald-900 dark:text-emerald-100">
+                          {versions.find(v => v.id === selectedVersion)?.totalRecipes.toLocaleString() || "2,307"}
+                        </div>
                       </div>
                     </div>
                     <p className="text-sm text-emerald-700 dark:text-emerald-300">For all product variants</p>
@@ -282,7 +355,9 @@ export const RecipeMaster = () => {
                       </div>
                       <div>
                         <p className="text-sm font-medium text-orange-600 dark:text-orange-400 uppercase tracking-wide">Unique Ingredients</p>
-                        <div className="text-3xl font-bold text-orange-900 dark:text-orange-100">1,553</div>
+                        <div className="text-3xl font-bold text-orange-900 dark:text-orange-100">
+                          {versions.find(v => v.id === selectedVersion)?.uniqueIngredients || 206}
+                        </div>
                       </div>
                     </div>
                     <p className="text-sm text-orange-700 dark:text-orange-300">Across all Recipes in this Version</p>
@@ -302,7 +377,9 @@ export const RecipeMaster = () => {
                       </div>
                       <div>
                         <p className="text-sm font-medium text-purple-600 dark:text-purple-400 uppercase tracking-wide">Stores</p>
-                        <div className="text-3xl font-bold text-purple-900 dark:text-purple-100">1,876</div>
+                        <div className="text-3xl font-bold text-purple-900 dark:text-purple-100">
+                          {versions.find(v => v.id === selectedVersion)?.stores.toLocaleString() || "1,560"}
+                        </div>
                       </div>
                     </div>
                     <p className="text-sm text-purple-700 dark:text-purple-300">Stores using this Version</p>

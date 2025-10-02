@@ -28,48 +28,59 @@ interface VersionComparisonProps {
 
 const mockVersions: Version[] = [
   {
-    id: "v1.0",
-    name: "Version 1.0 - Base Launch",
-    description: "Initial recipe bank with core product portfolio",
-    stores: 1876,
+    id: "v5",
+    name: "v5 All India Master",
+    description: "Default for All India stores",
+    stores: 1560,
     status: "Active",
-    lastUpdated: "2024-01-15",
-    products: 687,
-    recipes: 4811,
-    ingredients: 1553
+    lastUpdated: "2025-03-25",
+    products: 558,
+    recipes: 2307,
+    ingredients: 206
   },
   {
-    id: "v1.1",
-    name: "Version 1.1 - Q1 Update",
-    description: "Addition of new seasonal items and recipe optimization",
-    stores: 1945,
+    id: "v6",
+    name: "v6 PM Changeover",
+    description: "Delhi NCR + Selection of Beta stores",
+    stores: 432,
     status: "Active",
-    lastUpdated: "2024-03-20",
-    products: 712,
-    recipes: 4956,
-    ingredients: 1602
+    lastUpdated: "2025-04-20",
+    products: 543,
+    recipes: 2286,
+    ingredients: 206
   },
   {
-    id: "v1.2",
-    name: "Version 1.2 - Summer Special",
-    description: "Summer menu additions and ingredient cost optimization",
-    stores: 2012,
+    id: "v7",
+    name: "v7 Maharshtra Only",
+    description: "All Mahashtra stores",
+    stores: 330,
     status: "Active",
-    lastUpdated: "2024-06-15",
-    products: 745,
-    recipes: 5134,
-    ingredients: 1687
+    lastUpdated: "2025-04-27",
+    products: 563,
+    recipes: 2433,
+    ingredients: 210
   },
   {
-    id: "v2.0",
-    name: "Version 2.0 - Major Overhaul",
-    description: "Complete recipe restructuring with new categorization",
-    stores: 2156,
-    status: "Draft",
-    lastUpdated: "2024-08-30",
-    products: 823,
-    recipes: 5789,
-    ingredients: 1843
+    id: "v8",
+    name: "v8 Mozz + Cheddar for CHD",
+    description: "All Stores mapped to CHD SCC",
+    stores: 155,
+    status: "Active",
+    lastUpdated: "2025-08-04",
+    products: 558,
+    recipes: 2307,
+    ingredients: 211
+  },
+  {
+    id: "v9",
+    name: "v9 BBP Doughball change only",
+    description: "125 Beta stores across India",
+    stores: 125,
+    status: "Active",
+    lastUpdated: "2025-08-14",
+    products: 543,
+    recipes: 2307,
+    ingredients: 207
   }
 ];
 

@@ -12,44 +12,69 @@ interface VersionSelectorProps {
 
 const versions = [
   {
-    id: "v1.0",
-    name: "Version 1.0",
-    description: "All India, Except Maharashtra",
-    stores: 1876,
+    id: "v5",
+    name: "v5",
+    description: "All India Master",
+    stores: 1560,
     status: "active",
-    lastUpdated: "2025-09-05",
-    regionalCoverage: "All India except Maharashtra",
-    keyDifferences: "Standard cheese blend for all Pizza products"
+    lastUpdated: "by Kshitij, 25th Mar 2025",
+    regionalCoverage: "Default for All India stores",
+    keyDifferences: "Default master",
+    totalMenuItems: 558,
+    totalRecipes: 2307,
+    uniqueIngredients: 206
   },
   {
-    id: "v2.0",
-    name: "Version 2.0", 
-    description: "All Maharashtra Stores",
-    stores: 247,
+    id: "v6",
+    name: "v6", 
+    description: "PM Changeover",
+    stores: 432,
     status: "active",
-    lastUpdated: "2025-08-28",
-    regionalCoverage: "Maharashtra region",
-    keyDifferences: "Dairy Blend instead of Seasoned cheese blend for all Pizza products"
+    lastUpdated: "by Varun, 20th Apr 2025",
+    regionalCoverage: "Delhi NCR + Selection of Beta stores",
+    keyDifferences: "Reduced MOZ from 40g->30g in all Pizza Mania recipes (cost reduction experiment)",
+    totalMenuItems: 543,
+    totalRecipes: 2286,
+    uniqueIngredients: 206
   },
   {
-    id: "v3.0",
-    name: "Version 3.0",
+    id: "v7",
+    name: "v7",
+    description: "Maharshtra Only",
+    stores: 330,
+    status: "active",
+    lastUpdated: "by Varun, 27th Apr 2025",
+    regionalCoverage: "All Mahashtra stores",
+    keyDifferences: "All Pizza items having Pizza Dairy blend instead of Seasoned cheese blend",
+    totalMenuItems: 563,
+    totalRecipes: 2433,
+    uniqueIngredients: 210
+  },
+  {
+    id: "v8",
+    name: "v8",
     description: "Mozz + Cheddar for CHD",
-    stores: 89,
+    stores: 155,
     status: "active",
-    lastUpdated: "2025-08-15",
-    regionalCoverage: "Chandigarh region",
-    keyDifferences: "Mozzarella + Cheddar cheese combination for premium products"
+    lastUpdated: "by Varun, 4th Aug 2025",
+    regionalCoverage: "All Stores mapped to CHD SCC",
+    keyDifferences: "Reduced MOZ to MOZ+CHEDDAR blend (cost reduction experiment)",
+    totalMenuItems: 558,
+    totalRecipes: 2307,
+    uniqueIngredients: 211
   },
   {
-    id: "v4.0",
-    name: "Version 4.0",
-    description: "BBP Doughball change",
-    stores: 156,
+    id: "v9",
+    name: "v9",
+    description: "BBP Doughball change only",
+    stores: 125,
     status: "active",
-    lastUpdated: "2025-07-20",
-    regionalCoverage: "Select metro stores",
-    keyDifferences: "Updated doughball specifications for BBP products"
+    lastUpdated: "by Varun, 14th Aug 2025",
+    regionalCoverage: "125 Beta stores across India",
+    keyDifferences: "Experiment for BBP, changing Dough from 3 MED balls to 1 LAR ball",
+    totalMenuItems: 543,
+    totalRecipes: 2307,
+    uniqueIngredients: 207
   }
 ];
 
@@ -75,18 +100,12 @@ export const VersionSelector = ({ selectedVersion, onVersionChange }: VersionSel
                 <SelectContent>
                   {versions.map((version) => (
                     <SelectItem key={version.id} value={version.id}>
-                      <div className="flex flex-col items-start gap-1">
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">{version.name}</span>
-                          <Badge 
-                            variant={version.status === "active" ? "default" : "secondary"}
-                            className={`text-xs ${version.status === "active" ? "bg-green-500 hover:bg-green-600" : ""}`}
-                          >
-                            {version.status}
-                          </Badge>
+                      <div className="flex items-center justify-between gap-4 w-full min-w-[300px]">
+                        <div className="flex flex-col items-start gap-1">
+                          <span className="font-medium">{version.name} {version.description}</span>
                         </div>
-                        <span className="text-xs text-muted-foreground">
-                          {version.description}
+                        <span className="text-xs text-muted-foreground whitespace-nowrap">
+                          {version.stores} stores
                         </span>
                       </div>
                     </SelectItem>
@@ -107,7 +126,7 @@ export const VersionSelector = ({ selectedVersion, onVersionChange }: VersionSel
                   </div>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Calendar className="w-4 h-4" />
-                    <span>Updated: {currentVersion.lastUpdated}</span>
+                    <span>Last updated: {currentVersion.lastUpdated}</span>
                   </div>
                 </div>
                 
