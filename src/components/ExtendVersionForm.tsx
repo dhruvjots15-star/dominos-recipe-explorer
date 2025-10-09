@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { useToast } from "@/hooks/use-toast";
 import { X, AlertCircle, ChevronRight } from "lucide-react";
 import { generateNextRequestId } from "@/utils/requestIdUtils";
+import { StoreSelector } from "@/components/StoreSelector";
 
 interface ExtendVersionFormProps {
   isOpen: boolean;
@@ -20,9 +21,9 @@ interface ExtendVersionFormProps {
 export const ExtendVersionForm = ({ isOpen, onClose, selectedVersion, onRequestSubmitted }: ExtendVersionFormProps) => {
   const [formData, setFormData] = useState({
     requestDesc: "",
-    targetStores: [] as string[],
     remarks: ""
   });
+  const [selectedStores, setSelectedStores] = useState<string[]>([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const { toast } = useToast();
 
@@ -36,6 +37,14 @@ export const ExtendVersionForm = ({ isOpen, onClose, selectedVersion, onRequestS
       });
       return;
     }
+    if (selectedStores.length === 0) {
+      toast({
+        title: "Error",
+        description: "Please select at least one store",
+        variant: "destructive"
+      });
+      return;
+    }
     setShowConfirmation(true);
   };
 
@@ -45,7 +54,8 @@ export const ExtendVersionForm = ({ isOpen, onClose, selectedVersion, onRequestS
     // Close form and reset state first
     onClose();
     setShowConfirmation(false);
-    setFormData({ requestDesc: "", targetStores: [], remarks: "" });
+    setFormData({ requestDesc: "", remarks: "" });
+    setSelectedStores([]);
     
     // Navigate to request landing page with success toast
     window.location.href = `/recipe-request/${requestId}?source=recipe-bank&showToast=true`;
@@ -165,13 +175,11 @@ export const ExtendVersionForm = ({ isOpen, onClose, selectedVersion, onRequestS
           </div>
 
           <div>
-            <Label htmlFor="targetStores">Target Stores</Label>
-            <div className="p-3 border rounded-md bg-muted/50">
-              <p className="text-sm text-muted-foreground">100 additional stores selected</p>
-              <Button variant="link" className="p-0 h-auto text-sm">
-                Change Store Selection
-              </Button>
-            </div>
+            <Label htmlFor="targetStores">Target Stores *</Label>
+            <StoreSelector 
+              selectedStores={selectedStores}
+              onStoresChange={setSelectedStores}
+            />
           </div>
 
           <div>
