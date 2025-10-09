@@ -384,56 +384,60 @@ const ExtendVersionPage = () => {
                         </TableRow>
                         {expandedRecipe === product.menuCode && mockRecipeDetailsBasic[product.menuCode] && (
                           <TableRow>
-                            <TableCell colSpan={7} className="p-0">
-                              <div className="bg-muted/30 dark:bg-muted/10 p-4 border-t">
-                                <h6 className="font-semibold mb-3">Recipe Details - {product.menuCode}</h6>
-                                <div className="rounded-md border">
+                            <TableCell colSpan={7} className="p-0 bg-gradient-to-r from-blue-50/50 via-background to-blue-50/50 dark:from-blue-950/20 dark:via-background dark:to-blue-950/20">
+                              <div className="p-6 border-t-4 border-blue-200 dark:border-blue-800">
+                                <div className="flex items-center gap-3 mb-4">
+                                  <div className="h-1 w-12 bg-gradient-to-r from-blue-500 to-blue-300 rounded-full" />
+                                  <h6 className="font-bold text-lg text-blue-900 dark:text-blue-100">Recipe Details - {product.menuCode}</h6>
+                                  <div className="h-1 flex-1 bg-gradient-to-r from-blue-300 to-transparent rounded-full" />
+                                </div>
+                                <div className="rounded-lg border-2 border-blue-200 dark:border-blue-800 overflow-hidden shadow-sm">
                                   <Table>
                                     <TableHeader>
-                                      <TableRow className="bg-muted/50">
-                                        <TableHead>Menu Code</TableHead>
-                                        <TableHead>Category</TableHead>
-                                        <TableHead>Description</TableHead>
-                                        <TableHead>Size Code</TableHead>
-                                        <TableHead>Size Description</TableHead>
-                                        <TableHead>Inventory Description</TableHead>
-                                        <TableHead>Inventory Code</TableHead>
-                                        <TableHead>Portion Unit</TableHead>
-                                        <TableHead>Amount</TableHead>
+                                      <TableRow className="bg-gradient-to-r from-blue-100 to-blue-50 dark:from-blue-900 dark:to-blue-950 border-b-2 border-blue-200 dark:border-blue-800">
+                                        <TableHead className="font-bold text-blue-900 dark:text-blue-100">Menu Code</TableHead>
+                                        <TableHead className="font-bold text-blue-900 dark:text-blue-100">Category</TableHead>
+                                        <TableHead className="font-bold text-blue-900 dark:text-blue-100">Description</TableHead>
+                                        <TableHead className="font-bold text-blue-900 dark:text-blue-100">Size Code</TableHead>
+                                        <TableHead className="font-bold text-blue-900 dark:text-blue-100">Size Description</TableHead>
+                                        <TableHead className="font-bold text-blue-900 dark:text-blue-100">Inventory Description</TableHead>
+                                        <TableHead className="font-bold text-blue-900 dark:text-blue-100">Inventory Code</TableHead>
+                                        <TableHead className="font-bold text-blue-900 dark:text-blue-100">Portion Unit</TableHead>
+                                        <TableHead className="font-bold text-blue-900 dark:text-blue-100">Amount</TableHead>
                                       </TableRow>
                                     </TableHeader>
                                     <TableBody>
                                       {mockRecipeDetailsBasic[product.menuCode].map((item: any, idx: number) => (
-                                        <TableRow key={idx}>
+                                        <TableRow key={idx} className="hover:bg-blue-50/50 dark:hover:bg-blue-950/30 border-b border-blue-100 dark:border-blue-900">
                                           <TableCell>
-                                            <Badge variant="secondary" className="font-mono text-xs">
+                                            <Badge variant="secondary" className="font-mono text-xs bg-blue-100 text-blue-900 dark:bg-blue-900 dark:text-blue-100">
                                               {item.menuCode}
                                             </Badge>
                                           </TableCell>
                                           <TableCell>
-                                            <Badge variant="outline" className="text-xs">
+                                            <Badge variant="outline" className="text-xs border-blue-300 text-blue-700 dark:border-blue-700 dark:text-blue-300">
                                               {item.category}
                                             </Badge>
                                           </TableCell>
-                                          <TableCell className="text-sm">{item.description}</TableCell>
+                                          <TableCell className="text-sm font-medium">{item.description}</TableCell>
                                           <TableCell>
-                                            <Badge variant="secondary" className="font-mono text-xs">
+                                            <Badge variant="secondary" className="font-mono text-xs bg-blue-100 text-blue-900 dark:bg-blue-900 dark:text-blue-100">
                                               {item.sizeCode}
                                             </Badge>
                                           </TableCell>
                                           <TableCell className="text-sm">{item.sizeDescription}</TableCell>
-                                          <TableCell className="text-sm">{item.inventoryDescription}</TableCell>
+                                          <TableCell className="text-sm font-medium">{item.inventoryDescription}</TableCell>
                                           <TableCell>
-                                            <Badge variant="secondary" className="font-mono text-xs">
+                                            <Badge variant="secondary" className="font-mono text-xs bg-blue-100 text-blue-900 dark:bg-blue-900 dark:text-blue-100">
                                               {item.inventoryCode}
                                             </Badge>
                                           </TableCell>
                                           <TableCell>
-                                            <Badge variant="outline" className="text-xs">
+                                            <Badge variant="outline" className="text-xs border-blue-300 text-blue-700 dark:border-blue-700 dark:text-blue-300">
                                               {item.portionUnit}
                                             </Badge>
                                           </TableCell>
-                                          <TableCell className="text-sm">{item.amount}</TableCell>
+                                          <TableCell className="text-sm font-semibold">{item.amount}</TableCell>
                                         </TableRow>
                                       ))}
                                     </TableBody>
@@ -511,94 +515,139 @@ const ExtendVersionPage = () => {
                         </TableRow>
                         {expandedRecipe === product.menuCode && mockRecipeDifferencesDetails[`${product.menuCode}-${product.differenceType === 'Ingredient change' ? 'ingredient' : 'grammage'}`] && (
                           <TableRow>
-                            <TableCell colSpan={6} className="p-0">
-                              <div className="bg-muted/30 dark:bg-muted/10 p-4 border-t">
-                                <h6 className="font-semibold mb-3">Recipe Comparison - {product.menuCode}</h6>
-                                <div className="rounded-md border">
+                            <TableCell colSpan={7} className="p-0 bg-gradient-to-r from-amber-50/50 via-background to-amber-50/50 dark:from-amber-950/20 dark:via-background dark:to-amber-950/20">
+                              <div className="p-6 border-t-4 border-amber-300 dark:border-amber-700">
+                                <div className="flex items-center gap-3 mb-4">
+                                  <div className="h-1 w-12 bg-gradient-to-r from-amber-500 to-amber-300 rounded-full" />
+                                  <h6 className="font-bold text-lg text-amber-900 dark:text-amber-100">Recipe Comparison - {product.menuCode}</h6>
+                                  <Badge variant="outline" className="bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-100 font-semibold border-2 border-amber-300 dark:border-amber-700">
+                                    {product.differenceType}
+                                  </Badge>
+                                  <div className="h-1 flex-1 bg-gradient-to-r from-amber-300 to-transparent rounded-full" />
+                                </div>
+                                <div className="rounded-lg border-2 border-amber-200 dark:border-amber-800 overflow-hidden shadow-sm">
                                   <Table>
                                     <TableHeader>
-                                      <TableRow className="bg-muted/50">
-                                        <TableHead>Menu Code</TableHead>
-                                        <TableHead>Category</TableHead>
-                                        <TableHead>Description</TableHead>
-                                        <TableHead>Size Code</TableHead>
-                                        <TableHead>Size Description</TableHead>
+                                      <TableRow className="bg-gradient-to-r from-amber-100 to-amber-50 dark:from-amber-900 dark:to-amber-950 border-b-2 border-amber-200 dark:border-amber-800">
+                                        <TableHead className="font-bold text-amber-900 dark:text-amber-100">Menu Code</TableHead>
+                                        <TableHead className="font-bold text-amber-900 dark:text-amber-100">Category</TableHead>
+                                        <TableHead className="font-bold text-amber-900 dark:text-amber-100">Description</TableHead>
+                                        <TableHead className="font-bold text-amber-900 dark:text-amber-100">Size Code</TableHead>
+                                        <TableHead className="font-bold text-amber-900 dark:text-amber-100">Size Description</TableHead>
                                         {mockRecipeDifferencesDetails[`${product.menuCode}-${product.differenceType === 'Ingredient change' ? 'ingredient' : 'grammage'}`].type === 'ingredient' ? (
                                           <>
-                                            <TableHead>Inventory Description in {currentDialogData?.version}</TableHead>
-                                            <TableHead>Inventory Code in {currentDialogData?.version}</TableHead>
-                                            <TableHead>Inventory Description in {selectedVersion}</TableHead>
-                                            <TableHead>Inventory Code in {selectedVersion}</TableHead>
-                                            <TableHead>Portion Unit</TableHead>
-                                            <TableHead>Amount</TableHead>
+                                            <TableHead className="font-bold text-amber-900 dark:text-amber-100 bg-rose-100 dark:bg-rose-900/30">
+                                              <div className="flex items-center gap-1">
+                                                <span>Inventory Desc ({currentDialogData?.version})</span>
+                                                <Badge variant="outline" className="text-xs bg-rose-200 dark:bg-rose-800">OLD</Badge>
+                                              </div>
+                                            </TableHead>
+                                            <TableHead className="font-bold text-amber-900 dark:text-amber-100 bg-rose-100 dark:bg-rose-900/30">
+                                              <div className="flex items-center gap-1">
+                                                <span>Inv Code ({currentDialogData?.version})</span>
+                                                <Badge variant="outline" className="text-xs bg-rose-200 dark:bg-rose-800">OLD</Badge>
+                                              </div>
+                                            </TableHead>
+                                            <TableHead className="font-bold text-amber-900 dark:text-amber-100 bg-emerald-100 dark:bg-emerald-900/30">
+                                              <div className="flex items-center gap-1">
+                                                <span>Inventory Desc ({selectedVersion})</span>
+                                                <Badge variant="outline" className="text-xs bg-emerald-200 dark:bg-emerald-800">NEW</Badge>
+                                              </div>
+                                            </TableHead>
+                                            <TableHead className="font-bold text-amber-900 dark:text-amber-100 bg-emerald-100 dark:bg-emerald-900/30">
+                                              <div className="flex items-center gap-1">
+                                                <span>Inv Code ({selectedVersion})</span>
+                                                <Badge variant="outline" className="text-xs bg-emerald-200 dark:bg-emerald-800">NEW</Badge>
+                                              </div>
+                                            </TableHead>
+                                            <TableHead className="font-bold text-amber-900 dark:text-amber-100">Portion Unit</TableHead>
+                                            <TableHead className="font-bold text-amber-900 dark:text-amber-100">Amount</TableHead>
                                           </>
                                         ) : (
                                           <>
-                                            <TableHead>Inventory Description</TableHead>
-                                            <TableHead>Inventory Code</TableHead>
-                                            <TableHead>Portion Unit</TableHead>
-                                            <TableHead>Amount in {currentDialogData?.version}</TableHead>
-                                            <TableHead>Amount in {selectedVersion}</TableHead>
+                                            <TableHead className="font-bold text-amber-900 dark:text-amber-100">Inventory Description</TableHead>
+                                            <TableHead className="font-bold text-amber-900 dark:text-amber-100">Inventory Code</TableHead>
+                                            <TableHead className="font-bold text-amber-900 dark:text-amber-100">Portion Unit</TableHead>
+                                            <TableHead className="font-bold text-amber-900 dark:text-amber-100 bg-rose-100 dark:bg-rose-900/30">
+                                              <div className="flex items-center gap-1">
+                                                <span>Amount ({currentDialogData?.version})</span>
+                                                <Badge variant="outline" className="text-xs bg-rose-200 dark:bg-rose-800">OLD</Badge>
+                                              </div>
+                                            </TableHead>
+                                            <TableHead className="font-bold text-amber-900 dark:text-amber-100 bg-emerald-100 dark:bg-emerald-900/30">
+                                              <div className="flex items-center gap-1">
+                                                <span>Amount ({selectedVersion})</span>
+                                                <Badge variant="outline" className="text-xs bg-emerald-200 dark:bg-emerald-800">NEW</Badge>
+                                              </div>
+                                            </TableHead>
                                           </>
                                         )}
                                       </TableRow>
                                     </TableHeader>
                                     <TableBody>
                                       {mockRecipeDifferencesDetails[`${product.menuCode}-${product.differenceType === 'Ingredient change' ? 'ingredient' : 'grammage'}`].ingredients.map((item: any, idx: number) => (
-                                        <TableRow key={idx} className={item.highlight ? 'bg-amber-50 dark:bg-amber-950/30' : ''}>
+                                        <TableRow key={idx} className={item.highlight ? 'bg-amber-100 dark:bg-amber-900/40 border-l-4 border-l-amber-500 dark:border-l-amber-400' : 'hover:bg-amber-50/50 dark:hover:bg-amber-950/30 border-b border-amber-100 dark:border-amber-900'}>
                                           <TableCell>
-                                            <Badge variant="secondary" className="font-mono text-xs">
+                                            <Badge variant="secondary" className="font-mono text-xs bg-amber-100 text-amber-900 dark:bg-amber-900 dark:text-amber-100">
                                               {item.menuCode}
                                             </Badge>
                                           </TableCell>
                                           <TableCell>
-                                            <Badge variant="outline" className="text-xs">
+                                            <Badge variant="outline" className="text-xs border-amber-300 text-amber-700 dark:border-amber-700 dark:text-amber-300">
                                               {item.category}
                                             </Badge>
                                           </TableCell>
-                                          <TableCell className="text-sm">{item.description}</TableCell>
+                                          <TableCell className="text-sm font-medium">{item.description}</TableCell>
                                           <TableCell>
-                                            <Badge variant="secondary" className="font-mono text-xs">
+                                            <Badge variant="secondary" className="font-mono text-xs bg-amber-100 text-amber-900 dark:bg-amber-900 dark:text-amber-100">
                                               {item.sizeCode}
                                             </Badge>
                                           </TableCell>
                                           <TableCell className="text-sm">{item.sizeDescription}</TableCell>
                                           {mockRecipeDifferencesDetails[`${product.menuCode}-${product.differenceType === 'Ingredient change' ? 'ingredient' : 'grammage'}`].type === 'ingredient' ? (
                                             <>
-                                              <TableCell className="text-sm">{item.inventoryDescV2}</TableCell>
-                                              <TableCell>
-                                                <Badge variant="secondary" className="font-mono text-xs">
+                                              <TableCell className={`text-sm font-medium ${item.highlight ? 'bg-rose-100 dark:bg-rose-900/40' : 'bg-rose-50 dark:bg-rose-950/20'}`}>
+                                                {item.inventoryDescV2}
+                                              </TableCell>
+                                              <TableCell className={item.highlight ? 'bg-rose-100 dark:bg-rose-900/40' : 'bg-rose-50 dark:bg-rose-950/20'}>
+                                                <Badge variant="secondary" className="font-mono text-xs bg-rose-200 text-rose-900 dark:bg-rose-800 dark:text-rose-100">
                                                   {item.inventoryCodeV2}
                                                 </Badge>
                                               </TableCell>
-                                              <TableCell className="text-sm">{item.inventoryDescVX}</TableCell>
-                                              <TableCell>
-                                                <Badge variant="secondary" className="font-mono text-xs">
+                                              <TableCell className={`text-sm font-medium ${item.highlight ? 'bg-emerald-100 dark:bg-emerald-900/40' : 'bg-emerald-50 dark:bg-emerald-950/20'}`}>
+                                                {item.inventoryDescVX}
+                                              </TableCell>
+                                              <TableCell className={item.highlight ? 'bg-emerald-100 dark:bg-emerald-900/40' : 'bg-emerald-50 dark:bg-emerald-950/20'}>
+                                                <Badge variant="secondary" className="font-mono text-xs bg-emerald-200 text-emerald-900 dark:bg-emerald-800 dark:text-emerald-100">
                                                   {item.inventoryCodeVX}
                                                 </Badge>
                                               </TableCell>
                                               <TableCell>
-                                                <Badge variant="outline" className="text-xs">
+                                                <Badge variant="outline" className="text-xs border-amber-300 text-amber-700 dark:border-amber-700 dark:text-amber-300">
                                                   {item.portionUnit}
                                                 </Badge>
                                               </TableCell>
-                                              <TableCell className="text-sm">{item.amount}</TableCell>
+                                              <TableCell className="text-sm font-semibold">{item.amount}</TableCell>
                                             </>
                                           ) : (
                                             <>
-                                              <TableCell className="text-sm">{item.inventoryDescription}</TableCell>
+                                              <TableCell className="text-sm font-medium">{item.inventoryDescription}</TableCell>
                                               <TableCell>
-                                                <Badge variant="secondary" className="font-mono text-xs">
+                                                <Badge variant="secondary" className="font-mono text-xs bg-amber-100 text-amber-900 dark:bg-amber-900 dark:text-amber-100">
                                                   {item.inventoryCode}
                                                 </Badge>
                                               </TableCell>
                                               <TableCell>
-                                                <Badge variant="outline" className="text-xs">
+                                                <Badge variant="outline" className="text-xs border-amber-300 text-amber-700 dark:border-amber-700 dark:text-amber-300">
                                                   {item.portionUnit}
                                                 </Badge>
                                               </TableCell>
-                                              <TableCell className="text-sm">{item.amountV2}</TableCell>
-                                              <TableCell className="text-sm">{item.amountVX}</TableCell>
+                                              <TableCell className={`text-sm font-semibold ${item.highlight ? 'bg-rose-100 dark:bg-rose-900/40' : 'bg-rose-50 dark:bg-rose-950/20'}`}>
+                                                {item.amountV2}
+                                              </TableCell>
+                                              <TableCell className={`text-sm font-semibold ${item.highlight ? 'bg-emerald-100 dark:bg-emerald-900/40' : 'bg-emerald-50 dark:bg-emerald-950/20'}`}>
+                                                {item.amountVX}
+                                              </TableCell>
                                             </>
                                           )}
                                         </TableRow>
