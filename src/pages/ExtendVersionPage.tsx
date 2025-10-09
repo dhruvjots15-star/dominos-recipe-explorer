@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, AlertCircle, ChevronRight } from "lucide-react";
 import { generateNextRequestId } from "@/utils/requestIdUtils";
+import { StoreSelector } from "@/components/StoreSelector";
 
 const ExtendVersionPage = () => {
   const navigate = useNavigate();
@@ -18,9 +19,9 @@ const ExtendVersionPage = () => {
   
   const [formData, setFormData] = useState({
     requestDesc: "",
-    targetStores: [] as string[],
     remarks: ""
   });
+  const [selectedStores, setSelectedStores] = useState<string[]>([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -209,13 +210,11 @@ const ExtendVersionPage = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="targetStores" className="text-base font-semibold">Target Stores</Label>
-                <div className="p-4 border rounded-lg bg-muted/50">
-                  <p className="font-medium mb-2">100 additional stores selected</p>
-                  <Button variant="link" className="p-0 h-auto text-sm">
-                    Change Store Selection
-                  </Button>
-                </div>
+                <Label htmlFor="targetStores" className="text-base font-semibold">Target Stores *</Label>
+                <StoreSelector 
+                  selectedStores={selectedStores}
+                  onStoresChange={setSelectedStores}
+                />
               </div>
 
               <div className="space-y-2">
