@@ -86,6 +86,7 @@ const mockVersions: Version[] = [
 
 const mockDifferences = {
   summary: {
+    productsIdentical: 359,
     productsOnlyInV1: 45,
     productsOnlyInV2: 81,
     productsWithDifferentRecipes: 123,
@@ -479,15 +480,15 @@ export const VersionComparison = ({ isOpen, onClose, currentVersion }: VersionCo
                   <GitCompare className="w-5 h-5" />
                   Comparison Summary
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                   <Card>
                     <CardContent className="p-4">
                       <div className="text-center">
-                        <div className="text-2xl font-bold text-red-600 mb-1">
-                          {mockDifferences.summary.productsOnlyInV1}
+                        <div className="text-2xl font-bold text-emerald-600 mb-1">
+                          {mockDifferences.summary.productsIdentical}
                         </div>
                         <p className="text-sm text-muted-foreground">
-                          Products only in {currentVersionData.name.split(' - ')[0]}
+                          Products Identical in both versions
                         </p>
                       </div>
                     </CardContent>
@@ -496,11 +497,24 @@ export const VersionComparison = ({ isOpen, onClose, currentVersion }: VersionCo
                   <Card>
                     <CardContent className="p-4">
                       <div className="text-center">
-                        <div className="text-2xl font-bold text-emerald-600 mb-1">
+                        <div className="text-2xl font-bold text-red-600 mb-1">
+                          {mockDifferences.summary.productsOnlyInV1}
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          Products Only in {currentVersionData.name}
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardContent className="p-4">
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-blue-600 mb-1">
                           {mockDifferences.summary.productsOnlyInV2}
                         </div>
                         <p className="text-sm text-muted-foreground">
-                          New products in {compareVersionData.name.split(' - ')[0]}
+                          Products Only in {compareVersionData.name}
                         </p>
                       </div>
                     </CardContent>
@@ -536,7 +550,7 @@ export const VersionComparison = ({ isOpen, onClose, currentVersion }: VersionCo
                   {/* Table 1 - Products only in V1 */}
                   <div>
                     <h4 className="text-lg font-semibold mb-4 text-red-600">
-                      Products found in {currentVersionData.name.split(' - ')[0]} but not in {compareVersionData.name.split(' - ')[0]}
+                      {mockDifferences.summary.productsOnlyInV1} Products found in {currentVersionData.name} but not in {compareVersionData.name}
                     </h4>
                     <Card>
                       <CardContent className="p-0">
@@ -610,8 +624,8 @@ export const VersionComparison = ({ isOpen, onClose, currentVersion }: VersionCo
 
                   {/* Table 2 - Products only in V2 */}
                   <div>
-                    <h4 className="text-lg font-semibold mb-4 text-emerald-600">
-                      Products found in {compareVersionData.name.split(' - ')[0]} but not in {currentVersionData.name.split(' - ')[0]}
+                    <h4 className="text-lg font-semibold mb-4 text-blue-600">
+                      {mockDifferences.summary.productsOnlyInV2} Products found in {compareVersionData.name} but not in {currentVersionData.name}
                     </h4>
                     <Card>
                       <CardContent className="p-0">
