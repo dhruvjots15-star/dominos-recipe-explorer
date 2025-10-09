@@ -1012,7 +1012,6 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
           <Button 
             variant="ghost" 
             onClick={onBack}
-            className="text-primary hover:bg-muted/50 hover:text-primary transition-colors duration-200"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             {source === 'dashboard' ? 'Back to Dashboard' : 

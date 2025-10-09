@@ -120,7 +120,6 @@ const ModifyRecipeRequestPage = () => {
               <AlertDialogTrigger asChild>
                 <Button 
                   variant="ghost" 
-                  className="hover:bg-muted/50"
                 >
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Back to Dashboard
@@ -145,7 +144,6 @@ const ModifyRecipeRequestPage = () => {
             <Button 
               variant="ghost" 
               onClick={() => navigate("/dashboard")}
-              className="hover:bg-muted/50"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Dashboard

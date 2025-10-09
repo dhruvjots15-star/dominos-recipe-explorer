@@ -178,7 +178,6 @@ const ExtendVersionPage = () => {
           <Button 
             variant="ghost" 
             onClick={() => navigate("/recipe-bank")}
-            className="hover:bg-muted/50"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Recipe Bank
