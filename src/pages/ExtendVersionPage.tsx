@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, AlertCircle, ChevronRight } from "lucide-react";
 import { generateNextRequestId } from "@/utils/requestIdUtils";
 import { StoreSelector } from "@/components/StoreSelector";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const ExtendVersionPage = () => {
   const navigate = useNavigate();
@@ -23,6 +24,7 @@ const ExtendVersionPage = () => {
   });
   const [selectedStores, setSelectedStores] = useState<string[]>([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [storeDialogOpen, setStoreDialogOpen] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,6 +32,14 @@ const ExtendVersionPage = () => {
       toast({
         title: "Error",
         description: "Request description is required",
+        variant: "destructive"
+      });
+      return;
+    }
+    if (selectedStores.length === 0) {
+      toast({
+        title: "Error",
+        description: "Please select at least one store",
         variant: "destructive"
       });
       return;
@@ -211,10 +221,16 @@ const ExtendVersionPage = () => {
 
               <div className="space-y-2">
                 <Label htmlFor="targetStores" className="text-base font-semibold">Target Stores *</Label>
-                <StoreSelector 
-                  selectedStores={selectedStores}
-                  onStoresChange={setSelectedStores}
-                />
+                <div className="p-4 border rounded-lg bg-muted/50">
+                  {selectedStores.length === 0 ? (
+                    <p className="text-sm text-muted-foreground mb-3">No stores selected</p>
+                  ) : (
+                    <p className="text-sm mb-3"><span className="font-medium">{selectedStores.length}</span> stores selected</p>
+                  )}
+                  <Button type="button" variant="secondary" onClick={() => setStoreDialogOpen(true)}>
+                    Select Stores
+                  </Button>
+                </div>
               </div>
 
               <div className="space-y-2">
@@ -227,6 +243,22 @@ const ExtendVersionPage = () => {
                   rows={4}
                 />
               </div>
+
+              {/* Store Selection Dialog */}
+              <Dialog open={storeDialogOpen} onOpenChange={setStoreDialogOpen}>
+                <DialogContent className="max-w-2xl">
+                  <DialogHeader>
+                    <DialogTitle>Select Stores</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <StoreSelector selectedStores={selectedStores} onStoresChange={setSelectedStores} />
+                    <div className="flex justify-end gap-2">
+                      <Button variant="outline" type="button" onClick={() => setStoreDialogOpen(false)}>Close</Button>
+                      <Button type="button" onClick={() => setStoreDialogOpen(false)}>Apply</Button>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
 
               <div className="flex gap-4 pt-6">
                 <Button 
