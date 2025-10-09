@@ -102,25 +102,56 @@ const ExtendVersionPage = () => {
     { menuCode: "DS001", productDesc: "Brownie", category: "Dessert", sizeCode: "REG", sizeDesc: "Regular", differenceType: "Ingredient change" }
   ];
 
-  const mockRecipeDetails: Record<string, any[]> = {
+  // Mock recipe details for Product Differences section (basic recipe view)
+  const mockRecipeDetailsBasic: Record<string, any[]> = {
     "PZ012": [
-      { ingredient: "Pizza Base", grammage: "120g" },
-      { ingredient: "Tomato Sauce", grammage: "80g" },
-      { ingredient: "Mozzarella Cheese", grammage: "45g" },
-      { ingredient: "Bell Peppers", grammage: "25g" },
-      { ingredient: "Onions", grammage: "20g" },
-      { ingredient: "Mushrooms", grammage: "20g" },
-      { ingredient: "Oregano", grammage: "2g" },
-      { ingredient: "Olive Oil", grammage: "5ml" }
+      { menuCode: "PIZ0ABCD", category: "Pizza", description: "Veggie Deluxe Classic", sizeCode: "HT07", sizeDescription: "Half Thick", inventoryDescription: "PIE_New Hand-Tossed Dough Reg (165gm)", inventoryCode: "80000161", portionUnit: "NOS", amount: "1.00" },
+      { menuCode: "PIZ0ABCD", category: "Pizza", description: "Veggie Deluxe Classic", sizeCode: "HT07", sizeDescription: "Half Thick", inventoryDescription: "SAU_Tomato Blend", inventoryCode: "SPI0001", portionUnit: "GMS", amount: "80.00" },
+      { menuCode: "PIZ0ABCD", category: "Pizza", description: "Veggie Deluxe Classic", sizeCode: "HT07", sizeDescription: "Half Thick", inventoryDescription: "CH_Diced Mozzarella - New Specs", inventoryCode: "10000721", portionUnit: "GMS", amount: "45.00" },
+      { menuCode: "PIZ0ABCD", category: "Pizza", description: "Veggie Deluxe Classic", sizeCode: "HT07", sizeDescription: "Half Thick", inventoryDescription: "VG TOP_Green Pepper", inventoryCode: "VFF0002", portionUnit: "GMS", amount: "25.00" },
+      { menuCode: "PIZ0ABCD", category: "Pizza", description: "Veggie Deluxe Classic", sizeCode: "HT07", sizeDescription: "Half Thick", inventoryDescription: "VG TOP_Onion", inventoryCode: "VFF0001", portionUnit: "GMS", amount: "20.00" },
+      { menuCode: "PIZ0ABCD", category: "Pizza", description: "Veggie Deluxe Classic", sizeCode: "HT07", sizeDescription: "Half Thick", inventoryDescription: "VG TOP_Mushroom", inventoryCode: "VFF0010", portionUnit: "GMS", amount: "20.00" },
+      { menuCode: "PIZ0ABCD", category: "Pizza", description: "Veggie Deluxe Classic", sizeCode: "HT07", sizeDescription: "Half Thick", inventoryDescription: "SES_Oregano Seasoning", inventoryCode: "SES0007", portionUnit: "GMS", amount: "2.00" },
+      { menuCode: "PIZ0ABCD", category: "Pizza", description: "Veggie Deluxe Classic", sizeCode: "HT07", sizeDescription: "Half Thick", inventoryDescription: "OTH_ Oil", inventoryCode: "DOI0001", portionUnit: "GMS", amount: "5.00" }
     ],
-    "PZ001": [
-      { ingredient: "Pizza Base", grammage: "120g" },
-      { ingredient: "Tomato Sauce", grammage: "75g" },
-      { ingredient: "Premium Mozzarella", grammage: "45g" },
-      { ingredient: "Oregano", grammage: "2g" },
-      { ingredient: "Olive Oil", grammage: "5ml" },
-      { ingredient: "Basil", grammage: "3g" }
+    "PZ018": [
+      { menuCode: "PIZ0EFGH", category: "Pizza", description: "Chicken Tikka Special", sizeCode: "HT95", sizeDescription: "Half Thick XL", inventoryDescription: "PIE_New Hand-Tossed Dough XL (220gm)", inventoryCode: "80000162", portionUnit: "NOS", amount: "1.00" },
+      { menuCode: "PIZ0EFGH", category: "Pizza", description: "Chicken Tikka Special", sizeCode: "HT95", sizeDescription: "Half Thick XL", inventoryDescription: "SAU_Tikka Sauce", inventoryCode: "SPI0005", portionUnit: "GMS", amount: "60.00" },
+      { menuCode: "PIZ0EFGH", category: "Pizza", description: "Chicken Tikka Special", sizeCode: "HT95", sizeDescription: "Half Thick XL", inventoryDescription: "CH_Diced Mozzarella - New Specs", inventoryCode: "10000721", portionUnit: "GMS", amount: "55.00" },
+      { menuCode: "PIZ0EFGH", category: "Pizza", description: "Chicken Tikka Special", sizeCode: "HT95", sizeDescription: "Half Thick XL", inventoryDescription: "MT_Chicken Tikka", inventoryCode: "MT0015", portionUnit: "GMS", amount: "40.00" },
+      { menuCode: "PIZ0EFGH", category: "Pizza", description: "Chicken Tikka Special", sizeCode: "HT95", sizeDescription: "Half Thick XL", inventoryDescription: "VG TOP_Onion", inventoryCode: "VFF0001", portionUnit: "GMS", amount: "25.00" },
+      { menuCode: "PIZ0EFGH", category: "Pizza", description: "Chicken Tikka Special", sizeCode: "HT95", sizeDescription: "Half Thick XL", inventoryDescription: "VG TOP_Green Pepper", inventoryCode: "VFF0002", portionUnit: "GMS", amount: "20.00" }
     ]
+  };
+
+  // Mock recipe details for Recipe Differences section (comparison view)
+  const mockRecipeDifferencesDetails: Record<string, any> = {
+    "PZ001-ingredient": {
+      type: "ingredient",
+      ingredients: [
+        { menuCode: "PIZ0WXYZ", category: "Pizza", description: "Margherita Pizza Regular", sizeCode: "RT12", sizeDescription: "Regular Thin", inventoryDescV2: "SAU_Tomato Blend", inventoryCodeV2: "SPI0001", inventoryDescVX: "SAU_Premium Tomato Sauce", inventoryCodeVX: "SPI0010", portionUnit: "GMS", amount: "75.00", highlight: true },
+        { menuCode: "PIZ0WXYZ", category: "Pizza", description: "Margherita Pizza Regular", sizeCode: "RT12", sizeDescription: "Regular Thin", inventoryDescV2: "CH_Diced Mozzarella - New Specs", inventoryCodeV2: "10000721", inventoryDescVX: "CH_Premium Mozzarella Blend", inventoryCodeVX: "10000725", portionUnit: "GMS", amount: "45.00", highlight: true },
+        { menuCode: "PIZ0WXYZ", category: "Pizza", description: "Margherita Pizza Regular", sizeCode: "RT12", sizeDescription: "Regular Thin", inventoryDescV2: "PIE_New Hand-Tossed Dough Reg (165gm)", inventoryCodeV2: "80000161", inventoryDescVX: "PIE_New Hand-Tossed Dough Reg (165gm)", inventoryCodeVX: "80000161", portionUnit: "NOS", amount: "1.00", highlight: false },
+        { menuCode: "PIZ0WXYZ", category: "Pizza", description: "Margherita Pizza Regular", sizeCode: "RT12", sizeDescription: "Regular Thin", inventoryDescV2: "SES_Oregano Seasoning", inventoryCodeV2: "SES0007", inventoryDescVX: "SES_Oregano Seasoning", inventoryCodeVX: "SES0007", portionUnit: "GMS", amount: "2.00", highlight: false }
+      ]
+    },
+    "PZ008-grammage": {
+      type: "grammage",
+      ingredients: [
+        { menuCode: "PIZ0MNOP", category: "Pizza", description: "Pepperoni Feast", sizeCode: "LT88", sizeDescription: "Large Thin", inventoryDescription: "MT_Pepperoni", inventoryCode: "MT0008", portionUnit: "GMS", amountV2: "50.00", amountVX: "45.00", highlight: true },
+        { menuCode: "PIZ0MNOP", category: "Pizza", description: "Pepperoni Feast", sizeCode: "LT88", sizeDescription: "Large Thin", inventoryDescription: "CH_Diced Mozzarella - New Specs", inventoryCode: "10000721", portionUnit: "GMS", amountV2: "60.00", amountVX: "55.00", highlight: true },
+        { menuCode: "PIZ0MNOP", category: "Pizza", description: "Pepperoni Feast", sizeCode: "LT88", sizeDescription: "Large Thin", inventoryDescription: "SAU_Tomato Blend", inventoryCode: "SPI0001", portionUnit: "GMS", amountV2: "80.00", amountVX: "80.00", highlight: false },
+        { menuCode: "PIZ0MNOP", category: "Pizza", description: "Pepperoni Feast", sizeCode: "LT88", sizeDescription: "Large Thin", inventoryDescription: "PIE_Thin Crust Dough Large (200gm)", inventoryCode: "80000165", portionUnit: "NOS", amountV2: "1.00", amountVX: "1.00", highlight: false }
+      ]
+    },
+    "PZ015-ingredient": {
+      type: "ingredient",
+      ingredients: [
+        { menuCode: "PIZ0QRST", category: "Pizza", description: "Chicken Supreme", sizeCode: "MT45", sizeDescription: "Medium Thick", inventoryDescV2: "MT_Grilled Chicken", inventoryCodeV2: "MT0012", inventoryDescVX: "MT_Chicken Tikka", inventoryCodeVX: "MT0015", portionUnit: "GMS", amount: "35.00", highlight: true },
+        { menuCode: "PIZ0QRST", category: "Pizza", description: "Chicken Supreme", sizeCode: "MT45", sizeDescription: "Medium Thick", inventoryDescV2: "CH_Diced Mozzarella - New Specs", inventoryCodeV2: "10000721", inventoryDescVX: "CH_Diced Mozzarella - New Specs", inventoryCodeVX: "10000721", portionUnit: "GMS", amount: "50.00", highlight: false },
+        { menuCode: "PIZ0QRST", category: "Pizza", description: "Chicken Supreme", sizeCode: "MT45", sizeDescription: "Medium Thick", inventoryDescV2: "VG TOP_Onion", inventoryCodeV2: "VFF0001", inventoryDescVX: "VG TOP_Onion", inventoryCodeVX: "VFF0001", portionUnit: "GMS", amount: "25.00", highlight: false }
+      ]
+    }
   };
 
   const handleViewProducts = (type: string) => {
@@ -145,7 +176,7 @@ const ExtendVersionPage = () => {
     setRecipeDialogOpen(true);
   };
 
-  const handleViewRecipe = (menuCode: string) => {
+  const handleViewRecipe = (menuCode: string, isProductDialog: boolean = false) => {
     setExpandedRecipe(expandedRecipe === menuCode ? null : menuCode);
   };
 
@@ -351,24 +382,58 @@ const ExtendVersionPage = () => {
                             </div>
                           </TableCell>
                         </TableRow>
-                        {expandedRecipe === product.menuCode && mockRecipeDetails[product.menuCode] && (
+                        {expandedRecipe === product.menuCode && mockRecipeDetailsBasic[product.menuCode] && (
                           <TableRow>
                             <TableCell colSpan={7} className="p-0">
-                              <div className="bg-gray-50 p-4 border-t">
+                              <div className="bg-muted/30 dark:bg-muted/10 p-4 border-t">
                                 <h6 className="font-semibold mb-3">Recipe Details - {product.menuCode}</h6>
                                 <div className="rounded-md border">
                                   <Table>
                                     <TableHeader>
-                                      <TableRow className="bg-gray-100">
-                                        <TableHead>Ingredient</TableHead>
-                                        <TableHead>Grammage</TableHead>
+                                      <TableRow className="bg-muted/50">
+                                        <TableHead>Menu Code</TableHead>
+                                        <TableHead>Category</TableHead>
+                                        <TableHead>Description</TableHead>
+                                        <TableHead>Size Code</TableHead>
+                                        <TableHead>Size Description</TableHead>
+                                        <TableHead>Inventory Description</TableHead>
+                                        <TableHead>Inventory Code</TableHead>
+                                        <TableHead>Portion Unit</TableHead>
+                                        <TableHead>Amount</TableHead>
                                       </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                      {mockRecipeDetails[product.menuCode].map((item: any, idx: number) => (
+                                      {mockRecipeDetailsBasic[product.menuCode].map((item: any, idx: number) => (
                                         <TableRow key={idx}>
-                                          <TableCell>{item.ingredient}</TableCell>
-                                          <TableCell>{item.grammage}</TableCell>
+                                          <TableCell>
+                                            <Badge variant="secondary" className="font-mono text-xs">
+                                              {item.menuCode}
+                                            </Badge>
+                                          </TableCell>
+                                          <TableCell>
+                                            <Badge variant="outline" className="text-xs">
+                                              {item.category}
+                                            </Badge>
+                                          </TableCell>
+                                          <TableCell className="text-sm">{item.description}</TableCell>
+                                          <TableCell>
+                                            <Badge variant="secondary" className="font-mono text-xs">
+                                              {item.sizeCode}
+                                            </Badge>
+                                          </TableCell>
+                                          <TableCell className="text-sm">{item.sizeDescription}</TableCell>
+                                          <TableCell className="text-sm">{item.inventoryDescription}</TableCell>
+                                          <TableCell>
+                                            <Badge variant="secondary" className="font-mono text-xs">
+                                              {item.inventoryCode}
+                                            </Badge>
+                                          </TableCell>
+                                          <TableCell>
+                                            <Badge variant="outline" className="text-xs">
+                                              {item.portionUnit}
+                                            </Badge>
+                                          </TableCell>
+                                          <TableCell className="text-sm">{item.amount}</TableCell>
                                         </TableRow>
                                       ))}
                                     </TableBody>
@@ -444,24 +509,98 @@ const ExtendVersionPage = () => {
                             </div>
                           </TableCell>
                         </TableRow>
-                        {expandedRecipe === product.menuCode && mockRecipeDetails[product.menuCode] && (
+                        {expandedRecipe === product.menuCode && mockRecipeDifferencesDetails[`${product.menuCode}-${product.differenceType === 'Ingredient change' ? 'ingredient' : 'grammage'}`] && (
                           <TableRow>
-                            <TableCell colSpan={7} className="p-0">
-                              <div className="bg-gray-50 p-4 border-t">
-                                <h6 className="font-semibold mb-3">Recipe Details - {product.menuCode}</h6>
+                            <TableCell colSpan={6} className="p-0">
+                              <div className="bg-muted/30 dark:bg-muted/10 p-4 border-t">
+                                <h6 className="font-semibold mb-3">Recipe Comparison - {product.menuCode}</h6>
                                 <div className="rounded-md border">
                                   <Table>
                                     <TableHeader>
-                                      <TableRow className="bg-gray-100">
-                                        <TableHead>Ingredient</TableHead>
-                                        <TableHead>Grammage</TableHead>
+                                      <TableRow className="bg-muted/50">
+                                        <TableHead>Menu Code</TableHead>
+                                        <TableHead>Category</TableHead>
+                                        <TableHead>Description</TableHead>
+                                        <TableHead>Size Code</TableHead>
+                                        <TableHead>Size Description</TableHead>
+                                        {mockRecipeDifferencesDetails[`${product.menuCode}-${product.differenceType === 'Ingredient change' ? 'ingredient' : 'grammage'}`].type === 'ingredient' ? (
+                                          <>
+                                            <TableHead>Inventory Description in {currentDialogData?.version}</TableHead>
+                                            <TableHead>Inventory Code in {currentDialogData?.version}</TableHead>
+                                            <TableHead>Inventory Description in {selectedVersion}</TableHead>
+                                            <TableHead>Inventory Code in {selectedVersion}</TableHead>
+                                            <TableHead>Portion Unit</TableHead>
+                                            <TableHead>Amount</TableHead>
+                                          </>
+                                        ) : (
+                                          <>
+                                            <TableHead>Inventory Description</TableHead>
+                                            <TableHead>Inventory Code</TableHead>
+                                            <TableHead>Portion Unit</TableHead>
+                                            <TableHead>Amount in {currentDialogData?.version}</TableHead>
+                                            <TableHead>Amount in {selectedVersion}</TableHead>
+                                          </>
+                                        )}
                                       </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                      {mockRecipeDetails[product.menuCode].map((item: any, idx: number) => (
-                                        <TableRow key={idx}>
-                                          <TableCell>{item.ingredient}</TableCell>
-                                          <TableCell>{item.grammage}</TableCell>
+                                      {mockRecipeDifferencesDetails[`${product.menuCode}-${product.differenceType === 'Ingredient change' ? 'ingredient' : 'grammage'}`].ingredients.map((item: any, idx: number) => (
+                                        <TableRow key={idx} className={item.highlight ? 'bg-amber-50 dark:bg-amber-950/30' : ''}>
+                                          <TableCell>
+                                            <Badge variant="secondary" className="font-mono text-xs">
+                                              {item.menuCode}
+                                            </Badge>
+                                          </TableCell>
+                                          <TableCell>
+                                            <Badge variant="outline" className="text-xs">
+                                              {item.category}
+                                            </Badge>
+                                          </TableCell>
+                                          <TableCell className="text-sm">{item.description}</TableCell>
+                                          <TableCell>
+                                            <Badge variant="secondary" className="font-mono text-xs">
+                                              {item.sizeCode}
+                                            </Badge>
+                                          </TableCell>
+                                          <TableCell className="text-sm">{item.sizeDescription}</TableCell>
+                                          {mockRecipeDifferencesDetails[`${product.menuCode}-${product.differenceType === 'Ingredient change' ? 'ingredient' : 'grammage'}`].type === 'ingredient' ? (
+                                            <>
+                                              <TableCell className="text-sm">{item.inventoryDescV2}</TableCell>
+                                              <TableCell>
+                                                <Badge variant="secondary" className="font-mono text-xs">
+                                                  {item.inventoryCodeV2}
+                                                </Badge>
+                                              </TableCell>
+                                              <TableCell className="text-sm">{item.inventoryDescVX}</TableCell>
+                                              <TableCell>
+                                                <Badge variant="secondary" className="font-mono text-xs">
+                                                  {item.inventoryCodeVX}
+                                                </Badge>
+                                              </TableCell>
+                                              <TableCell>
+                                                <Badge variant="outline" className="text-xs">
+                                                  {item.portionUnit}
+                                                </Badge>
+                                              </TableCell>
+                                              <TableCell className="text-sm">{item.amount}</TableCell>
+                                            </>
+                                          ) : (
+                                            <>
+                                              <TableCell className="text-sm">{item.inventoryDescription}</TableCell>
+                                              <TableCell>
+                                                <Badge variant="secondary" className="font-mono text-xs">
+                                                  {item.inventoryCode}
+                                                </Badge>
+                                              </TableCell>
+                                              <TableCell>
+                                                <Badge variant="outline" className="text-xs">
+                                                  {item.portionUnit}
+                                                </Badge>
+                                              </TableCell>
+                                              <TableCell className="text-sm">{item.amountV2}</TableCell>
+                                              <TableCell className="text-sm">{item.amountVX}</TableCell>
+                                            </>
+                                          )}
                                         </TableRow>
                                       ))}
                                     </TableBody>
