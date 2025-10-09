@@ -15,6 +15,7 @@ import RecipeEditorPage from "./pages/RecipeEditorPage";
 import ExtendVersionPage from "./pages/ExtendVersionPage";
 import RollbackVersionPage from "./pages/RollbackVersionPage";
 import { AddNewInventoryItemForm } from "./components/AddNewInventoryItemForm";
+import { AddNewInventoryItemFormPhase1 } from "./components/AddNewInventoryItemFormPhase1";
 import { ModifyInventoryItemForm } from "./components/ModifyInventoryItemForm";
 
 const queryClient = new QueryClient();
@@ -35,6 +36,7 @@ const App = () => (
             <Route path="/extra-toppings" element={<Index activeTab="extra-toppings" />} />
             <Route path="/inventory-codes" element={<Index activeTab="inventory-codes" />} />
             <Route path="/inventory-codes/add-new" element={<AddNewInventoryItemForm />} />
+            <Route path="/inventory-codes/add-new-phase1" element={<AddNewInventoryItemFormPhase1 />} />
             <Route path="/inventory-codes/modify" element={<ModifyInventoryItemForm />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/recipe-request/:requestId" element={<RecipeRequestLandingPage />} />

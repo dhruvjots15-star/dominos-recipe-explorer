@@ -146,9 +146,12 @@ export const InventoryCodesMaster = () => {
                 Edit
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuContent align="end" className="w-64">
               <DropdownMenuItem onClick={() => navigate("/inventory-codes/add-new")}>
                 Add a New Inventory Item
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate("/inventory-codes/add-new-phase1")}>
+                Add a New Inventory Item (Phase 1)
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => navigate("/inventory-codes/modify")}>
                 Modify an Existing Inventory Item
