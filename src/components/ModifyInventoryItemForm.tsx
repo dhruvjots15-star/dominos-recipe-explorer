@@ -129,7 +129,6 @@ export const ModifyInventoryItemForm = () => {
           <Button
             variant="ghost"
             onClick={() => navigate("/inventory-codes")}
-            className="hover:bg-muted/50"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Inventory Codes Master
