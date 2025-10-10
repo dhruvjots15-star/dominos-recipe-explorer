@@ -65,8 +65,7 @@ export const StoreSelector = ({ selectedStores, onStoresChange }: StoreSelectorP
   };
 
   const checkMethodChange = (newMethod: string) => {
-    if ((activeMethod && activeMethod !== newMethod) || 
-        (selectedStores.length > 0 && activeMethod !== newMethod)) {
+    if (selectedStores.length > 0 && activeMethod && activeMethod !== newMethod) {
       if (confirm("Previous selection will be discarded. Continue?")) {
         onStoresChange([]);
         setStoreChips([]);
