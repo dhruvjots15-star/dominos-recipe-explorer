@@ -2,15 +2,16 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-import { CheckCircle, Clock, AlertCircle, XCircle, ArrowLeft, User, Calendar, FileText, Settings, Play, Globe, ChevronDown, ChevronUp } from "lucide-react";
+import { CheckCircle, Clock, AlertCircle, XCircle, ArrowLeft, User, Calendar, FileText, Settings, Play, Globe, ChevronDown, ChevronUp, Eye } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { getDashboardRequestById, DashboardRequest } from "@/data/dashboardRequestsData";
-import { getRequestById as getRecipeBankRequestById, RecipeRequest as RBRequest } from "@/data/requestsData";
+import { getRequestById as getRecipeBankRequestById, RecipeRequest as RBRequest, getStoresForRequest } from "@/data/requestsData";
 import { getInventoryRequestById } from "@/data/inventoryCodesData";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { StoreListDialog } from "@/components/StoreListDialog";
 
 interface RecipeRequestLandingProps {
   requestId: string;
@@ -27,6 +28,7 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
   const [showStores, setShowStores] = useState(false);
   const [showSizeCodes, setShowSizeCodes] = useState(false);
   const [showInventoryItems, setShowInventoryItems] = useState(false);
+  const [showStoreListDialog, setShowStoreListDialog] = useState(false);
 
   // Get the actual request data or create a placeholder for newly created requests
   const baseRequestType = source === 'size-codes' ? 'NEW SIZE CODE' : 
@@ -1525,7 +1527,18 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
                   <p className="text-foreground font-medium mt-1 text-primary">{request.targetVersion}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">Target Stores</label>
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium text-muted-foreground">Target Stores</label>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowStoreListDialog(true)}
+                      className="text-primary hover:text-primary/80 gap-1"
+                    >
+                      <Eye className="h-4 w-4" />
+                      View
+                    </Button>
+                  </div>
                   <p className="text-foreground font-medium mt-1">{request.affectedStores} stores</p>
                 </div>
                 <div>
@@ -1558,6 +1571,14 @@ export const RecipeRequestLanding = ({ requestId, onBack, source = 'recipe-bank'
           </CardContent>
         </Card>
       </div>
+      
+      {/* Store List Dialog */}
+      <StoreListDialog
+        isOpen={showStoreListDialog}
+        onClose={() => setShowStoreListDialog(false)}
+        versionName={`Request ${requestId}`}
+        stores={getStoresForRequest(requestId)}
+      />
     </div>
   );
 };

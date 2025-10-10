@@ -1,3 +1,9 @@
+export interface Store {
+  id: string;
+  city: string;
+  locality: string;
+}
+
 export interface RecipeRequest {
   requestId: string;
   requestDesc: string;
@@ -10,6 +16,50 @@ export interface RecipeRequest {
   affectedStores?: number;
   remarks?: string;
 }
+
+// Helper functions to generate dummy stores
+const cities = [
+  "Mumbai", "Delhi", "Bangalore", "Hyderabad", "Chennai", "Kolkata", 
+  "Pune", "Ahmedabad", "Jaipur", "Surat", "Lucknow", "Kanpur",
+  "Nagpur", "Indore", "Thane", "Bhopal", "Visakhapatnam", "Patna",
+  "Vadodara", "Ghaziabad", "Ludhiana", "Agra", "Nashik", "Faridabad",
+  "Meerut", "Rajkot", "Kalyan", "Vasai", "Varanasi", "Srinagar",
+  "Aurangabad", "Dhanbad", "Amritsar", "Navi Mumbai", "Allahabad",
+  "Ranchi", "Howrah", "Coimbatore", "Jabalpur", "Gwalior", "Noida"
+];
+
+const localities = [
+  "Andheri", "CP", "Skymark Sector 98", "Koramangala", "Indiranagar",
+  "Bandra", "Malad", "Powai", "Whitefield", "HSR Layout", "MG Road",
+  "Sector 18", "Sector 62", "Gomti Nagar", "Hazratganj", "Sadar",
+  "Connaught Place", "Karol Bagh", "Lajpat Nagar", "Nehru Place",
+  "Marathahalli", "Jayanagar", "Rajajinagar", "Yelahanka", "Electronic City",
+  "Hitech City", "Jubilee Hills", "Banjara Hills", "Gachibowli", "Kukatpally",
+  "Anna Nagar", "T Nagar", "Adyar", "Velachery", "Porur", "OMR",
+  "Salt Lake", "Park Street", "Rajarhat", "New Town", "Ballygunge",
+  "Aundh", "Kothrud", "Viman Nagar", "Wakad", "Hinjewadi", "Kharadi",
+  "Satellite", "Vastrapur", "Bodakdev", "Prahlad Nagar", "Maninagar"
+];
+
+const generateStoreId = (num: number): string => {
+  const paddedNum = num.toString().padStart(4, '0');
+  return `DPI${paddedNum}`;
+};
+
+const getRandomCity = () => cities[Math.floor(Math.random() * cities.length)];
+const getRandomLocality = () => localities[Math.floor(Math.random() * localities.length)];
+
+const generateStores = (count: number, startNum: number = 1): Store[] => {
+  const stores: Store[] = [];
+  for (let i = 0; i < count; i++) {
+    stores.push({
+      id: generateStoreId(startNum + i),
+      city: getRandomCity(),
+      locality: getRandomLocality()
+    });
+  }
+  return stores;
+};
 
 export const mockRequestsData: RecipeRequest[] = [
   {
@@ -93,6 +143,21 @@ export const mockRequestsData: RecipeRequest[] = [
   }
 ];
 
+// Store data for each request
+const requestStoresData: Record<string, Store[]> = {
+  REQ_001: generateStores(150, 1),
+  REQ_002: generateStores(75, 200),
+  REQ_003: generateStores(200, 300),
+  REQ_004: generateStores(120, 550),
+  REQ_005: generateStores(300, 700),
+  REQ_006: generateStores(180, 1050),
+  REQ_007: generateStores(95, 1250),
+};
+
 export const getRequestById = (requestId: string): RecipeRequest | undefined => {
   return mockRequestsData.find(request => request.requestId === requestId);
+};
+
+export const getStoresForRequest = (requestId: string): Store[] => {
+  return requestStoresData[requestId] || [];
 };
