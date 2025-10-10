@@ -2,8 +2,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Building2, Calendar, ChevronDown, ChevronUp } from "lucide-react";
+import { Building2, Calendar, ChevronDown, ChevronUp, Eye } from "lucide-react";
 import { useState } from "react";
+import { StoreListDialog } from "./StoreListDialog";
+import { getStoresForVersion } from "@/data/storesData";
 
 interface VersionSelectorProps {
   selectedVersion: string;
@@ -80,7 +82,9 @@ const versions = [
 
 export const VersionSelector = ({ selectedVersion, onVersionChange }: VersionSelectorProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [showStoreList, setShowStoreList] = useState(false);
   const currentVersion = versions.find(v => v.id === selectedVersion);
+  const currentStores = currentVersion ? getStoresForVersion(currentVersion.id) : [];
 
   return (
     <Card className="bg-card border">
@@ -123,6 +127,15 @@ export const VersionSelector = ({ selectedVersion, onVersionChange }: VersionSel
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Building2 className="w-4 h-4" />
                     <span>{currentVersion.stores} stores</span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowStoreList(true)}
+                      className="h-7 px-2 gap-1.5 ml-2"
+                    >
+                      <Eye className="w-3.5 h-3.5" />
+                      View
+                    </Button>
                   </div>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Calendar className="w-4 h-4" />
@@ -168,6 +181,16 @@ export const VersionSelector = ({ selectedVersion, onVersionChange }: VersionSel
           )}
         </div>
       </CardContent>
+
+      {/* Store List Dialog */}
+      {currentVersion && (
+        <StoreListDialog
+          isOpen={showStoreList}
+          onClose={() => setShowStoreList(false)}
+          versionName={`${currentVersion.name} ${currentVersion.description}`}
+          stores={currentStores}
+        />
+      )}
     </Card>
   );
 };
