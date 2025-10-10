@@ -119,7 +119,7 @@ export const NewRecipeRequestForm = ({ open, onOpenChange }: NewRecipeRequestFor
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="max-w-[95vw] max-h-[90vh] overflow-y-auto w-full">\
+        <DialogContent className="max-w-[98vw] max-h-[90vh] overflow-y-auto w-full">\
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold text-primary">
               New Recipe Creation Request Form

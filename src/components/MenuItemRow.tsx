@@ -6,6 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Edit, Trash2, Wand2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
 
 interface MenuItem {
   id: string;
@@ -59,6 +60,7 @@ const channels = [
 
 export const MenuItemRow = ({ item, index, lastGeneratedMenuCode, onUpdate, onDelete }: MenuItemRowProps) => {
   const [expandedRows, setExpandedRows] = useState<MenuItem[]>([]);
+  const { toast } = useToast();
 
   const generateMenuCode = () => {
     if (!item.categoryCode || !item.vegNonVeg) return;
@@ -90,6 +92,14 @@ export const MenuItemRow = ({ item, index, lastGeneratedMenuCode, onUpdate, onDe
     }
     
     onUpdate({ menuCode: newMenuCode });
+    
+    // Show success toast
+    toast({
+      title: "Menu Code auto-generated",
+      description: `Generated code: ${newMenuCode}`,
+      className: "bg-success text-success-foreground border-success",
+      duration: 2000,
+    });
   };
 
   const handleSizeCodeChange = (sizeCode: string, checked: boolean) => {
@@ -210,9 +220,9 @@ export const MenuItemRow = ({ item, index, lastGeneratedMenuCode, onUpdate, onDe
   return (
     <div className="border rounded-lg p-6 space-y-4">
       {/* All fields in one row */}
-      <div className="grid grid-cols-7 gap-6 items-end">
+      <div className="grid grid-cols-7 gap-4 items-end">
         {/* Category Code */}
-        <div className="space-y-2 min-w-[180px]">
+        <div className="space-y-2 min-w-[160px]">
           <Label className="text-sm">Category *</Label>
           <Select value={item.categoryCode} onValueChange={(value) => onUpdate({ categoryCode: value })}>
             <SelectTrigger className="h-10 w-full">
@@ -229,7 +239,7 @@ export const MenuItemRow = ({ item, index, lastGeneratedMenuCode, onUpdate, onDe
         </div>
 
         {/* Veg/Non Veg */}
-        <div className="space-y-2 min-w-[120px]">
+        <div className="space-y-2 min-w-[110px]">
           <Label className="text-sm">Type *</Label>
           <Select value={item.vegNonVeg} onValueChange={(value) => onUpdate({ vegNonVeg: value })}>
             <SelectTrigger className="h-10 w-full">
@@ -246,14 +256,14 @@ export const MenuItemRow = ({ item, index, lastGeneratedMenuCode, onUpdate, onDe
         </div>
 
         {/* Menu Code */}
-        <div className="space-y-2 min-w-[140px]">
+        <div className="space-y-2 min-w-[130px]">
           <Label className="text-sm">Menu Code *</Label>
-          <div className="flex gap-2">
+          <div className="flex gap-1.5">
             <Input
               value={item.menuCode}
-              placeholder="Auto-generated"
+              placeholder="Auto-gen"
               readOnly
-              className="font-mono h-10 text-sm"
+              className="font-mono h-10 text-sm flex-1"
             />
             <Button
               type="button"
@@ -261,7 +271,7 @@ export const MenuItemRow = ({ item, index, lastGeneratedMenuCode, onUpdate, onDe
               size="sm"
               onClick={generateMenuCode}
               disabled={!item.categoryCode || !item.vegNonVeg}
-              className="h-10 w-10 p-0"
+              className="h-10 w-10 p-0 shrink-0"
             >
               <Wand2 className="h-4 w-4" />
             </Button>
@@ -269,7 +279,7 @@ export const MenuItemRow = ({ item, index, lastGeneratedMenuCode, onUpdate, onDe
         </div>
 
         {/* Menu Item Name */}
-        <div className="space-y-2 min-w-[200px]">
+        <div className="space-y-2 min-w-[180px]">
           <Label className="text-sm">Item Name *</Label>
           <Input
             value={item.menuItemName}
@@ -280,7 +290,7 @@ export const MenuItemRow = ({ item, index, lastGeneratedMenuCode, onUpdate, onDe
         </div>
 
         {/* Size Codes */}
-        <div className="space-y-2 min-w-[160px]">
+        <div className="space-y-2 min-w-[140px]">
           <Label className="text-sm">Size Code *</Label>
           <Select>
             <SelectTrigger className="h-10 w-full">
@@ -312,7 +322,7 @@ export const MenuItemRow = ({ item, index, lastGeneratedMenuCode, onUpdate, onDe
         </div>
 
         {/* Channels */}
-        <div className="space-y-2 min-w-[160px]">
+        <div className="space-y-2 min-w-[140px]">
           <Label className="text-sm">Channels *</Label>
           <Select>
             <SelectTrigger className="h-10 w-full">
