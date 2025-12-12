@@ -21,6 +21,7 @@ interface NewRecipeRequestFormProps {
 interface MenuItem {
   id: string;
   categoryCode: string;
+  subCategory: string;
   vegNonVeg: string;
   menuCode: string;
   menuItemName: string;
@@ -58,6 +59,7 @@ export const NewRecipeRequestForm = ({ open, onOpenChange }: NewRecipeRequestFor
     const newItem: MenuItem = {
       id: `item_${Date.now()}`,
       categoryCode: "",
+      subCategory: "",
       vegNonVeg: "",
       menuCode: "",
       menuItemName: "",
