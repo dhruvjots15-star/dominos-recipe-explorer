@@ -29,12 +29,11 @@ interface MenuItemRowProps {
 }
 
 const categories = [
-  { value: "MCT0001", label: "MCT0001 (Pizza)" },
-  { value: "MCT0002", label: "MCT0002 (Beverages)" },
-  { value: "MCT0003", label: "MCT0003 (Breads)" },
-  { value: "MCT0004", label: "MCT0004 (Sides)" },
-  { value: "MCT0005", label: "MCT0005 (Desserts)" },
-  { value: "MCT0006", label: "MCT0006 (Combos)" },
+  { value: "Pizza", label: "Pizza" },
+  { value: "Beverages", label: "Beverages" },
+  { value: "Breads", label: "Breads" },
+  { value: "Sides", label: "Sides" },
+  { value: "Desserts", label: "Desserts" },
 ];
 
 const vegNonVegOptions = [
@@ -47,6 +46,11 @@ const sidesSubCategories = [
   { value: "Dips", label: "Dips" },
   { value: "Tacos", label: "Tacos" },
   { value: "Parcels", label: "Parcels" },
+];
+
+const dessertsSubCategories = [
+  { value: "Desserts", label: "Desserts" },
+  { value: "Cakes", label: "Cakes" },
 ];
 
 const sizeCodes = [
@@ -69,15 +73,23 @@ export const MenuItemRow = ({ item, index, lastGeneratedMenuCode, onUpdate, onDe
   const [expandedRows, setExpandedRows] = useState<MenuItem[]>([]);
   const { toast } = useToast();
 
-  // Determine if SubCategory should be enabled (only for Sides category)
-  const isSubCategoryEnabled = item.categoryCode === "MCT0004"; // Sides
+  // Determine if SubCategory should be enabled (Sides or Desserts)
+  const isSubCategoryEnabled = item.categoryCode === "Sides" || item.categoryCode === "Desserts";
+
+  // Get subcategory options based on category
+  const getSubCategoryOptions = () => {
+    if (item.categoryCode === "Sides") return sidesSubCategories;
+    if (item.categoryCode === "Desserts") return dessertsSubCategories;
+    return [];
+  };
 
   // Determine if Veg/Non-Veg should be enabled
   const isVegNonVegEnabled = () => {
-    if (item.categoryCode === "MCT0001") return true; // Pizza - enabled
-    if (item.categoryCode === "MCT0002") return false; // Beverages - disabled
-    if (item.categoryCode === "MCT0003") return false; // Breads - disabled
-    if (item.categoryCode === "MCT0004") { // Sides
+    if (item.categoryCode === "Pizza") return true; // Pizza - enabled
+    if (item.categoryCode === "Beverages") return false; // Beverages - disabled
+    if (item.categoryCode === "Breads") return false; // Breads - disabled
+    if (item.categoryCode === "Desserts") return false; // Desserts - disabled
+    if (item.categoryCode === "Sides") {
       // Enabled only if Tacos or Parcels selected in subcategory
       return item.subCategory === "Tacos" || item.subCategory === "Parcels";
     }
@@ -106,30 +118,51 @@ export const MenuItemRow = ({ item, index, lastGeneratedMenuCode, onUpdate, onDe
     const needsVegNonVeg = isVegNonVegEnabled();
     if (!item.categoryCode || (needsVegNonVeg && !item.vegNonVeg)) return;
     
-    let prefix = "";
-    if (item.categoryCode === "MCT0001") { // Pizza
-      prefix = item.vegNonVeg === "Veg" ? "PIZ0" : "PIZ5";
-    } else if (item.categoryCode === "MCT0002") { // Beverages
-      prefix = "BEV0";
-    } else if (item.categoryCode === "MCT0003") { // Breads
-      prefix = "BRD0";
-    } else if (item.categoryCode === "MCT0004") { // Sides
-      prefix = "SID0";
-    } else if (item.categoryCode === "MCT0005") { // Desserts
-      prefix = "DST0";
-    } else if (item.categoryCode === "MCT0006") { // Combos
-      prefix = "CMB0";
-    }
+    // For Sides and Desserts, subcategory is required
+    if ((item.categoryCode === "Sides" || item.categoryCode === "Desserts") && !item.subCategory) return;
     
-    let newMenuCode;
-    if (lastGeneratedMenuCode && lastGeneratedMenuCode.startsWith(prefix)) {
-      // Generate next sequential code from last generated
-      const lastNumber = parseInt(lastGeneratedMenuCode.slice(3));
-      newMenuCode = `${prefix}${String(lastNumber + 1).padStart(3, '0')}`;
-    } else {
-      // Generate random code if no previous code or different prefix
+    let newMenuCode = "";
+    
+    if (item.categoryCode === "Pizza") {
+      const prefix = item.vegNonVeg === "Veg" ? "PIZ0" : "PIZ5";
       const randomNum = Math.floor(Math.random() * 900) + 100;
       newMenuCode = `${prefix}${randomNum}`;
+    } else if (item.categoryCode === "Beverages") {
+      const randomNum = Math.floor(Math.random() * 900) + 100;
+      newMenuCode = `BEV0${randomNum}`;
+    } else if (item.categoryCode === "Breads") {
+      const randomNum = Math.floor(Math.random() * 900) + 100;
+      newMenuCode = `BRD0${randomNum}`;
+    } else if (item.categoryCode === "Sides") {
+      if (item.subCategory === "Sides") {
+        const randomNum = Math.floor(Math.random() * 900) + 100;
+        newMenuCode = `SID0${randomNum}`;
+      } else if (item.subCategory === "Dips") {
+        const randomNum = Math.floor(Math.random() * 900) + 100;
+        newMenuCode = `DIP0${randomNum}`;
+      } else if (item.subCategory === "Tacos") {
+        const randomNum = Math.floor(Math.random() * 90) + 10;
+        if (item.vegNonVeg === "Veg") {
+          newMenuCode = `TACVG${randomNum}`;
+        } else {
+          newMenuCode = `TACNV${randomNum}`;
+        }
+      } else if (item.subCategory === "Parcels") {
+        const randomNum = Math.floor(Math.random() * 9) + 1;
+        if (item.vegNonVeg === "Veg") {
+          newMenuCode = `VGPARCEL${randomNum}`;
+        } else {
+          newMenuCode = `NVPARCEL${randomNum}`;
+        }
+      }
+    } else if (item.categoryCode === "Desserts") {
+      if (item.subCategory === "Desserts") {
+        const randomNum = Math.floor(Math.random() * 9000) + 1000;
+        newMenuCode = `DST${randomNum}`;
+      } else if (item.subCategory === "Cakes") {
+        const randomNum = Math.floor(Math.random() * 90) + 10;
+        newMenuCode = `CAK${randomNum}`;
+      }
     }
     
     onUpdate({ menuCode: newMenuCode });
@@ -298,7 +331,7 @@ export const MenuItemRow = ({ item, index, lastGeneratedMenuCode, onUpdate, onDe
               <SelectValue placeholder="Select" />
             </SelectTrigger>
             <SelectContent>
-              {sidesSubCategories.map((sub) => (
+              {getSubCategoryOptions().map((sub) => (
                 <SelectItem key={sub.value} value={sub.value}>
                   {sub.label}
                 </SelectItem>
@@ -343,7 +376,7 @@ export const MenuItemRow = ({ item, index, lastGeneratedMenuCode, onUpdate, onDe
               variant="outline"
               size="sm"
               onClick={generateMenuCode}
-              disabled={!item.categoryCode || (isVegNonVegEnabled() && !item.vegNonVeg)}
+              disabled={!item.categoryCode || (isVegNonVegEnabled() && !item.vegNonVeg) || ((item.categoryCode === "Sides" || item.categoryCode === "Desserts") && !item.subCategory)}
               className="h-10 w-10 p-0 shrink-0"
             >
               <Wand2 className="h-4 w-4" />
