@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 interface MenuItem {
   id: string;
   categoryCode: string;
+  subCategory: string;
   vegNonVeg: string;
   menuCode: string;
   menuItemName: string;
@@ -39,7 +40,13 @@ const categories = [
 const vegNonVegOptions = [
   { value: "Veg", label: "Veg" },
   { value: "Non Veg", label: "Non Veg" },
-  { value: "NA", label: "NA" },
+];
+
+const sidesSubCategories = [
+  { value: "Sides", label: "Sides" },
+  { value: "Dips", label: "Dips" },
+  { value: "Tacos", label: "Tacos" },
+  { value: "Parcels", label: "Parcels" },
 ];
 
 const sizeCodes = [
@@ -62,8 +69,42 @@ export const MenuItemRow = ({ item, index, lastGeneratedMenuCode, onUpdate, onDe
   const [expandedRows, setExpandedRows] = useState<MenuItem[]>([]);
   const { toast } = useToast();
 
+  // Determine if SubCategory should be enabled (only for Sides category)
+  const isSubCategoryEnabled = item.categoryCode === "MCT0004"; // Sides
+
+  // Determine if Veg/Non-Veg should be enabled
+  const isVegNonVegEnabled = () => {
+    if (item.categoryCode === "MCT0001") return true; // Pizza - enabled
+    if (item.categoryCode === "MCT0002") return false; // Beverages - disabled
+    if (item.categoryCode === "MCT0003") return false; // Breads - disabled
+    if (item.categoryCode === "MCT0004") { // Sides
+      // Enabled only if Tacos or Parcels selected in subcategory
+      return item.subCategory === "Tacos" || item.subCategory === "Parcels";
+    }
+    return false;
+  };
+
+  // Handle category change - reset subcategory and vegNonVeg
+  const handleCategoryChange = (value: string) => {
+    onUpdate({ 
+      categoryCode: value, 
+      subCategory: "", 
+      vegNonVeg: "" 
+    });
+  };
+
+  // Handle subcategory change - reset vegNonVeg if needed
+  const handleSubCategoryChange = (value: string) => {
+    onUpdate({ 
+      subCategory: value, 
+      vegNonVeg: "" 
+    });
+  };
+
   const generateMenuCode = () => {
-    if (!item.categoryCode || !item.vegNonVeg) return;
+    // For categories that don't need vegNonVeg, skip that check
+    const needsVegNonVeg = isVegNonVegEnabled();
+    if (!item.categoryCode || (needsVegNonVeg && !item.vegNonVeg)) return;
     
     let prefix = "";
     if (item.categoryCode === "MCT0001") { // Pizza
@@ -146,6 +187,7 @@ export const MenuItemRow = ({ item, index, lastGeneratedMenuCode, onUpdate, onDe
         newRows.push({
           id: `${item.id}_${channelIndex}_${sizeIndex}`,
           categoryCode: item.categoryCode,
+          subCategory: item.subCategory,
           vegNonVeg: item.vegNonVeg,
           menuCode: newMenuCode,
           menuItemName: item.menuItemName,
@@ -159,7 +201,13 @@ export const MenuItemRow = ({ item, index, lastGeneratedMenuCode, onUpdate, onDe
     setExpandedRows(newRows);
   };
 
-  const isFormValid = item.categoryCode && item.vegNonVeg && item.menuCode && 
+  // Form validation - vegNonVeg only required if enabled
+  const needsVegNonVeg = isVegNonVegEnabled();
+  const needsSubCategory = isSubCategoryEnabled;
+  const isFormValid = item.categoryCode && 
+                     (!needsVegNonVeg || item.vegNonVeg) && 
+                     (!needsSubCategory || item.subCategory) &&
+                     item.menuCode && 
                      item.menuItemName && item.sizeCodes.length > 0 && item.channels.length > 0;
 
   if (item.isLocked) {
@@ -220,11 +268,11 @@ export const MenuItemRow = ({ item, index, lastGeneratedMenuCode, onUpdate, onDe
   return (
     <div className="border rounded-lg p-6 space-y-4">
       {/* All fields in one row */}
-      <div className="grid grid-cols-7 gap-4 items-end">
+      <div className="grid grid-cols-8 gap-3 items-end">
         {/* Category Code */}
-        <div className="space-y-2 min-w-[160px]">
+        <div className="space-y-2 min-w-[150px]">
           <Label className="text-sm">Category *</Label>
-          <Select value={item.categoryCode} onValueChange={(value) => onUpdate({ categoryCode: value })}>
+          <Select value={item.categoryCode} onValueChange={handleCategoryChange}>
             <SelectTrigger className="h-10 w-full">
               <SelectValue placeholder="Category" />
             </SelectTrigger>
@@ -238,12 +286,37 @@ export const MenuItemRow = ({ item, index, lastGeneratedMenuCode, onUpdate, onDe
           </Select>
         </div>
 
+        {/* SubCategory */}
+        <div className="space-y-2 min-w-[110px]">
+          <Label className="text-sm text-muted-foreground">SubCategory</Label>
+          <Select 
+            value={item.subCategory} 
+            onValueChange={handleSubCategoryChange}
+            disabled={!isSubCategoryEnabled}
+          >
+            <SelectTrigger className={`h-10 w-full ${!isSubCategoryEnabled ? 'opacity-50 cursor-not-allowed' : ''}`}>
+              <SelectValue placeholder="Select" />
+            </SelectTrigger>
+            <SelectContent>
+              {sidesSubCategories.map((sub) => (
+                <SelectItem key={sub.value} value={sub.value}>
+                  {sub.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
         {/* Veg/Non Veg */}
         <div className="space-y-2 min-w-[110px]">
-          <Label className="text-sm">Type *</Label>
-          <Select value={item.vegNonVeg} onValueChange={(value) => onUpdate({ vegNonVeg: value })}>
-            <SelectTrigger className="h-10 w-full">
-              <SelectValue placeholder="Type" />
+          <Label className="text-sm text-muted-foreground">Veg/Non-Veg</Label>
+          <Select 
+            value={item.vegNonVeg} 
+            onValueChange={(value) => onUpdate({ vegNonVeg: value })}
+            disabled={!isVegNonVegEnabled()}
+          >
+            <SelectTrigger className={`h-10 w-full ${!isVegNonVegEnabled() ? 'opacity-50 cursor-not-allowed' : ''}`}>
+              <SelectValue placeholder="Select" />
             </SelectTrigger>
             <SelectContent>
               {vegNonVegOptions.map((option) => (
@@ -270,7 +343,7 @@ export const MenuItemRow = ({ item, index, lastGeneratedMenuCode, onUpdate, onDe
               variant="outline"
               size="sm"
               onClick={generateMenuCode}
-              disabled={!item.categoryCode || !item.vegNonVeg}
+              disabled={!item.categoryCode || (isVegNonVegEnabled() && !item.vegNonVeg)}
               className="h-10 w-10 p-0 shrink-0"
             >
               <Wand2 className="h-4 w-4" />

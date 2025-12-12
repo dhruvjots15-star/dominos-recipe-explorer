@@ -15,6 +15,7 @@ import { generateNextRequestId } from "@/utils/requestIdUtils";
 interface MenuItem {
   id: string;
   categoryCode: string;
+  subCategory: string;
   vegNonVeg: string;
   menuCode: string;
   menuItemName: string;
@@ -54,6 +55,7 @@ const NewRecipeRequestPage = () => {
     const newItem: MenuItem = {
       id: `item_${Date.now()}`,
       categoryCode: lastUsedCategory,
+      subCategory: "",
       vegNonVeg: "",
       menuCode: "",
       menuItemName: "",
